@@ -1,0 +1,33 @@
+services:
+  mysql:
+    image: mysql
+    container_name: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_USER=tech-fiap
+      - MYSQL_PASSWORD=mysecret123
+      - MYSQL_DATABASE=ze_burguer
+      - MYSQL_ROOT_PASSWORD=mysecret123
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - fullstack
+  
+  app-ze-burguer:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    image: golang
+    container_name: app-ze-burguer
+    ports:
+      - 3003:3003
+    depends_on:
+      - "mysql"
+    networks:
+      - fullstack
+
+networks:
+  fullstack:
+    driver: bridge
+  
