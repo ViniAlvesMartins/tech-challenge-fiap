@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/cmd/cli"
+	cli "fiappos/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/httpserver"
 )
 
 func main() {
