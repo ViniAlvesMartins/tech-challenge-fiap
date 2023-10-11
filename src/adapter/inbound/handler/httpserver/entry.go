@@ -1,9 +1,15 @@
 package cli
 
 import (
+	"context"
 	"encoding/json"
+	"fiappos/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
+	"fmt"
+	"gorm.io/gorm"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -18,14 +24,11 @@ type User struct {
 	Age       int    `json:"age"`
 }
 
-// func logging(f http.HandlerFunc) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		log.Println(r.URL.Path)
-// 		f(w, r)
-// 	}
-// }
+type Handler struct {
+	Conn *gorm.DB
+}
 
-func getUser(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 	peter := User{
 		Firstname: "John",
 		Lastname:  "Doe",
@@ -86,16 +89,25 @@ func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
 }
 
 func Execute() {
+	cfg, err := postgres.NewConfig()
 
-	// 	fmt.Println("entry")
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	// 	messageHandler := h.NewMessageHandler()
+	db, err := postgres.NewConnection(context.Background(), slog.New(slog.NewTextHandler(os.Stderr, nil)), cfg)
 
-	// 	messageHandler.PostMessage()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	h := Handler{
+		Conn: db,
+	}
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", Chain(getUser, Method("GET"), Logging()))
+	router.HandleFunc("/", Chain(h.getUser, Method("GET"), Logging()))
 
 	http.ListenAndServe(":8080", router)
 
