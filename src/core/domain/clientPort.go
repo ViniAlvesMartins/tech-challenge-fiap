@@ -14,9 +14,9 @@ func NewClientDomain(
 	email string,
 ) ClientDomainInterface {
 	return &ClientDomain{
-		id:    id,
-		cpf:   cpf,
-		name:  name,
-		email: email,
+		Id:    id,
+		Cpf:   cpf,
+		Name:  name,
+		Email: email,
 	}
 }
