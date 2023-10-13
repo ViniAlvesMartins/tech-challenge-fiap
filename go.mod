@@ -2,8 +2,6 @@ module fiappos/ViniAlvesMartins/tech-challenge-fiap
 
 go 1.21.0
 
-require go.uber.org/zap v1.26.0
-
 require (
 	github.com/gorilla/mux v1.8.0
 	github.com/kelseyhightower/envconfig v1.4.0

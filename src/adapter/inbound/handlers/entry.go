@@ -1,8 +1,7 @@
-package cli
+package handlers
 
 import (
 	"context"
-	"encoding/json"
 	"fiappos/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
 	"fmt"
 	"log"
@@ -11,33 +10,12 @@ import (
 	"os"
 	"time"
 
-	"gorm.io/gorm"
-
 	"github.com/gorilla/mux"
 )
 
 // "fmt"
 
 // "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/adapter/handler"
-type User struct {
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	Age       int    `json:"age"`
-}
-
-type Handler struct {
-	Conn *gorm.DB
-}
-
-func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
-	peter := User{
-		Firstname: "John",
-		Lastname:  "Doe",
-		Age:       25,
-	}
-
-	json.NewEncoder(w).Encode(peter)
-}
 
 type Middleware func(http.HandlerFunc) http.HandlerFunc
 
@@ -89,6 +67,10 @@ func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
 	return f
 }
 
+/*type Handler struct {
+	Conn *gorm.DB
+}*/
+
 func Execute() {
 	cfg, err := postgres.NewConfig()
 
@@ -102,19 +84,17 @@ func Execute() {
 		fmt.Println(err)
 	}
 
-	h := Handler{
-		Conn: db,
-	}
+	h := New(db)
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", Chain(h.getUser, Method("GET"), Logging()))
+	// router.HandleFunc("/", Chain(h.getUser, Method("GET"), Logging()))
 
-	router.HandleFunc("/api/client/{id}", middleware.GetUser).Methods("GET", "OPTIONS")
-	router.HandleFunc("/api/user", middleware.GetAllUser).Methods("GET", "OPTIONS")
-	router.HandleFunc("/api/newclient", middleware.CreateUser).Methods("POST", "OPTIONS")
-	router.HandleFunc("/api/client/{id}", middleware.UpdateUser).Methods("PUT", "OPTIONS")
-	router.HandleFunc("/api/deleteclient/{id}", middleware.DeleteUser).Methods("DELETE", "OPTIONS")
+	router.HandleFunc("/clients", h.GetAllClients).Methods(http.MethodGet)
+	router.HandleFunc("/clients/{id}", h.GetClient).Methods(http.MethodGet)
+	router.HandleFunc("/clients", h.AddClient).Methods(http.MethodPost)
+	router.HandleFunc("/clients/{id}", h.UpdateClient).Methods(http.MethodPut)
+	router.HandleFunc("/clients/{id}", h.DeleteClient).Methods(http.MethodDelete)
 
 	http.ListenAndServe(":8080", router)
 
