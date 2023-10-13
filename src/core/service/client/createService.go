@@ -1,4 +1,4 @@
-package client
+package service
 
 import (
 	"errors"
@@ -10,15 +10,14 @@ type CreateService struct {
 	clientRepository port.ClientRepository
 }
 
-func createService(clientRepository port.ClientRepository) *CreateService {
+func NewClientService(clientRepository port.ClientRepository) *CreateService {
 	return &CreateService{
 		clientRepository: clientRepository,
 	}
 }
 
-func (srv *CreateService) Create(id string, cpf int32, name string, email string) (domain.Client, error) {
+func (srv *CreateService) Create(cpf int32, name string, email string) (domain.Client, error) {
 	clientNew := domain.Client{
-		Id:    id,
 		Cpf:   cpf,
 		Name:  name,
 		Email: email,
@@ -27,7 +26,7 @@ func (srv *CreateService) Create(id string, cpf int32, name string, email string
 	client, err := srv.clientRepository.Create(clientNew)
 
 	if err != nil {
-		return domain.Client{}, errors.New("create product from repository has failed")
+		return domain.Client{}, errors.New("create client from repository has failed")
 	}
 
 	return client, nil

@@ -7,5 +7,5 @@ type ClientRepository interface {
 }
 
 type ClientService interface {
-	Create(id string, cpf int32, name string, email string) (domain.Client, error)
+	Create(cpf int32, name string, email string) (domain.Client, error)
 }
