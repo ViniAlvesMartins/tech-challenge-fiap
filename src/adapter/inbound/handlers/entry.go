@@ -1,9 +1,11 @@
-package handlers
+package cli
 
 import (
 	"context"
+	"encoding/json"
 	"fiappos/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
 	"fmt"
+	"gorm.io/gorm"
 	"log"
 	"log/slog"
 	"net/http"
@@ -16,6 +18,25 @@ import (
 // "fmt"
 
 // "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/adapter/handler"
+type User struct {
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Age       int    `json:"age"`
+}
+
+type Handler struct {
+	Conn *gorm.DB
+}
+
+func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
+	peter := User{
+		Firstname: "John",
+		Lastname:  "Doe",
+		Age:       25,
+	}
+
+	json.NewEncoder(w).Encode(peter)
+}
 
 type Middleware func(http.HandlerFunc) http.HandlerFunc
 
@@ -67,10 +88,6 @@ func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
 	return f
 }
 
-/*type Handler struct {
-	Conn *gorm.DB
-}*/
-
 func Execute() {
 	cfg, err := postgres.NewConfig()
 
@@ -84,17 +101,13 @@ func Execute() {
 		fmt.Println(err)
 	}
 
-	h := New(db)
+	h := Handler{
+		Conn: db,
+	}
 
 	router := mux.NewRouter()
 
-	// router.HandleFunc("/", Chain(h.getUser, Method("GET"), Logging()))
-
-	router.HandleFunc("/clients", h.GetAllClients).Methods(http.MethodGet)
-	router.HandleFunc("/clients/{id}", h.GetClient).Methods(http.MethodGet)
-	router.HandleFunc("/clients", h.AddClient).Methods(http.MethodPost)
-	router.HandleFunc("/clients/{id}", h.UpdateClient).Methods(http.MethodPut)
-	router.HandleFunc("/clients/{id}", h.DeleteClient).Methods(http.MethodDelete)
+	router.HandleFunc("/", Chain(h.getUser, Method("GET"), Logging()))
 
 	http.ListenAndServe(":8080", router)
 
