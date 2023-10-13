@@ -4,13 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"fiappos/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
+	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/controller"
+	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/adapter/outbound/repository"
+	service "fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/service/product"
 	"fmt"
-	"gorm.io/gorm"
 	"log"
 	"log/slog"
 	"net/http"
 	"os"
 	"time"
+
+	"gorm.io/gorm"
 
 	"github.com/gorilla/mux"
 )
@@ -105,22 +109,15 @@ func Execute() {
 		Conn: db,
 	}
 
+	productRepository := repository.NewProductRepository(db)
+	productService := service.NewProductService(productRepository)
+	productController := controller.NewProductController(productService)
+
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", Chain(h.getUser, Method("GET"), Logging()))
+	router.HandleFunc("/product", Chain(productController.CreateProduct, Method("POST"), Logging()))
 
 	http.ListenAndServe(":8080", router)
 
-	// router := gin.Default()
-	// router.GET("/", func(c *gin.Context) {
-	// 	c.JSON(200, gin.H{
-	// 		"message": "Hello World! teste1s2122",
-	// 	})
-	// })
-
-	// router.GET("/os", func(c *gin.Context) {
-	// 	c.String(200, runtime.GOOS)
-	// })
-
-	// router.Run(":8080")
 }
