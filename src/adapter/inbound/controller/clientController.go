@@ -1,19 +1,30 @@
 package controller
 
 import (
-	"fmt"
+	"encoding/json"
+	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"net/http"
 )
 
 type ClientController struct {
+	clientService port.ClientService
 }
 
-func NewClientController() *ClientController {
-	return &ClientController{}
+func NewClientController(clientService port.ClientService) *ClientController {
+	return &ClientController{
+		clientService: clientService,
+	}
 }
 
-func (m *ClientController) PostMessage(w http.ResponseWriter, r *http.Request) {
+func (c *ClientController) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("handler")
+	client, err := c.clientService.Create("123", 11122233344, "teste", "teste@com")
 
+	if err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(client)
 }
