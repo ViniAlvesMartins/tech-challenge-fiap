@@ -1,10 +1,17 @@
 package cli
 
 import (
+	"context"
 	"encoding/json"
+	"fiappos/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
+	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 	"time"
+
+	"gorm.io/gorm"
 
 	"github.com/gorilla/mux"
 )
@@ -18,14 +25,11 @@ type User struct {
 	Age       int    `json:"age"`
 }
 
-// func logging(f http.HandlerFunc) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		log.Println(r.URL.Path)
-// 		f(w, r)
-// 	}
-// }
+type Handler struct {
+	Conn *gorm.DB
+}
 
-func getUser(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 	peter := User{
 		Firstname: "John",
 		Lastname:  "Doe",
@@ -86,15 +90,44 @@ func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
 }
 
 func Execute() {
+	cfg, err := postgres.NewConfig()
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	db, err := postgres.NewConnection(context.Background(), slog.New(slog.NewTextHandler(os.Stderr, nil)), cfg)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	h := Handler{
+		Conn: db,
+	}
+
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", Chain(getUser, Method("GET"), Logging()))
+	router.HandleFunc("/", Chain(h.getUser, Method("GET"), Logging()))
 
-	/*router.HandleFunc("/api/client/{id}", middleware.GetUser).Methods("GET", "OPTIONS")
+	router.HandleFunc("/api/client/{id}", middleware.GetUser).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/user", middleware.GetAllUser).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/newclient", middleware.CreateUser).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/client/{id}", middleware.UpdateUser).Methods("PUT", "OPTIONS")
-	router.HandleFunc("/api/deleteclient/{id}", middleware.DeleteUser).Methods("DELETE", "OPTIONS")*/
+	router.HandleFunc("/api/deleteclient/{id}", middleware.DeleteUser).Methods("DELETE", "OPTIONS")
 
 	http.ListenAndServe(":8080", router)
+
+	// router := gin.Default()
+	// router.GET("/", func(c *gin.Context) {
+	// 	c.JSON(200, gin.H{
+	// 		"message": "Hello World! teste1s2122",
+	// 	})
+	// })
+
+	// router.GET("/os", func(c *gin.Context) {
+	// 	c.String(200, runtime.GOOS)
+	// })
+
+	// router.Run(":8080")
 }

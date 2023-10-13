@@ -1,1 +1,7 @@
-# tech_challenge_fiap
+# Tech Challenge FIAP
+
+### Runing dev environment
+`$ docker-compose up`
+
+### Runing prod environment
+`$ docker-compose -f docker-compose.prod.yaml up`
