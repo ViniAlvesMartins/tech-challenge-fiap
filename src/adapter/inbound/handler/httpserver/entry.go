@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"fiappos/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
 	"fmt"
-	"gorm.io/gorm"
 	"log"
 	"log/slog"
 	"net/http"
 	"os"
 	"time"
+
+	"gorm.io/gorm"
 
 	"github.com/gorilla/mux"
 )
@@ -104,7 +105,7 @@ func Execute() {
 	h := Handler{
 		Conn: db,
 	}
-
+	
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", Chain(h.getUser, Method("GET"), Logging()))
