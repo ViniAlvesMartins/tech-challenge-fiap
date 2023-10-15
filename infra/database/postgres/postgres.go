@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 	"log/slog"
 
 	"gorm.io/driver/postgres"
@@ -11,7 +12,7 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-func NewConnection(ctx context.Context, log *slog.Logger, cfg Config) (*gorm.DB, error) {
+func NewConnection(ctx context.Context, log *slog.Logger, cfg infra.Config) (*gorm.DB, error) {
 	var err error
 	var conn *gorm.DB
 
