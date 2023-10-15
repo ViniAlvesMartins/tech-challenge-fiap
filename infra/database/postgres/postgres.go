@@ -28,7 +28,6 @@ func NewConnection(ctx context.Context, log *slog.Logger, cfg infra.Config) (*go
 	})
 
 	if err != nil {
-		log.Error(fmt.Sprintf("Error to connect to schema %s", cfg.DatabaseSchema))
 		return nil, err
 	}
 
@@ -41,8 +40,6 @@ func NewConnection(ctx context.Context, log *slog.Logger, cfg infra.Config) (*go
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
-
-	log.Info(fmt.Sprintf("Successfuly connected to %s database", cfg.DatabaseDBName))
 
 	return conn, nil
 

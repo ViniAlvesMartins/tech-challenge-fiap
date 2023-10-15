@@ -19,12 +19,22 @@ func main() {
 
 	if err != nil {
 		logger.Error("error loading config", err)
-		panic("error loading config")
+		panic(err)
 	}
 
 	db, err := loadDatabase(ctx, cfg)
 
-	httpserver.Run(ctx, logger, db)
+	if err != nil {
+		logger.Error("error connecting tdo database", err)
+		panic(err)
+	}
+
+	err = httpserver.Run(ctx, logger, db)
+
+	if err != nil {
+		logger.Error("error running application", err)
+		panic(err)
+	}
 }
 
 func loadDatabase(ctx context.Context, cfg infra.Config) (*gorm.DB, error) {
