@@ -18,7 +18,7 @@ func NewProductRepository(db *gorm.DB) *ProductRepository {
 
 func (repo *ProductRepository) Create(product domain.Product) (domain.Product, error) {
 
-	if result := repo.db.Create(&product); result.Error != nil {
+	if result := repo.db.Save(&product); result.Error != nil {
 		fmt.Println("result.Error")
 
 		fmt.Println(result.Error)

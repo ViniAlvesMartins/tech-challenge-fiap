@@ -7,5 +7,5 @@ type ProductRepository interface {
 }
 
 type ProductService interface {
-	Create(description string, price float32, category string) (domain.Product, error)
+	Create(product domain.Product) (domain.Product, error)
 }

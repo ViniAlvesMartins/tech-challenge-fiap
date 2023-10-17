@@ -2,7 +2,9 @@ package controller
 
 import (
 	"encoding/json"
+	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
 	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
+	"fmt"
 	"net/http"
 )
 
@@ -18,7 +20,13 @@ func NewProductController(productService port.ProductService) *ProductController
 
 func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
-	product, err := p.productService.Create("teste", 15.15, "bebida")
+	var product2 domain.Product
+
+	err := json.NewDecoder(r.Body).Decode(&product2)
+
+	fmt.Println(product2)
+
+	product, err := p.productService.Create(product2)
 
 	if err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)

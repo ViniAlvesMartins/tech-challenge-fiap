@@ -21,6 +21,7 @@ func NewConnection(ctx context.Context, log *slog.Logger, cfg Config) (*gorm.DB,
 	conn, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: gormlogger.Discard,
 		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   fmt.Sprintf("%s.", cfg.DatabaseSchema),
 			SingularTable: false,
 		},
 	})

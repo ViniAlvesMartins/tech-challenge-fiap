@@ -10,7 +10,7 @@ type category string
 //)
 
 type Product struct {
-	ID          int64   `json:"id" gorm:"primaryKey;autoIncrement"`
+	ID          int     `json:"id" gorm:"primaryKey;autoIncrement"`
 	Description string  `json:"description"`
 	Price       float32 `json:"price"`
 	Category    string  `json:"category" gorm:"index"`

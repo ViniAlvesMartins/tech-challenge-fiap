@@ -116,7 +116,7 @@ func Execute() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", Chain(h.getUser, Method("GET"), Logging()))
-	router.HandleFunc("/product", Chain(productController.CreateProduct, Method("POST"), Logging()))
+	router.HandleFunc("/product", productController.CreateProduct)
 
 	http.ListenAndServe(":8080", router)
 

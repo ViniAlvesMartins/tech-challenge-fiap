@@ -16,13 +16,7 @@ func NewProductService(productRepository port.ProductRepository) *productService
 	}
 }
 
-func (srv *productService) Create(description string, price float32, category string) (domain.Product, error) {
-
-	product := domain.Product{
-		Description: description,
-		Price:       price,
-		Category:    category,
-	}
+func (srv *productService) Create(product domain.Product) (domain.Product, error) {
 
 	prod, err := srv.productRepository.Create(product)
 
