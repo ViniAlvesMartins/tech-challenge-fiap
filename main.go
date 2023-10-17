@@ -1,32 +1,22 @@
 package main
 
 import (
-<<<<<<< HEAD
-	"fiappos/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
-	cli "fiappos/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/httpserver"
-
-	_ "github.com/lib/pq"
-
-	_ "github.com/golang-migrate/migrate/v4/source/file"
-)
-
-func main() {
-	postgres.MigrationExecute()
-	cli.Execute()
-=======
 	"context"
+	"log/slog"
+	"os"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/httpserver"
 	"gorm.io/gorm"
-	"log/slog"
-	"os"
 )
 
 func main() {
 	var err error
 	var ctx = context.Background()
 	var logger = loadLogger()
+	
+	postgres.MigrationExecute()
 
 	cfg, err := loadConfig()
 
@@ -64,8 +54,4 @@ func loadConfig() (infra.Config, error) {
 
 func loadLogger() *slog.Logger {
 	return slog.New(slog.NewTextHandler(os.Stderr, nil))
->>>>>>> main
 }
-
-
-//re 

@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
+
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/lib/pq"
@@ -12,7 +14,7 @@ import (
 )
 
 func MigrationExecute() {
-	cfg, err := NewConfig()
+	cfg, err := infra.NewConfig()
 	if err != nil {
 		fmt.Println(err)
 	}
