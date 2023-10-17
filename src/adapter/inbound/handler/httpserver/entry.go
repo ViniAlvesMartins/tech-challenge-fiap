@@ -2,11 +2,12 @@ package httpserver
 
 import (
 	"context"
+	"log/slog"
+	"net/http"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/controller"
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
-	"log/slog"
-	"net/http"
 )
 
 func Run(ctx context.Context, logger *slog.Logger, db *gorm.DB) error {

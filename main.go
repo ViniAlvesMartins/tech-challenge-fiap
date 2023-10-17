@@ -2,18 +2,21 @@ package main
 
 import (
 	"context"
+	"log/slog"
+	"os"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/httpserver"
 	"gorm.io/gorm"
-	"log/slog"
-	"os"
 )
 
 func main() {
 	var err error
 	var ctx = context.Background()
 	var logger = loadLogger()
+	
+	postgres.MigrationExecute()
 
 	cfg, err := loadConfig()
 
