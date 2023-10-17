@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/config/database/postgres"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/httpserver"
 	"gorm.io/gorm"
 	"log/slog"
