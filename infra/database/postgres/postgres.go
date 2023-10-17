@@ -3,8 +3,9 @@ package postgres
 import (
 	"context"
 	"fmt"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 	"log/slog"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -22,7 +23,7 @@ func NewConnection(ctx context.Context, log *slog.Logger, cfg infra.Config) (*go
 	conn, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: gormlogger.Discard,
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   fmt.Sprintf("%s", cfg.DatabaseSchema),
+			TablePrefix:   fmt.Sprintf("%s.", cfg.DatabaseSchema),
 			SingularTable: false,
 		},
 	})
