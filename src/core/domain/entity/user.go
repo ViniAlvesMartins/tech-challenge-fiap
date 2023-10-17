@@ -5,8 +5,10 @@ import (
 )
 
 type User struct {
-	ID        uint32
-	Nickname  string
+	ID        uint
+	Firstname string
+	Lastname  string
+	Age       int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

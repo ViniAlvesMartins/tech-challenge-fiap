@@ -1,7 +1,8 @@
-package cli
+package httpserver
 
 import (
 	"context"
+<<<<<<< HEAD
 	"encoding/json"
 	"fiappos/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
 	"fmt"
@@ -106,22 +107,21 @@ func Execute() {
 		Conn: db,
 	}
 	
+=======
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/controller"
+	"github.com/gorilla/mux"
+	"gorm.io/gorm"
+	"log/slog"
+	"net/http"
+)
+
+func Run(ctx context.Context, logger *slog.Logger, db *gorm.DB) error {
+>>>>>>> main
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", Chain(h.getUser, Method("GET"), Logging()))
+	userController := controller.NewUserController(logger)
 
-	http.ListenAndServe(":8080", router)
+	router.HandleFunc("/users", Chain(func(w http.ResponseWriter, r *http.Request) { userController.GetUser(w, r) }, Method("GET"), Logging()))
 
-	// router := gin.Default()
-	// router.GET("/", func(c *gin.Context) {
-	// 	c.JSON(200, gin.H{
-	// 		"message": "Hello World! teste1s2122",
-	// 	})
-	// })
-
-	// router.GET("/os", func(c *gin.Context) {
-	// 	c.String(200, runtime.GOOS)
-	// })
-
-	// router.Run(":8080")
+	return http.ListenAndServe(":8080", router)
 }

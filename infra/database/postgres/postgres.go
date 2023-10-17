@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 )
 
-func NewConnection(ctx context.Context, log *slog.Logger, cfg Config) (*gorm.DB, error) {
+func NewConnection(ctx context.Context, log *slog.Logger, cfg infra.Config) (*gorm.DB, error) {
 	var err error
 	var conn *gorm.DB
 
@@ -21,13 +23,12 @@ func NewConnection(ctx context.Context, log *slog.Logger, cfg Config) (*gorm.DB,
 	conn, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: gormlogger.Discard,
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   fmt.Sprintf("%s", cfg.DatabaseSchema),
+			TablePrefix:   fmt.Sprintf("%s.", cfg.DatabaseSchema),
 			SingularTable: false,
 		},
 	})
 
 	if err != nil {
-		log.Error(fmt.Sprintf("Error to connect to schema %s", cfg.DatabaseSchema))
 		return nil, err
 	}
 
@@ -40,8 +41,6 @@ func NewConnection(ctx context.Context, log *slog.Logger, cfg Config) (*gorm.DB,
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
-
-	log.Info(fmt.Sprintf("Successfuly connected to %s database", cfg.DatabaseDBName))
 
 	return conn, nil
 
