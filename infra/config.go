@@ -1,4 +1,4 @@
-package postgres
+package infra
 
 import (
 	"github.com/kelseyhightower/envconfig"

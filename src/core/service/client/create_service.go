@@ -16,7 +16,7 @@ func NewClientService(clientRepository port.ClientRepository) *CreateService {
 	}
 }
 
-func (srv *CreateService) Create(cpf int32, name string, email string) (domain.Client, error) {
+func (srv *CreateService) Create(cpf int, name string, email string) (domain.Client, error) {
 	clientNew := domain.Client{
 		Cpf:   cpf,
 		Name:  name,

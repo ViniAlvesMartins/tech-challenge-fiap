@@ -1,4 +1,4 @@
-module fiappos/ViniAlvesMartins/tech-challenge-fiap
+module github.com/ViniAlvesMartins/tech-challenge-fiap
 
 go 1.21.0
 
