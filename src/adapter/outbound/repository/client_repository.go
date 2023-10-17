@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
 	"gorm.io/gorm"
 	"log/slog"
@@ -22,6 +23,7 @@ func (c *ClientRepository) Create(client domain.Client) (domain.Client, error) {
 
 	if result := c.db.Create(&client); result.Error != nil {
 		c.logger.Error("result.Error")
+		return client, errors.New("create client from repository has failed")
 	}
 
 	return client, nil
