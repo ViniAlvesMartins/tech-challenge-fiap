@@ -2,19 +2,21 @@ package controller
 
 import (
 	"encoding/json"
-	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
-	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
-	"log"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
+	"log/slog"
 	"net/http"
 )
 
 type ClientController struct {
 	clientService port.ClientService
+	logger        *slog.Logger
 }
 
-func NewClientController(clientService port.ClientService) *ClientController {
+func NewClientController(clientService port.ClientService, logger *slog.Logger) *ClientController {
 	return &ClientController{
 		clientService: clientService,
+		logger:        logger,
 	}
 }
 
@@ -25,7 +27,7 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 	err := json.NewDecoder(r.Body).Decode(&client)
 
 	if err != nil {
-		log.Fatalf("Unable to decode the request body.  %v", err)
+		c.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
 	clientCreated, err := c.clientService.Create(client.Cpf, client.Name, client.Email)

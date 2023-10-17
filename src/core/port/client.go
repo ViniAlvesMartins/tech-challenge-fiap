@@ -1,11 +1,13 @@
 package port
 
-import "fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+import (
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+)
 
 type ClientRepository interface {
 	Create(client domain.Client) (domain.Client, error)
 }
 
 type ClientService interface {
-	Create(cpf int32, name string, email string) (domain.Client, error)
+	Create(cpf int, name string, email string) (*domain.Client, error)
 }

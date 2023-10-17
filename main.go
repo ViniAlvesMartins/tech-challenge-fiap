@@ -5,6 +5,8 @@ import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/httpserver"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/outbound/repository"
+	service "github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service/client"
 	"gorm.io/gorm"
 	"log/slog"
 	"os"
@@ -29,7 +31,11 @@ func main() {
 		panic(err)
 	}
 
-	err = httpserver.Run(ctx, logger, db)
+	clientRepository := repository.NewClientRepository(db, logger)
+	clientService := service.NewClientService(clientRepository, logger)
+	entry := httpserver.NewEntry(logger, clientService)
+
+	err = entry.Run(ctx)
 
 	if err != nil {
 		logger.Error("error running application", err)

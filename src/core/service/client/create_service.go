@@ -2,32 +2,35 @@ package service
 
 import (
 	"errors"
-	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
-	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
+	"log/slog"
 )
 
 type CreateService struct {
 	clientRepository port.ClientRepository
+	logger           *slog.Logger
 }
 
-func NewClientService(clientRepository port.ClientRepository) *CreateService {
+func NewClientService(clientRepository port.ClientRepository, logger *slog.Logger) *CreateService {
 	return &CreateService{
 		clientRepository: clientRepository,
+		logger:           logger,
 	}
 }
 
-func (srv *CreateService) Create(cpf int, name string, email string) (domain.Client, error) {
+func (c *CreateService) Create(cpf int, name string, email string) (*domain.Client, error) {
 	clientNew := domain.Client{
 		Cpf:   cpf,
 		Name:  name,
 		Email: email,
 	}
 
-	client, err := srv.clientRepository.Create(clientNew)
+	client, err := c.clientRepository.Create(clientNew)
 
 	if err != nil {
-		return domain.Client{}, errors.New("create client from repository has failed")
+		return nil, errors.New("create client from repository has failed")
 	}
 
-	return client, nil
+	return &client, nil
 }

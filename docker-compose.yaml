@@ -3,7 +3,7 @@ version: '3.9'
 services:
   dev-app:
     container_name: app.ze-burger.dev
-    env_file: .env
+    env_file: .env.example
     build:
       dockerfile: Dockerfile
       context: ./
