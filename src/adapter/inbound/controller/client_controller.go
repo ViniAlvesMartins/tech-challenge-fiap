@@ -33,7 +33,7 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 	clientCreated, err := c.clientService.Create(client.Cpf, client.Name, client.Email)
 
 	if err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	w.Header().Add("Content-Type", "application/json")

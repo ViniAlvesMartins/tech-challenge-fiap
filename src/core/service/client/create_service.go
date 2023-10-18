@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
@@ -29,7 +28,7 @@ func (c *CreateService) Create(cpf int, name string, email string) (*domain.Clie
 	client, err := c.clientRepository.Create(clientNew)
 
 	if err != nil {
-		return nil, errors.New("create client from repository has failed")
+		return nil, err
 	}
 
 	return &client, nil
