@@ -2,17 +2,21 @@ package service
 
 import (
 	"errors"
-	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
-	"fiappos/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
+	"log/slog"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
 type productService struct {
 	productRepository port.ProductRepository
+	logger            *slog.Logger
 }
 
-func NewProductService(productRepository port.ProductRepository) *productService {
+func NewProductService(productRepository port.ProductRepository, logger *slog.Logger) *productService {
 	return &productService{
 		productRepository: productRepository,
+		logger:            logger,
 	}
 }
 
