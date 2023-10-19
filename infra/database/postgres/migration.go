@@ -18,8 +18,8 @@ func MigrationExecute() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	connStr := fmt.Sprintf("host=%s user=%s sslmode=disable password=%s",
-	cfg.DatabaseHost, cfg.DatabaseUsername, cfg.DatabasePassword)
+	connStr := fmt.Sprintf("host=%s user=%s sslmode=disable password=%s dbname=%s",
+	cfg.DatabaseHost, cfg.DatabaseUsername, cfg.DatabasePassword, cfg.DatabaseDBName)
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -33,7 +33,7 @@ func MigrationExecute() {
 
 	m, err := migrate.NewWithDatabaseInstance(
         "file://infra/database/migrations",
-        "postgres", driver)
+        cfg.DatabaseDBName, driver)
 	if err != nil {
 		fmt.Println(err)
 	}
