@@ -2,17 +2,16 @@ package main
 
 import (
 	"context"
-	"log/slog"
-	"os"
-
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/http_server"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/outbound/repository"
 	srvClient "github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service/client"
+	srvOrder "github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service/order"
 	srcProduct "github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service/product"
-
 	"gorm.io/gorm"
+	"log/slog"
+	"os"
 )
 
 func main() {
@@ -42,7 +41,10 @@ func main() {
 	productRepository := repository.NewProductRepository(db, logger)
 	productService := srcProduct.NewProductService(productRepository, logger)
 
-	entry := http_server.NewEntry(logger, clientService, productService)
+	orderRepository := repository.NewOrderRepository(db, logger)
+	orderService := srvOrder.NewOrderService(orderRepository, logger)
+
+	entry := http_server.NewEntry(logger, clientService, productService, orderService)
 
 	err = entry.Run(ctx)
 

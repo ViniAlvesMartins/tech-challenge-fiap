@@ -6,30 +6,25 @@ import (
 	"log/slog"
 )
 
-type CreateService struct {
+type ClientService struct {
 	clientRepository port.ClientRepository
 	logger           *slog.Logger
 }
 
-func NewClientService(clientRepository port.ClientRepository, logger *slog.Logger) *CreateService {
-	return &CreateService{
+func NewClientService(clientRepository port.ClientRepository, logger *slog.Logger) *ClientService {
+	return &ClientService{
 		clientRepository: clientRepository,
 		logger:           logger,
 	}
 }
 
-func (c *CreateService) Create(cpf int, name string, email string) (*domain.Client, error) {
-	clientNew := domain.Client{
-		Cpf:   cpf,
-		Name:  name,
-		Email: email,
-	}
+func (c *ClientService) Create(client domain.Client) (*domain.Client, error) {
 
-	client, err := c.clientRepository.Create(clientNew)
+	clientNew, err := c.clientRepository.Create(client)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &client, nil
+	return &clientNew, nil
 }
