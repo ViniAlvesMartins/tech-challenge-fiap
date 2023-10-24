@@ -2,7 +2,7 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 	"net/http"
@@ -22,23 +22,35 @@ func NewClientController(clientService port.ClientService, logger *slog.Logger) 
 
 func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) {
 
-	var client domain.Client
+	var clientDto dto.ClientDto
 
-	err := json.NewDecoder(r.Body).Decode(&client)
+	err := json.NewDecoder(r.Body).Decode(&clientDto)
 
 	if err != nil {
 		c.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
-	clientCreated, err := c.clientService.Create(client.Cpf, client.Name, client.Email)
+	errValidate := dto.ValidateClient(clientDto)
+
+	if len(errValidate.Errors) > 0 {
+		c.logger.Error("validate error.  %v", errValidate)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errValidate)
+		return
+	}
+
+	clientDomain := dto.ConvertClientDtoToDomain(clientDto)
+
+	client, err := c.clientService.Create(clientDomain)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(w).Encode(clientCreated)
+	err = json.NewEncoder(w).Encode(client)
 	if err != nil {
 		return
 	}

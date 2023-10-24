@@ -8,19 +8,19 @@ import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
-type productService struct {
+type ProductService struct {
 	productRepository port.ProductRepository
 	logger            *slog.Logger
 }
 
-func NewProductService(productRepository port.ProductRepository, logger *slog.Logger) *productService {
-	return &productService{
+func NewProductService(productRepository port.ProductRepository, logger *slog.Logger) *ProductService {
+	return &ProductService{
 		productRepository: productRepository,
 		logger:            logger,
 	}
 }
 
-func (srv *productService) Create(product domain.Product) (domain.Product, error) {
+func (srv *ProductService) Create(product domain.Product) (domain.Product, error) {
 
 	prod, err := srv.productRepository.Create(product)
 
