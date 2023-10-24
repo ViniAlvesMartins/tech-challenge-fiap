@@ -89,8 +89,9 @@ VALUES (3, 'nuggets', 7, 'quente');
 
 -- Create orders products.
 CREATE TABLE IF NOT EXISTS ze_burguer.orders_products (
-    "id_orders" INT NOT NULL,
-    "id_products" INT NOT NULL,
-    CONSTRAINT "FK_id_orders" FOREIGN KEY ("id_orders") REFERENCES  ze_burguer.orders(id),
-    CONSTRAINT "FK_id_products" FOREIGN KEY ("id_products") REFERENCES ze_burguer.products(id)
+    "id" BIGSERIAL NOT NULL,
+    "order_id" INT NOT NULL,
+    "product_id" INT NOT NULL,
+    CONSTRAINT "FK_id_order" FOREIGN KEY ("order_id") REFERENCES  ze_burguer.orders(id),
+    CONSTRAINT "FK_id_product" FOREIGN KEY ("product_id") REFERENCES ze_burguer.products(id)
 ); 

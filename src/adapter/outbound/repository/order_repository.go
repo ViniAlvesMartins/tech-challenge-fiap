@@ -23,7 +23,7 @@ func (o *OrderRepository) Create(order domain.Order) (domain.Order, error) {
 
 	if result := o.db.Create(&order); result.Error != nil {
 		o.logger.Error("result.Error")
-		return order, errors.New("create client from repository has failed")
+		return order, errors.New("create order from repository has failed")
 	}
 
 	return order, nil

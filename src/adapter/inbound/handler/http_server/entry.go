@@ -36,8 +36,8 @@ func (e *Entry) Run(ctx context.Context) error {
 	productController := controller.NewProductController(e.productService, e.logger)
 	orderController := controller.NewOrderController(e.orderService, e.logger)
 
-	router.HandleFunc("/client", Chain(func(w http.ResponseWriter, r *http.Request) { clientController.CreateClient(w, r) }, Method("POST"), Logging()))
-	router.HandleFunc("/order", Chain(func(w http.ResponseWriter, r *http.Request) { orderController.CreateOrder(w, r) }, Method("POST"), Logging()))
+	router.HandleFunc("/client", Chain(clientController.CreateClient, Method("POST"), Logging()))
+	router.HandleFunc("/order", Chain(orderController.CreateOrder, Method("POST"), Logging()))
 	router.HandleFunc("/product", Chain(productController.CreateProduct, Method("POST"), Logging()))
 
 	return http.ListenAndServe(":8080", router)
