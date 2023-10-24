@@ -28,3 +28,20 @@ func (c *ClientRepository) Create(client domain.Client) (domain.Client, error) {
 
 	return client, nil
 }
+
+func (c *ClientRepository) GetClientByCpf(cpf int) (*domain.Client, error) {
+
+	var client domain.Client
+
+	if result := c.db.Find(&client, "cpf=?", cpf); result.Error != nil {
+
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+
+		c.logger.Error("result.Error")
+		return nil, errors.New("an error occurred from repository")
+	}
+
+	return &client, nil
+}

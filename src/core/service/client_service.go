@@ -28,3 +28,14 @@ func (c *ClientService) Create(client domain.Client) (*domain.Client, error) {
 
 	return &clientNew, nil
 }
+
+func (c *ClientService) GetClientByCpf(cpf int) (*domain.Client, error) {
+	client, err := c.clientRepository.GetClientByCpf(cpf)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
+
+}
