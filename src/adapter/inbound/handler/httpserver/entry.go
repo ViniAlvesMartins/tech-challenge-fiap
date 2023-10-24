@@ -26,7 +26,13 @@ func (e *Entry) Run(ctx context.Context) error {
 
 	clientController := controller.NewClientController(e.clientService, e.logger)
 
-	router.HandleFunc("/client", Chain(func(w http.ResponseWriter, r *http.Request) { clientController.CreateClient(w, r) }, Method("POST"), Logging()))
+	router.HandleFunc("/client", Chain(func(w http.ResponseWriter, r *http.Request) {
+		clientController.CreateClient(w, r)
+	}, Method("POST"), Logging()))
+
+	router.HandleFunc("/client", Chain(func(w http.ResponseWriter, r *http.Request) {
+		clientController.GetClientByCpf(w, r)
+	}, Method("GET"), Logging()))
 
 	return http.ListenAndServe(":8080", router)
 }

@@ -33,3 +33,14 @@ func (c *CreateService) Create(cpf int, name string, email string) (*domain.Clie
 
 	return &client, nil
 }
+
+func (c *CreateService) GetClientByCpf(cpf int) (*domain.Client, error) {
+	client, err := c.clientRepository.GetClientByCpf(cpf)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
+
+}

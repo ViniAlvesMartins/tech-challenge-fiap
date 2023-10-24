@@ -6,6 +6,7 @@ import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 	"net/http"
+	"strconv"
 )
 
 type ClientController struct {
@@ -42,4 +43,28 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		return
 	}
+}
+
+func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request) {
+	cpf := r.URL.Query().Get("cpf")
+
+	cpfInt, err := strconv.Atoi(cpf)
+
+	if err != nil {
+		c.logger.Error("Error to convert cpf to int.  %v", err)
+	}
+
+	client, err := c.clientService.GetClientByCpf(cpfInt)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(client)
+	if err != nil {
+		return
+	}
+
 }
