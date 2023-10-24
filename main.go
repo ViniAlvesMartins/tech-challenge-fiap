@@ -7,9 +7,11 @@ import (
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/httpserver"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/http_server"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/outbound/repository"
-	service "github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service/client"
+	srvClient "github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service/client"
+	srcProduct "github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service/product"
+
 	"gorm.io/gorm"
 )
 
@@ -17,7 +19,7 @@ func main() {
 	var err error
 	var ctx = context.Background()
 	var logger = loadLogger()
-	
+
 	postgres.MigrationExecute()
 
 	cfg, err := loadConfig()
@@ -35,8 +37,12 @@ func main() {
 	}
 
 	clientRepository := repository.NewClientRepository(db, logger)
-	clientService := service.NewClientService(clientRepository, logger)
-	entry := httpserver.NewEntry(logger, clientService)
+	clientService := srvClient.NewClientService(clientRepository, logger)
+
+	productRepository := repository.NewProductRepository(db, logger)
+	productService := srcProduct.NewProductService(productRepository, logger)
+
+	entry := http_server.NewEntry(logger, clientService, productService)
 
 	err = entry.Run(ctx)
 
