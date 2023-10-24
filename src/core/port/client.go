@@ -10,6 +10,6 @@ type ClientRepository interface {
 }
 
 type ClientService interface {
-	Create(cpf int, name string, email string) (*domain.Client, error)
 	GetClientByCpf(cpf int) (*domain.Client, error)
+	Create(client domain.Client) (*domain.Client, error)
 }
