@@ -3,9 +3,10 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
 	"log/slog"
 	"net/http"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
@@ -54,4 +55,9 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(product)
+}
+
+func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.Request) {
+	
+
 }

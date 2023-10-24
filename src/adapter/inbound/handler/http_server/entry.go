@@ -32,6 +32,9 @@ func (e *Entry) Run(ctx context.Context) error {
 
 	router.HandleFunc("/client", Chain(func(w http.ResponseWriter, r *http.Request) { clientController.CreateClient(w, r) }, Method("POST"), Logging()))
 	router.HandleFunc("/product", Chain(productController.CreateProduct, Method("POST"), Logging()))
+	router.HandleFunc("/product", Chain(func(w http.ResponseWriter, r *http.Request) {
+		productController.GetProductByCategory(w, r)
+	}, Method("GET"), Logging()))
 
 	return http.ListenAndServe(":8080", router)
 }

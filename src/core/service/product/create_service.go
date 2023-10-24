@@ -30,3 +30,14 @@ func (srv *productService) Create(product domain.Product) (domain.Product, error
 
 	return prod, nil
 }
+
+func (srv *productService) GetProductByCategory(categoryId int) (*domain.Product, error) {
+	prod, err := srv.productRepository.GetProductByCategory(categoryId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
+
+}
