@@ -1,10 +1,11 @@
 package service
 
 import (
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 	"time"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
 type OrderService struct {

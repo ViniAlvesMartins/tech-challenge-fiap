@@ -38,6 +38,6 @@ func (srv *ProductService) GetProductByCategory(categoryId int) (*domain.Product
 		return nil, err
 	}
 
-	return &prod, nil
+	return prod, nil
 
 }
