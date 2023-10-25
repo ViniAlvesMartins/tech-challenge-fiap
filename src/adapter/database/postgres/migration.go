@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"log/slog"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 
@@ -13,31 +14,34 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func MigrationExecute() {
-	cfg, err := infra.NewConfig()
-	if err != nil {
-		fmt.Println(err)
-	}
+func MigrationExecute(cfg *infra.Config, log *slog.Logger) {
+	var err error
+
 	connStr := fmt.Sprintf("host=%s user=%s sslmode=disable password=%s dbname=%s",
-	cfg.DatabaseHost, cfg.DatabaseUsername, cfg.DatabasePassword, cfg.DatabaseDBName)
+		cfg.DatabaseHost, cfg.DatabaseUsername, cfg.DatabasePassword, cfg.DatabaseDBName)
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("error opening postgres connection", err)
 	}
 
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
-		fmt.Println(err)
+		log.Error("error instantiating postgres driver", err)
 	}
 
-	m, err := migrate.NewWithDatabaseInstance(
-        "file://infra/database/migrations",
-        cfg.DatabaseDBName, driver)
+	m, err := migrate.NewWithDatabaseInstance(fmt.Sprintf("file://%s", cfg.MigrationsDir), cfg.DatabaseDBName, driver)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("error creating migration instance", err)
 	}
-	
-	m.Up()
-	m.Close()
+
+	err = m.Up()
+	if err != nil {
+		log.Error("error executing migration", err)
+	}
+
+	srcErr, dbErr := m.Close()
+	if srcErr != nil || dbErr != nil {
+		log.Error("error closing migration instance", srcErr, dbErr)
+	}
 }
