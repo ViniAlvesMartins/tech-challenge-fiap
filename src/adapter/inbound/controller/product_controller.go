@@ -50,6 +50,7 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 
 	if err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")

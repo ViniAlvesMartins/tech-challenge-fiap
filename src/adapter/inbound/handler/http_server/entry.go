@@ -14,13 +14,19 @@ type Entry struct {
 	logger         *slog.Logger
 	clientService  port.ClientService
 	productService port.ProductService
+	orderService   port.OrderService
 }
 
-func NewEntry(logger *slog.Logger, clientService port.ClientService, productService port.ProductService) *Entry {
+func NewEntry(logger *slog.Logger,
+	clientService port.ClientService,
+	productService port.ProductService,
+	orderService port.OrderService) *Entry {
+
 	return &Entry{
 		logger:         logger,
 		clientService:  clientService,
 		productService: productService,
+		orderService:   orderService,
 	}
 }
 
@@ -29,12 +35,13 @@ func (e *Entry) Run(ctx context.Context) error {
 
 	clientController := controller.NewClientController(e.clientService, e.logger)
 	productController := controller.NewProductController(e.productService, e.logger)
+	orderController := controller.NewOrderController(e.orderService, e.logger)
 
-	router.HandleFunc("/client", Chain(func(w http.ResponseWriter, r *http.Request) { clientController.CreateClient(w, r) }, Method("POST"), Logging()))
+	router.HandleFunc("/client", Chain(clientController.CreateClient, Method("POST"), Logging()))
+	router.HandleFunc("/order", Chain(orderController.CreateOrder, Method("POST"), Logging()))
 	router.HandleFunc("/product", Chain(productController.CreateProduct, Method("POST"), Logging()))
-	router.HandleFunc("/product", Chain(func(w http.ResponseWriter, r *http.Request) {
-		productController.GetProductByCategory(w, r)
-	}, Method("GET"), Logging()))
+	router.HandleFunc("/client", Chain(clientController.GetClientByCpf, Method("GET"), Logging()))
+
 
 	return http.ListenAndServe(":8080", router)
 }
