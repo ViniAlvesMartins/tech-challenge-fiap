@@ -33,7 +33,7 @@ func (repo *ProductRepository) Create(product domain.Product) (domain.Product, e
 	return product, nil
 }
 
-func (repo *ProductRepository) GetProductByCategory(categoryId int) (domain.Product, error) {
+func (repo *ProductRepository) GetProductByCategory(categoryId int) (*domain.Product, error) {
 	var product domain.Product
 
 	result := repo.db.Where(&categoryId)

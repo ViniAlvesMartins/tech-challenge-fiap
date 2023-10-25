@@ -40,6 +40,7 @@ func (e *Entry) Run(ctx context.Context) error {
 	router.HandleFunc("/client", Chain(clientController.CreateClient, Method("POST"), Logging()))
 	router.HandleFunc("/order", Chain(orderController.CreateOrder, Method("POST"), Logging()))
 	router.HandleFunc("/product", Chain(productController.CreateProduct, Method("POST"), Logging()))
+	router.HandleFunc("/product", Chain(productController.GetProductByCategory, Method("GET"), Logging()))
 	router.HandleFunc("/client", Chain(clientController.GetClientByCpf, Method("GET"), Logging()))
 
 
