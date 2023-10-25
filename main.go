@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/config/database/postgres"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/httpserver"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra/database/postgres"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/http_server"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/outbound/repository"
+	srvOrder "github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service"
 	"gorm.io/gorm"
 	"log/slog"
 	"os"
@@ -14,6 +16,8 @@ func main() {
 	var err error
 	var ctx = context.Background()
 	var logger = loadLogger()
+
+	postgres.MigrationExecute()
 
 	cfg, err := loadConfig()
 
@@ -29,7 +33,18 @@ func main() {
 		panic(err)
 	}
 
-	err = httpserver.Run(ctx, logger, db)
+	clientRepository := repository.NewClientRepository(db, logger)
+	clientService := srvOrder.NewClientService(clientRepository, logger)
+
+	productRepository := repository.NewProductRepository(db, logger)
+	productService := srvOrder.NewProductService(productRepository, logger)
+
+	orderRepository := repository.NewOrderRepository(db, logger)
+	orderService := srvOrder.NewOrderService(orderRepository, logger)
+
+	entry := http_server.NewEntry(logger, clientService, productService, orderService)
+
+	err = entry.Run(ctx)
 
 	if err != nil {
 		logger.Error("error running application", err)
