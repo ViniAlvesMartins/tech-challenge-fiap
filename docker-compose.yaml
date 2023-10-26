@@ -9,6 +9,9 @@ services:
       POSTGRES_DB: $DATABASE_NAME
       POSTGRES_USER: $DATABASE_USERNAME
       POSTGRES_PASSWORD: $DATABASE_PASSWORD
+      PGDATA: /data/postgres
+    volumes:
+      - postgres_data:/data/postgres
     ports:
       - 5432:5432
     networks:
@@ -33,6 +36,9 @@ services:
         condition: service_healthy
     networks:
       - dev-networks
+
+volumes:
+  postgres_data:
 
 networks:
   dev-networks:
