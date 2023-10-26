@@ -2,10 +2,9 @@ package service
 
 import (
 	"fmt"
-	"log/slog"
-
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
+	"log/slog"
 )
 
 type ProductService struct {
@@ -52,14 +51,13 @@ func (p *ProductService) Delete(id int) error {
 	return nil
 }
 
-func (srv *ProductService) GetProductByCategory(categoryId int) ([]domain.Product, error) {
+func (p *ProductService) GetProductByCategory(categoryId int) ([]domain.Product, error) {
 	fmt.Println("Cheguei no service!")
-	prod, err := srv.productRepository.GetProductByCategory(categoryId)
+	prod, err := p.productRepository.GetProductByCategory(categoryId)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return prod, nil
-
 }
