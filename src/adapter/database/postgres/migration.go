@@ -1,10 +1,8 @@
 package postgres
 
 import (
-	"errors"
+	"database/sql"
 	"fmt"
-	"github.com/golang-migrate/migrate/v4/database"
-	"gorm.io/gorm"
 	"log/slog"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
@@ -16,50 +14,34 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-type Migration struct {
-	cfg infra.Config
-	db  *gorm.DB
-	log *slog.Logger
-}
-
-func NewMigration(db *gorm.DB, cfg infra.Config, log *slog.Logger) *Migration {
-	return &Migration{
-		db:  db,
-		cfg: cfg,
-		log: log,
-	}
-}
-
-func (m *Migration) Migrate() {
+func MigrationExecute(cfg *infra.Config, log *slog.Logger) {
 	var err error
 
-	migration, err := m.getMigrationInstance(m.cfg.MigrationsDir)
+	connStr := fmt.Sprintf("host=%s user=%s sslmode=disable password=%s dbname=%s",
+		cfg.DatabaseHost, cfg.DatabaseUsername, cfg.DatabasePassword, cfg.DatabaseDBName)
+
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		m.log.Error("error creating migration instance", err)
+		log.Error("error opening postgres connection", err)
 	}
 
-	err = migration.Up()
-	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		m.log.Error("error executing migration", err)
-	}
-}
-
-func (m *Migration) getMigrationInstance(dir string) (*migrate.Migrate, error) {
-	driver, err := m.getDriver()
-
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
-		return nil, err
+		log.Error("error instantiating postgres driver", err)
 	}
 
-	return migrate.NewWithDatabaseInstance(fmt.Sprintf("file://%s", dir), m.cfg.DatabaseDBName, driver)
-}
-
-func (m *Migration) getDriver() (database.Driver, error) {
-	db, err := m.db.DB()
-
+	m, err := migrate.NewWithDatabaseInstance(fmt.Sprintf("file://%s", cfg.MigrationsDir), cfg.DatabaseDBName, driver)
 	if err != nil {
-		return nil, err
+		log.Error("error creating migration instance", err)
 	}
 
-	return postgres.WithInstance(db, &postgres.Config{})
+	err = m.Up()
+	if err != nil {
+		log.Error("error executing migration", err)
+	}
+
+	srcErr, dbErr := m.Close()
+	if srcErr != nil || dbErr != nil {
+		log.Error("error closing migration instance", srcErr, dbErr)
+	}
 }

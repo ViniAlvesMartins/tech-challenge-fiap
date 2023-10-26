@@ -31,8 +31,7 @@ func main() {
 		panic(err)
 	}
 
-	migration := loadMigration(db, cfg, logger)
-	migration.Migrate()
+	postgres.MigrationExecute(&cfg, logger)
 
 	clientRepository := repository.NewClientRepository(db, logger)
 	clientService := service.NewClientService(clientRepository, logger)
@@ -67,8 +66,4 @@ func loadConfig() (infra.Config, error) {
 
 func loadLogger() *slog.Logger {
 	return slog.New(slog.NewTextHandler(os.Stderr, nil))
-}
-
-func loadMigration(db *gorm.DB, cfg infra.Config, log *slog.Logger) *postgres.Migration {
-	return postgres.NewMigration(db, cfg, log)
 }
