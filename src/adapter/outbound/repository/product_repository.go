@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 
@@ -33,16 +34,23 @@ func (repo *ProductRepository) Create(product domain.Product) (domain.Product, e
 	return product, nil
 }
 
-func (repo *ProductRepository) GetProductByCategory(categoryId int) (*domain.Product, error) {
-	var product domain.Product
+func (repo *ProductRepository) GetProductByCategory(categoryId int) ([]domain.Product, error) {
+	fmt.Println("Cheguei no Repositorio!")
+	var product []domain.Product
+	fmt.Println(product)
 
-	result := repo.db.Where(&categoryId)
+	if result := repo.db.Debug().Where("category_id=?", categoryId).Find(&product); result.Error != nil {
 
-	if result.Error != nil {
-		fmt.Println("result.Error")
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 
-		fmt.Println(result.Error)
+		repo.logger.Error("result.Error")
+		return nil, errors.New("an error occurred from repository")
 	}
 
-	return &product, nil
+	fmt.Println(product)
+	fmt.Println(categoryId)
+
+	return product, nil
 }
