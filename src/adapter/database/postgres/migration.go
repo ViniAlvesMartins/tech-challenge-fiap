@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log/slog"
 
@@ -36,7 +37,7 @@ func MigrationExecute(cfg *infra.Config, log *slog.Logger) {
 	}
 
 	err = m.Up()
-	if err != nil {
+	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		log.Error("error executing migration", err)
 	}
 
