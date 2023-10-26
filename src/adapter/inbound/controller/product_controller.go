@@ -23,7 +23,6 @@ func NewProductController(productService port.ProductService, logger *slog.Logge
 }
 
 func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request) {
-
 	var productDto dto.ProductDto
 
 	err := json.NewDecoder(r.Body).Decode(&productDto)
@@ -54,5 +53,39 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(product)
+}
+
+func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request) {
+	var productDto dto.ProductDto
+
+	err := json.NewDecoder(r.Body).Decode(&productDto)
+
+	if err != nil {
+		p.logger.Error("Unable to decode the request body.  %v", err)
+	}
+
+	errValidate := dto.ValidateProduct(productDto)
+
+	fmt.Println(errValidate)
+
+	if len(errValidate.Errors) > 0 {
+		p.logger.Error("validate error.  %v", errValidate)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errValidate)
+		return
+	}
+
+	productDomain := dto.ConvertDtoToDomain(productDto)
+
+	product, err := p.productService.Update(productDomain)
+
+	if err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(product)
 }

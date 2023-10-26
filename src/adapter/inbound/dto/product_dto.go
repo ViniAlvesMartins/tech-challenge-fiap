@@ -7,6 +7,7 @@ import (
 )
 
 type ProductDto struct {
+	ID          int     `json:"id"`
 	NameProduct string  `json:"name_product"`
 	Description string  `json:"description" validate:"required"`
 	Price       float32 `json:"price" validate:"required,gt=0" error:"O Número deve ser maior que zero"`
@@ -73,6 +74,7 @@ func ValidateProduct(dto ProductDto) IValidateError {
 func ConvertDtoToDomain(dto ProductDto) domain.Product {
 
 	var product = domain.Product{
+		ID:          dto.ID,
 		NameProduct: dto.NameProduct,
 		Description: dto.Description,
 		Price:       dto.Price,
