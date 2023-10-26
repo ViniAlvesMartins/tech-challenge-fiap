@@ -28,3 +28,14 @@ func (o *OrderRepository) Create(order domain.Order) (domain.Order, error) {
 
 	return order, nil
 }
+
+func (o *OrderRepository) Find() ([]domain.Order, error) {
+	var orders []domain.Order
+
+	if results := o.db.Preload("Products").Find(&orders); results.Error != nil {
+		o.logger.Error("result.Error")
+		return orders, errors.New("find orders from repository has failed")
+	}
+
+	return orders, nil
+}

@@ -32,3 +32,14 @@ func (o *OrderService) Create(order domain.Order) (*domain.Order, error) {
 
 	return &orderNew, nil
 }
+
+func (o *OrderService) Find() (*[]domain.Order, error) {
+
+	orders, err := o.orderRepository.Find()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &orders, nil
+}
