@@ -11,6 +11,7 @@ type Config struct {
 	DatabaseSchema   string `envconfig:"database_schema"`
 	DatabaseUsername string `envconfig:"database_username"`
 	DatabasePassword string `envconfig:"database_password"`
+	MigrationsDir    string `envconfig:"migrations_dir"`
 }
 
 func NewConfig() (cfg Config, err error) {
