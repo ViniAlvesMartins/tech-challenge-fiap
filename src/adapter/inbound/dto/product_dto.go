@@ -25,7 +25,7 @@ type Fields struct {
 }
 
 func ValidateProduct(dto ProductDto) IValidateError {
-
+	var validateError IValidateError
 	validate = validator.New(validator.WithRequiredStructEnabled())
 
 	err := validate.Struct(dto)
@@ -33,37 +33,17 @@ func ValidateProduct(dto ProductDto) IValidateError {
 	var errList []Fields
 
 	if err != nil {
-
-		// this check is only needed when your code could produce
-		// an invalid value for validation such as interface with nil
-		// value most including myself do not usually have code like this.
 		if _, ok := err.(*validator.InvalidValidationError); ok {
 			fmt.Println(err)
 		}
 
 		for _, err := range err.(validator.ValidationErrors) {
-			fmt.Println(err.Namespace())
-			fmt.Println(err.Field())
-			fmt.Println(err.StructNamespace())
-			fmt.Println(err.StructField())
-			fmt.Println(err.Tag())
-			fmt.Println(err.ActualTag())
-			fmt.Println(err.Kind())
-			fmt.Println(err.Type())
-			fmt.Println(err.Value())
-			fmt.Println(err.Param())
-			fmt.Println()
-
 			errList = append(errList, Fields{
 				Field:   err.Field(),
 				Message: err.Param(),
 			})
 		}
-
-		// from here you can create your own error messages in whatever language you wish
 	}
-
-	var validateError IValidateError
 
 	validateError.Errors = errList
 
@@ -71,7 +51,6 @@ func ValidateProduct(dto ProductDto) IValidateError {
 }
 
 func ConvertDtoToDomain(dto ProductDto) domain.Product {
-
 	var product = domain.Product{
 		NameProduct: dto.NameProduct,
 		Description: dto.Description,

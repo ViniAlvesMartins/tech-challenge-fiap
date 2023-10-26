@@ -1,7 +1,7 @@
-package domain
+package entity
 
 import (
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/enum"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
 	"time"
 )
 

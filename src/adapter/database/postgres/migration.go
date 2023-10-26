@@ -1,8 +1,9 @@
 package postgres
 
 import (
-	"database/sql"
 	"fmt"
+	"github.com/golang-migrate/migrate/v4/database"
+	"gorm.io/gorm"
 	"log/slog"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
@@ -14,34 +15,55 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func MigrationExecute(cfg *infra.Config, log *slog.Logger) {
+type Migration struct {
+	cfg infra.Config
+	db  *gorm.DB
+	log *slog.Logger
+}
+
+func NewMigration(db *gorm.DB, cfg infra.Config, log *slog.Logger) *Migration {
+	return &Migration{
+		db:  db,
+		cfg: cfg,
+		log: log,
+	}
+}
+
+func (m *Migration) Execute() {
 	var err error
 
-	connStr := fmt.Sprintf("host=%s user=%s sslmode=disable password=%s dbname=%s",
-		cfg.DatabaseHost, cfg.DatabaseUsername, cfg.DatabasePassword, cfg.DatabaseDBName)
-
-	db, err := sql.Open("postgres", connStr)
+	migration, err := m.getMigrationInstance(m.cfg.MigrationsDir)
 	if err != nil {
-		log.Error("error opening postgres connection", err)
+		m.log.Error("error creating migration instance", err)
 	}
 
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	err = migration.Up()
 	if err != nil {
-		log.Error("error instantiating postgres driver", err)
+		m.log.Error("error executing migration", err)
 	}
 
-	m, err := migrate.NewWithDatabaseInstance(fmt.Sprintf("file://%s", cfg.MigrationsDir), cfg.DatabaseDBName, driver)
-	if err != nil {
-		log.Error("error creating migration instance", err)
-	}
-
-	err = m.Up()
-	if err != nil {
-		log.Error("error executing migration", err)
-	}
-
-	srcErr, dbErr := m.Close()
+	srcErr, dbErr := migration.Close()
 	if srcErr != nil || dbErr != nil {
-		log.Error("error closing migration instance", srcErr, dbErr)
+		m.log.Error("error closing migration instance", srcErr, dbErr)
 	}
+}
+
+func (m *Migration) getMigrationInstance(dir string) (*migrate.Migrate, error) {
+	driver, err := m.getDriver()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return migrate.NewWithDatabaseInstance(fmt.Sprintf("file://%s", dir), m.cfg.DatabaseDBName, driver)
+}
+
+func (m *Migration) getDriver() (database.Driver, error) {
+	db, err := m.db.DB()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return postgres.WithInstance(db, &postgres.Config{})
 }
