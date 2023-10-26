@@ -3,11 +3,12 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
-	"github.com/gorilla/mux"
 	"log/slog"
 	"net/http"
 	"strconv"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
+	"github.com/gorilla/mux"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
@@ -117,6 +118,25 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	if err != nil {
+		return
+	}
+}
+
+func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.Request) {
+	categoryId := mux.Vars(r)["categoryid"]
+
+	categoryIdInt, err := strconv.Atoi(categoryId)
+
+	prod, err := p.productService.GetProductByCategory(categoryIdInt)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(prod)
 	if err != nil {
 		return
 	}

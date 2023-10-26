@@ -2,9 +2,11 @@ package repository
 
 import (
 	"errors"
+	"fmt"
+	"log/slog"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
 	"gorm.io/gorm"
-	"log/slog"
 )
 
 type ProductRepository struct {
@@ -53,4 +55,24 @@ func (p ProductRepository) Delete(id int) error {
 	}
 
 	return nil
+}
+func (repo *ProductRepository) GetProductByCategory(categoryId int) ([]domain.Product, error) {
+	fmt.Println("Cheguei no Repositorio!")
+	var product []domain.Product
+	fmt.Println(product)
+
+	if result := repo.db.Debug().Where("category_id=?", categoryId).Find(&product); result.Error != nil {
+
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+
+		repo.logger.Error("result.Error")
+		return nil, errors.New("an error occurred from repository")
+	}
+
+	fmt.Println(product)
+	fmt.Println(categoryId)
+
+	return product, nil
 }
