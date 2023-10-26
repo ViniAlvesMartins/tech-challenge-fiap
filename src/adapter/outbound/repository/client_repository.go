@@ -2,7 +2,7 @@ package repository
 
 import (
 	"errors"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"gorm.io/gorm"
 	"log/slog"
 )
@@ -19,7 +19,7 @@ func NewClientRepository(db *gorm.DB, logger *slog.Logger) *ClientRepository {
 	}
 }
 
-func (c *ClientRepository) Create(client domain.Client) (domain.Client, error) {
+func (c *ClientRepository) Create(client entity.Client) (entity.Client, error) {
 
 	if result := c.db.Create(&client); result.Error != nil {
 		c.logger.Error("result.Error")
@@ -29,9 +29,9 @@ func (c *ClientRepository) Create(client domain.Client) (domain.Client, error) {
 	return client, nil
 }
 
-func (c *ClientRepository) GetClientByCpf(cpf int) (*domain.Client, error) {
+func (c *ClientRepository) GetClientByCpf(cpf int) (*entity.Client, error) {
 
-	var client domain.Client
+	var client entity.Client
 
 	if result := c.db.Find(&client, "cpf=?", cpf); result.Error != nil {
 

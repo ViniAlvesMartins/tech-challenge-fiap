@@ -32,7 +32,7 @@ func main() {
 	}
 
 	migration := loadMigration(db, cfg, logger)
-	migration.Execute()
+	migration.Migrate()
 
 	clientRepository := repository.NewClientRepository(db, logger)
 	clientService := service.NewClientService(clientRepository, logger)

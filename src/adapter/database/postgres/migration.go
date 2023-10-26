@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"errors"
 	"fmt"
 	"github.com/golang-migrate/migrate/v4/database"
 	"gorm.io/gorm"
@@ -29,7 +30,7 @@ func NewMigration(db *gorm.DB, cfg infra.Config, log *slog.Logger) *Migration {
 	}
 }
 
-func (m *Migration) Execute() {
+func (m *Migration) Migrate() {
 	var err error
 
 	migration, err := m.getMigrationInstance(m.cfg.MigrationsDir)
@@ -38,13 +39,8 @@ func (m *Migration) Execute() {
 	}
 
 	err = migration.Up()
-	if err != nil {
+	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		m.log.Error("error executing migration", err)
-	}
-
-	srcErr, dbErr := migration.Close()
-	if srcErr != nil || dbErr != nil {
-		m.log.Error("error closing migration instance", srcErr, dbErr)
 	}
 }
 

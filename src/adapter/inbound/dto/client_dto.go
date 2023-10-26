@@ -3,7 +3,7 @@ package dto
 import (
 	"errors"
 	"fmt"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -51,9 +51,9 @@ func ValidateClient(dto ClientDto) IValidateError {
 	return validateError
 }
 
-func ConvertClientDtoToDomain(dto ClientDto) domain.Client {
+func ConvertClientDtoToDomain(dto ClientDto) entity.Client {
 
-	var client = domain.Client{
+	var client = entity.Client{
 		Name:  dto.Name,
 		Cpf:   dto.Cpf,
 		Email: dto.Email,

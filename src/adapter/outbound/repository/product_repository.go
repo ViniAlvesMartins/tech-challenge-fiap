@@ -3,9 +3,9 @@ package repository
 import (
 	"errors"
 	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"log/slog"
 
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +22,7 @@ func NewProductRepository(db *gorm.DB, logger *slog.Logger) *ProductRepository {
 	}
 }
 
-func (repo *ProductRepository) Create(product domain.Product) (domain.Product, error) {
+func (repo *ProductRepository) Create(product entity.Product) (entity.Product, error) {
 	result := repo.db.Create(&product)
 
 	if result.Error != nil {
@@ -34,9 +34,9 @@ func (repo *ProductRepository) Create(product domain.Product) (domain.Product, e
 	return product, nil
 }
 
-func (repo *ProductRepository) GetProductByCategory(categoryId int) ([]domain.Product, error) {
+func (repo *ProductRepository) GetProductByCategory(categoryId int) ([]entity.Product, error) {
 	fmt.Println("Cheguei no Repositorio!")
-	var product []domain.Product
+	var product []entity.Product
 	fmt.Println(product)
 
 	if result := repo.db.Debug().Where("category_id=?", categoryId).Find(&product); result.Error != nil {

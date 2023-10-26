@@ -1,15 +1,13 @@
 package port
 
-import (
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
-)
+import "github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 
 type OrderRepository interface {
-	Create(order domain.Order) (domain.Order, error)
-	Find() ([]domain.Order, error)
+	Create(order entity.Order) (entity.Order, error)
+	Find() ([]entity.Order, error)
 }
 
 type OrderService interface {
-	Create(order domain.Order) (*domain.Order, error)
-	Find() (*[]domain.Order, error)
+	Create(order entity.Order) (*entity.Order, error)
+	Find() (*[]entity.Order, error)
 }

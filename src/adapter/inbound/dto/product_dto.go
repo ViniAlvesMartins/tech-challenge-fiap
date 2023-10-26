@@ -2,7 +2,7 @@ package dto
 
 import (
 	"fmt"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -50,8 +50,8 @@ func ValidateProduct(dto ProductDto) IValidateError {
 	return validateError
 }
 
-func ConvertDtoToDomain(dto ProductDto) domain.Product {
-	var product = domain.Product{
+func ConvertDtoToDomain(dto ProductDto) entity.Product {
+	var product = entity.Product{
 		NameProduct: dto.NameProduct,
 		Description: dto.Description,
 		Price:       dto.Price,

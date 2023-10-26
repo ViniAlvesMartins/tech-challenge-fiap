@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 )
@@ -18,7 +18,7 @@ func NewClientService(clientRepository port.ClientRepository, logger *slog.Logge
 	}
 }
 
-func (c *ClientService) Create(client domain.Client) (*domain.Client, error) {
+func (c *ClientService) Create(client entity.Client) (*entity.Client, error) {
 
 	clientNew, err := c.clientRepository.Create(client)
 
@@ -29,7 +29,7 @@ func (c *ClientService) Create(client domain.Client) (*domain.Client, error) {
 	return &clientNew, nil
 }
 
-func (c *ClientService) GetClientByCpf(cpf int) (*domain.Client, error) {
+func (c *ClientService) GetClientByCpf(cpf int) (*entity.Client, error) {
 	client, err := c.clientRepository.GetClientByCpf(cpf)
 
 	if err != nil {
