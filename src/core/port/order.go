@@ -6,8 +6,10 @@ import (
 
 type OrderRepository interface {
 	Create(order domain.Order) (domain.Order, error)
+	Find() ([]domain.Order, error)
 }
 
 type OrderService interface {
 	Create(order domain.Order) (*domain.Order, error)
+	Find() (*[]domain.Order, error)
 }

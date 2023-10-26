@@ -33,13 +33,15 @@ func (e *Entry) Run(ctx context.Context) error {
 	router := mux.NewRouter()
 
 	clientController := controller.NewClientController(e.clientService, e.logger)
-	productController := controller.NewProductController(e.productService, e.logger)
-	orderController := controller.NewOrderController(e.orderService, e.logger)
+	router.HandleFunc("/client", clientController.CreateClient).Methods("POST")
+	router.HandleFunc("/client", clientController.GetClientByCpf).Methods("GET")
 
-	router.HandleFunc("/client", Chain(clientController.CreateClient, Method("POST"), Logging()))
-	router.HandleFunc("/order", Chain(orderController.CreateOrder, Method("POST"), Logging()))
-	router.HandleFunc("/product", Chain(productController.CreateProduct, Method("POST"), Logging()))
-	router.HandleFunc("/client", Chain(clientController.GetClientByCpf, Method("GET"), Logging()))
+	productController := controller.NewProductController(e.productService, e.logger)
+	router.HandleFunc("/product", productController.CreateProduct).Methods("POST")
+
+	orderController := controller.NewOrderController(e.orderService, e.logger)
+	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")
+	router.HandleFunc("/order", orderController.CreateOrder).Methods("POST")
 
 	return http.ListenAndServe(":8080", router)
 }
