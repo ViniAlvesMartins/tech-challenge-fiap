@@ -1,12 +1,9 @@
 package service
 
 import (
-	"errors"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/outbound/repository"
-	"log/slog"
-
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
+	"log/slog"
 )
 
 type ProductService struct {
@@ -14,31 +11,41 @@ type ProductService struct {
 	logger            *slog.Logger
 }
 
-func NewProductService(productRepository *repository.ProductRepository, logger *slog.Logger) *ProductService {
+func NewProductService(productRepository port.ProductRepository, logger *slog.Logger) *ProductService {
 	return &ProductService{
 		productRepository: productRepository,
 		logger:            logger,
 	}
 }
 
-func (srv *ProductService) Create(product domain.Product) (domain.Product, error) {
-
-	prod, err := srv.productRepository.Create(product)
+func (p *ProductService) Create(product domain.Product) (domain.Product, error) {
+	product.Active = true
+	productNew, err := p.productRepository.Create(product)
 
 	if err != nil {
-		return domain.Product{}, errors.New("create product from repository has failed")
+		return productNew, err
 	}
 
-	return prod, nil
+	return productNew, nil
 }
 
-func (srv *ProductService) Update(product domain.Product) (domain.Product, error) {
-
-	prod, err := srv.productRepository.Update(product)
+func (p *ProductService) Update(product domain.Product) (domain.Product, error) {
+	product.Active = true
+	productUpdated, err := p.productRepository.Update(product)
 
 	if err != nil {
-		return domain.Product{}, errors.New("update product from repository has failed")
+		return productUpdated, err
 	}
 
-	return prod, nil
+	return productUpdated, nil
+}
+
+func (p *ProductService) Delete(id int) error {
+	err := p.productRepository.Delete(id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -39,6 +39,7 @@ func (e *Entry) Run(ctx context.Context) error {
 	productController := controller.NewProductController(e.productService, e.logger)
 	router.HandleFunc("/product", productController.CreateProduct).Methods("POST")
 	router.HandleFunc("/product", productController.UpdateProduct).Methods("PATCH")
+	router.HandleFunc("/product/{productId}", productController.DeleteProduct).Methods("DELETE")
 
 	orderController := controller.NewOrderController(e.orderService, e.logger)
 	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")

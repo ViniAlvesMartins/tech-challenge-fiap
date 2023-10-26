@@ -12,6 +12,7 @@ type ProductDto struct {
 	Description string  `json:"description" validate:"required"`
 	Price       float32 `json:"price" validate:"required,gt=0" error:"O Número deve ser maior que zero"`
 	CategoryId  int     `json:"category_id" validate:"required"`
+	Active      bool    `json:"active"`
 }
 
 var validate *validator.Validate
@@ -79,6 +80,7 @@ func ConvertDtoToDomain(dto ProductDto) domain.Product {
 		Description: dto.Description,
 		Price:       dto.Price,
 		CategoryId:  dto.CategoryId,
+		Active:      dto.Active,
 	}
 
 	return product

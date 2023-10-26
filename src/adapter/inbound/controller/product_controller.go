@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
+	"github.com/gorilla/mux"
 	"log/slog"
 	"net/http"
+	"strconv"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
@@ -88,4 +90,34 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(product)
+}
+
+func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	productIdParam, ok := vars["productId"]
+
+	if !ok {
+		fmt.Println("id is missing in parameters")
+	}
+
+	productId, err := strconv.Atoi(productIdParam)
+
+	if err != nil {
+		p.logger.Error("Error to convert productId to int.  %v", err)
+	}
+
+	err = p.productService.Delete(productId)
+	if err != nil {
+		return
+	}
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err != nil {
+		return
+	}
 }
