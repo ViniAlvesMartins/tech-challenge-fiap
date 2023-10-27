@@ -7,7 +7,8 @@ import (
 
 type Payment struct {
 	ID        int                `json:"id" gorm:"primaryKey;autoIncrement"`
-	Order     Order              `json:"order" gorm:"one2one:orders"`
+	OrderID   int                `json:"-"`
+	Order     *Order             `json:"order" gorm:"foreignKey:OrderID;references:ID"`
 	Type      enum.PaymentType   `json:"type"`
 	Status    enum.PaymentStatus `json:"status"`
 	Amount    float32            `json:"amount"`
