@@ -17,7 +17,7 @@ func NewPaymentService(r port.PaymentRepository) *PaymentService {
 }
 
 func (p *PaymentService) Create(payment *entity.Payment) error {
-	payment.Status = enum.PENDING
+	payment.Status = enum.CONFIRMED
 
 	return p.repository.Create(payment)
 }
