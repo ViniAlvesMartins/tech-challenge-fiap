@@ -2,11 +2,12 @@ package http_server
 
 import (
 	"context"
+	"log/slog"
+	"net/http"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/controller"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"github.com/gorilla/mux"
-	"log/slog"
-	"net/http"
 )
 
 type Entry struct {
@@ -38,7 +39,9 @@ func (e *Entry) Run(ctx context.Context) error {
 
 	productController := controller.NewProductController(e.productService, e.logger)
 	router.HandleFunc("/product", productController.CreateProduct).Methods("POST")
-  router.HandleFunc("/product/{categoryid:[0-9]+}", productController.GetProductByCategory).Methods("GET")
+	router.HandleFunc("/product", productController.UpdateProduct).Methods("PATCH")
+	router.HandleFunc("/product/{productId:[0-9]+}", productController.DeleteProduct).Methods("DELETE")
+	router.HandleFunc("/product/{categoryid:[0-9]+}", productController.GetProductByCategory).Methods("GET")
 
 	orderController := controller.NewOrderController(e.orderService, e.logger)
 	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")
