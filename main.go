@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
+	"log/slog"
+	"os"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/database/postgres"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/http_server"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/outbound/repository"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service"
 	"gorm.io/gorm"
-	"log/slog"
-	"os"
 )
 
 func main() {

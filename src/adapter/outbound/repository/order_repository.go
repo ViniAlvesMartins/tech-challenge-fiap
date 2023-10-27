@@ -2,9 +2,10 @@ package repository
 
 import (
 	"errors"
+	"log/slog"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"gorm.io/gorm"
-	"log/slog"
 )
 
 type OrderRepository struct {
@@ -28,7 +29,7 @@ func (o *OrderRepository) Create(order entity.Order) (entity.Order, error) {
 	return order, nil
 }
 
-func (o *OrderRepository) Find() ([]entity.Order, error) {
+func (o *OrderRepository) GetAll() ([]entity.Order, error) {
 	var orders []entity.Order
 
 	if results := o.db.Preload("Products").Find(&orders); results.Error != nil {

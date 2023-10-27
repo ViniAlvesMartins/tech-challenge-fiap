@@ -9,3 +9,7 @@ type PaymentRepository interface {
 type PaymentService interface {
 	Create(payment *entity.Payment) error
 }
+
+type PaymentExternal interface {
+	PayWithQrCode()
+}

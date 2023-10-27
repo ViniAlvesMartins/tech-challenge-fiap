@@ -7,11 +7,13 @@ type ProductRepository interface {
 	Update(product entity.Product) (entity.Product, error)
 	Delete(id int) error
 	GetProductByCategory(categoryId int) ([]entity.Product, error)
+	// GetProductById(id int) (entity.Product, error)
 }
 
 type ProductService interface {
-	Create(product entity.Product) (entity.Product, error)
+	Create(product entity.Product) (*entity.Product, error)
 	Update(product entity.Product) (entity.Product, error)
 	Delete(id int) error
 	GetProductByCategory(categoryId int) ([]entity.Product, error)
+	// GetProductById(int int) (*entity.Product, error)
 }

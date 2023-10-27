@@ -1,10 +1,11 @@
 package service
 
 import (
+	"log/slog"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
-	"log/slog"
 )
 
 type OrderService struct {
@@ -30,8 +31,8 @@ func (o *OrderService) Create(order entity.Order) (*entity.Order, error) {
 	return &orderNew, nil
 }
 
-func (o *OrderService) Find() (*[]entity.Order, error) {
-	orders, err := o.orderRepository.Find()
+func (o *OrderService) GetAll() (*[]entity.Order, error) {
+	orders, err := o.orderRepository.GetAll()
 
 	if err != nil {
 		return nil, err
