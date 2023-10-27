@@ -2,7 +2,7 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 	"net/http"
@@ -21,7 +21,7 @@ func NewOrderController(orderService port.OrderService, logger *slog.Logger) *Or
 }
 
 func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
-	var orderDomain domain.Order
+	var orderDomain entity.Order
 
 	err := json.NewDecoder(r.Body).Decode(&orderDomain)
 
@@ -45,7 +45,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
-	var orders *[]domain.Order
+	var orders *[]entity.Order
 
 	orders, err := o.orderService.Find()
 

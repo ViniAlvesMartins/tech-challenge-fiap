@@ -2,7 +2,7 @@ package repository
 
 import (
 	"errors"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"gorm.io/gorm"
 	"log/slog"
 )
@@ -19,7 +19,7 @@ func NewOrderRepository(db *gorm.DB, logger *slog.Logger) *OrderRepository {
 	}
 }
 
-func (o *OrderRepository) Create(order domain.Order) (domain.Order, error) {
+func (o *OrderRepository) Create(order entity.Order) (entity.Order, error) {
 	if result := o.db.Create(&order); result.Error != nil {
 		o.logger.Error("result.Error")
 		return order, errors.New("create order from repository has failed")
@@ -28,8 +28,8 @@ func (o *OrderRepository) Create(order domain.Order) (domain.Order, error) {
 	return order, nil
 }
 
-func (o *OrderRepository) Find() ([]domain.Order, error) {
-	var orders []domain.Order
+func (o *OrderRepository) Find() ([]entity.Order, error) {
+	var orders []entity.Order
 
 	if results := o.db.Preload("Products").Find(&orders); results.Error != nil {
 		o.logger.Error("result.Error")

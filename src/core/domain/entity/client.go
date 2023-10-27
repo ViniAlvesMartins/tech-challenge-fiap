@@ -1,4 +1,4 @@
-package domain
+package entity
 
 type Client struct {
 	ID    int    `json:"id" gorm:"primaryKey;autoIncrement"`

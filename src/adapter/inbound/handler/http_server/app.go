@@ -10,27 +10,30 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Entry struct {
+type App struct {
 	logger         *slog.Logger
 	clientService  port.ClientService
 	productService port.ProductService
 	orderService   port.OrderService
+	paymentService port.PaymentService
 }
 
-func NewEntry(logger *slog.Logger,
+func NewApp(logger *slog.Logger,
 	clientService port.ClientService,
 	productService port.ProductService,
-	orderService port.OrderService) *Entry {
-
-	return &Entry{
+	orderService port.OrderService,
+	paymentService port.PaymentService,
+) *App {
+	return &App{
 		logger:         logger,
 		clientService:  clientService,
 		productService: productService,
 		orderService:   orderService,
+		paymentService: paymentService,
 	}
 }
 
-func (e *Entry) Run(ctx context.Context) error {
+func (e *App) Run(ctx context.Context) error {
 	router := mux.NewRouter()
 
 	clientController := controller.NewClientController(e.clientService, e.logger)
@@ -39,6 +42,7 @@ func (e *Entry) Run(ctx context.Context) error {
 
 	productController := controller.NewProductController(e.productService, e.logger)
 	router.HandleFunc("/product", productController.CreateProduct).Methods("POST")
+	router.HandleFunc("/product/{categoryid:[0-9]+}", productController.GetProductByCategory).Methods("GET")
 	router.HandleFunc("/product", productController.UpdateProduct).Methods("PATCH")
 	router.HandleFunc("/product/{productId:[0-9]+}", productController.DeleteProduct).Methods("DELETE")
 	router.HandleFunc("/product/{categoryid:[0-9]+}", productController.GetProductByCategory).Methods("GET")
@@ -46,6 +50,9 @@ func (e *Entry) Run(ctx context.Context) error {
 	orderController := controller.NewOrderController(e.orderService, e.logger)
 	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")
 	router.HandleFunc("/order", orderController.CreateOrder).Methods("POST")
+
+	paymentController := controller.NewPaymentController(e.paymentService, e.logger)
+	router.HandleFunc("/payments", paymentController.CreatePayment).Methods("POST")
 
 	return http.ListenAndServe(":8080", router)
 }

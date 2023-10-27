@@ -1,4 +1,4 @@
-package domain
+package entity
 
 type Product struct {
 	ID          int     `json:"id" gorm:"primaryKey;autoIncrement"`

@@ -42,9 +42,12 @@ func main() {
 	orderRepository := repository.NewOrderRepository(db, logger)
 	orderService := service.NewOrderService(orderRepository, logger)
 
-	entry := http_server.NewEntry(logger, clientService, productService, orderService)
+	paymentRepository := repository.NewPaymentRepository(db, logger)
+	paymentService := service.NewPaymentService(paymentRepository)
 
-	err = entry.Run(ctx)
+	app := http_server.NewApp(logger, clientService, productService, orderService, paymentService)
+
+	err = app.Run(ctx)
 
 	if err != nil {
 		logger.Error("error running application", err)
