@@ -6,22 +6,23 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 ## Documentação
 
-[DDD](https://link-da-documentação)
+[DDD](https://miro.com/app/board/uXjVMjkFsPU=/?share_link_id=958233804889)
 
 [Arquitetura](#arquitetura)
 
-[Stack]()
+[Stack](#stack-utilizada)
 
-[Instalação]()
+[Instalação](#instalação)
 
 [APIs]()
 
+---
 
 ## Arquitetura
 
 ### Hexagonal
 
-![Hexagonal](./doc/arquitetura/hexagonal.png)
+![Hexagonal](./doc/arquitetura/hexagonal.svg)
 
 ### Estrutura do projeto
 
@@ -39,3 +40,43 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
         - **Domain**: Camada responsável pelas entidades do negócio; 
         - **Port**: Camada responsável por definir as interfaces de **Service**, **Repository** e **External**;
         - **Service**: Camada responsável pela implementação da regra de negócio;
+
+---
+
+## Stack utilizada
+
+**Linguagem:** Go lang (v1.21)
+
+**Banco de dados:** PostgreSQL
+
+**Ambiente:** Docker
+
+---
+
+## Instalação
+
+Clone o projeto
+
+```bash
+  git clone https://github.com/ViniAlvesMartins/tech-challenge-fiap.git
+```
+
+Entre no diretório do projeto
+
+```bash
+  cd tech-challenge-fiap
+```
+
+Inicie a aplicação com o ambiente de DEV
+
+```bash
+  docker-compose up
+```
+
+ou inicie a aplicação com o ambiente de PROD (sem seeder, apenas com a seed de categoria)
+
+```bash
+  docker-compose -f docker-compose.prod.yaml up
+```
+
+---
