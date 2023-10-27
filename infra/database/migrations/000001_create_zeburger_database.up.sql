@@ -28,25 +28,26 @@ INSERT INTO ze_burguer.clients ( "cpf", "name", "email")
 VALUES (185898224, 'dbdelicio', 'dbdelicio@emailo.com');
 
 -- Create enum status
-CREATE TYPE status_order AS ENUM ('WAITING', 'RECEIVED', 'PREPARING', 'READY', 'FINISHED');
+CREATE TYPE status_order AS ENUM ('AWAITING_PAYMENT', 'RECEIVED', 'PREPARING', 'READY', 'FINISHED');
 -- Create orders table
 CREATE TABLE IF NOT EXISTS ze_burguer.orders (
     "id" BIGSERIAL NOT NULL,
     "client_id" INT NOT NULL,
     "status_order" status_order NOT NULL,
     "created_at" TIMESTAMP NOT NULL,
+    "amount" FLOAT NOT NULL,
     CONSTRAINT "PK_order" PRIMARY KEY ("id"),
     CONSTRAINT "FK_client" FOREIGN KEY ("client_id") REFERENCES ze_burguer.clients(id)
 ); 
 -- Sample data orders
-INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at")
-VALUES (1, 'WAITING', '2023-10-13 11:30:30');
-INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at")
-VALUES (2, 'PREPARING', '2023-10-13 11:31:30');
-INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at")
-VALUES (3, 'RECEIVED', '2023-10-13 11:32:30');
-INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at")
-VALUES (4, 'FINISHED', '2023-10-13 11:33:30');
+INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at", "amount")
+VALUES (1, 'WAITING', '2023-10-13 11:30:30', 17.50);
+INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at", "amount")
+VALUES (2, 'PREPARING', '2023-10-13 11:31:30', 20.50);
+INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at", "amount")
+VALUES (3, 'RECEIVED', '2023-10-13 11:32:30', 15);
+INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at", "amount")
+VALUES (4, 'FINISHED', '2023-10-13 11:33:30', 17);
 
 -- Create category table
 CREATE TABLE IF NOT EXISTS ze_burguer.category (
