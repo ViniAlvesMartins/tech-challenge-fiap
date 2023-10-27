@@ -3,14 +3,15 @@ package repository
 import (
 	"errors"
 
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"log/slog"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 
 	"gorm.io/gorm"
 )
 
 type ProductRepository struct {
-	db *gorm.DB
+	db     *gorm.DB
 	logger *slog.Logger
 }
 
@@ -42,6 +43,19 @@ func (p *ProductRepository) Update(product entity.Product) (entity.Product, erro
 
 	return product, nil
 }
+
+// func (p *ProductRepository) GetProductById(id int) (*entity.Product, error) {
+// 	var product entity.Product
+
+// 	result := p.db.Model(&product).Where("id = ?", id).Find(&product)
+
+// 	if result.Error != nil {
+// 		p.logger.Error("result.Error")
+// 		return nil, errors.New("get product by id from repository has failed")
+// 	}
+
+// 	return &product, nil
+// }
 
 func (p *ProductRepository) Delete(id int) error {
 	var product entity.Product
