@@ -2,10 +2,9 @@ package service
 
 import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
-	"log/slog"
-	"time"
-
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
+	"log/slog"
 )
 
 type OrderService struct {
@@ -21,8 +20,7 @@ func NewOrderService(orderRepository port.OrderRepository, logger *slog.Logger) 
 }
 
 func (o *OrderService) Create(order entity.Order) (*entity.Order, error) {
-	order.CreatedAt = time.Now()
-	order.StatusOrder = "WAITING"
+	order.StatusOrder = enum.AWAITING_PAYMENT
 	orderNew, err := o.orderRepository.Create(order)
 
 	if err != nil {
