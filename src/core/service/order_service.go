@@ -5,7 +5,6 @@ import (
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
-
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
@@ -22,7 +21,6 @@ func NewOrderService(orderRepository port.OrderRepository, logger *slog.Logger) 
 }
 
 func (o *OrderService) Create(order entity.Order) (*entity.Order, error) {
-
 	order.StatusOrder = enum.AWAITING_PAYMENT
 	orderNew, err := o.orderRepository.Create(order)
 
