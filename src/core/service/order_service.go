@@ -21,7 +21,6 @@ func NewOrderService(orderRepository port.OrderRepository, logger *slog.Logger) 
 }
 
 func (o *OrderService) Create(order entity.Order) (*entity.Order, error) {
-
 	order.CreatedAt = time.Now()
 	order.StatusOrder = "WAITING"
 	orderNew, err := o.orderRepository.Create(order)
@@ -34,7 +33,6 @@ func (o *OrderService) Create(order entity.Order) (*entity.Order, error) {
 }
 
 func (o *OrderService) Find() (*[]entity.Order, error) {
-
 	orders, err := o.orderRepository.Find()
 
 	if err != nil {

@@ -20,7 +20,6 @@ func NewOrderRepository(db *gorm.DB, logger *slog.Logger) *OrderRepository {
 }
 
 func (o *OrderRepository) Create(order entity.Order) (entity.Order, error) {
-
 	if result := o.db.Create(&order); result.Error != nil {
 		o.logger.Error("result.Error")
 		return order, errors.New("create order from repository has failed")

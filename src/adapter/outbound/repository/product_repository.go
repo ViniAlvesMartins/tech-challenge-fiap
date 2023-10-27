@@ -2,7 +2,7 @@ package repository
 
 import (
 	"errors"
-	"fmt"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"log/slog"
 
@@ -11,7 +11,6 @@ import (
 
 type ProductRepository struct {
 	db *gorm.DB
-
 	logger *slog.Logger
 }
 
@@ -22,35 +21,53 @@ func NewProductRepository(db *gorm.DB, logger *slog.Logger) *ProductRepository {
 	}
 }
 
-func (repo *ProductRepository) Create(product entity.Product) (entity.Product, error) {
-	result := repo.db.Create(&product)
+func (p *ProductRepository) Create(product entity.Product) (entity.Product, error) {
+	result := p.db.Create(&product)
 
 	if result.Error != nil {
-		fmt.Println("result.Error")
-
-		fmt.Println(result.Error)
+		p.logger.Error("result.Error")
+		return product, errors.New("create product from repository has failed")
 	}
 
 	return product, nil
 }
 
-func (repo *ProductRepository) GetProductByCategory(categoryId int) ([]entity.Product, error) {
-	fmt.Println("Cheguei no Repositorio!")
-	var product []entity.Product
-	fmt.Println(product)
+func (p *ProductRepository) Update(product entity.Product) (entity.Product, error) {
+	result := p.db.Save(&product)
 
-	if result := repo.db.Debug().Where("category_id=?", categoryId).Find(&product); result.Error != nil {
+	if result.Error != nil {
+		p.logger.Error("result.Error")
+		return product, errors.New("update product from repository has failed")
+	}
+
+	return product, nil
+}
+
+func (p *ProductRepository) Delete(id int) error {
+	var product entity.Product
+
+	result := p.db.Model(&product).Where("id = ?", id).Update("active", false)
+
+	if result.Error != nil {
+		p.logger.Error("result.Error")
+		return errors.New("delete product from repository has failed")
+	}
+
+	return nil
+}
+
+func (p *ProductRepository) GetProductByCategory(categoryId int) ([]entity.Product, error) {
+	var product []entity.Product
+
+	if result := p.db.Where("category_id=?", categoryId).Find(&product); result.Error != nil {
 
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
 
-		repo.logger.Error("result.Error")
+		p.logger.Error("result.Error")
 		return nil, errors.New("an error occurred from repository")
 	}
-
-	fmt.Println(product)
-	fmt.Println(categoryId)
 
 	return product, nil
 }
