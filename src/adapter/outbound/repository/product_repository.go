@@ -60,7 +60,7 @@ func (p *ProductRepository) Delete(id int) error {
 func (p *ProductRepository) GetProductByCategory(categoryId int) ([]entity.Product, error) {
 	var product []entity.Product
 
-	if result := p.db.Where("category_id=?", categoryId).Where("active=true").Find(&product); result.Error != nil {
+	if result := p.db.Where("category_id=? AND active=true", categoryId).Find(&product); result.Error != nil {
 
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
