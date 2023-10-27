@@ -1,8 +1,7 @@
 package service
 
 import (
-	"fmt"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 )
@@ -19,7 +18,7 @@ func NewProductService(productRepository port.ProductRepository, logger *slog.Lo
 	}
 }
 
-func (p *ProductService) Create(product domain.Product) (domain.Product, error) {
+func (p *ProductService) Create(product entity.Product) (entity.Product, error) {
 	product.Active = true
 	productNew, err := p.productRepository.Create(product)
 
@@ -30,7 +29,7 @@ func (p *ProductService) Create(product domain.Product) (domain.Product, error) 
 	return productNew, nil
 }
 
-func (p *ProductService) Update(product domain.Product) (domain.Product, error) {
+func (p *ProductService) Update(product entity.Product) (entity.Product, error) {
 	product.Active = true
 	productUpdated, err := p.productRepository.Update(product)
 
@@ -51,8 +50,7 @@ func (p *ProductService) Delete(id int) error {
 	return nil
 }
 
-func (p *ProductService) GetProductByCategory(categoryId int) ([]domain.Product, error) {
-	fmt.Println("Cheguei no service!")
+func (p *ProductService) GetProductByCategory(categoryId int) ([]entity.Product, error) {
 	prod, err := p.productRepository.GetProductByCategory(categoryId)
 
 	if err != nil {
