@@ -69,28 +69,30 @@ CREATE TABLE IF NOT EXISTS ze_burguer.products (
     "name_product" VARCHAR(255) NOT NULL,
     "price" FLOAT NOT NULL,
     "description" VARCHAR(300) NOT NULL,
-    "image_product" VARCHAR(10) NULL, 
+    "image_product" VARCHAR(10) NULL,
+    "active" BOOLEAN NOT NULL,
     CONSTRAINT "PK_products" PRIMARY KEY ("id"),
     CONSTRAINT "FK_category" FOREIGN KEY ("category_id") REFERENCES ze_burguer.category(id)
 ); 
 -- Sample data products
-INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description")
-VALUES (1, 'x-salada', 10, 'hamburgão com salada');
-INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description")
-VALUES (2, 'suco de laranja', 2.50, 'gelado');
-INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description")
-VALUES (3, 'batata frita', 5, 'quente');
-INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description")
-VALUES (1, 'x-bacon', 10, 'hamburgão com bacon');
-INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description")
-VALUES (2, 'suco de limão', 3.50, 'gelado');
-INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description")
-VALUES (3, 'nuggets', 7, 'quente');
+INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description", "active")
+VALUES (1, 'x-salada', 10, 'hamburgão com salada', true);
+INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description", "active")
+VALUES (2, 'suco de laranja', 2.50, 'gelado', true);
+INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description", "active")
+VALUES (3, 'batata frita', 5, 'quente', true);
+INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description", "active")
+VALUES (1, 'x-bacon', 10, 'hamburgão com bacon', true);
+INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description", "active")
+VALUES (2, 'suco de limão', 3.50, 'gelado', true);
+INSERT INTO ze_burguer.products( "category_id", "name_product", "price", "description", "active")
+VALUES (3, 'nuggets', 7, 'quente', true);
 
 -- Create orders products.
 CREATE TABLE IF NOT EXISTS ze_burguer.orders_products (
-    "id_orders" INT NOT NULL,
-    "id_products" INT NOT NULL,
-    CONSTRAINT "FK_id_orders" FOREIGN KEY ("id_orders") REFERENCES  ze_burguer.orders(id),
-    CONSTRAINT "FK_id_products" FOREIGN KEY ("id_products") REFERENCES ze_burguer.products(id)
+    "id" BIGSERIAL NOT NULL,
+    "order_id" INT NOT NULL,
+    "product_id" INT NOT NULL,
+    CONSTRAINT "FK_id_order" FOREIGN KEY ("order_id") REFERENCES  ze_burguer.orders(id),
+    CONSTRAINT "FK_id_product" FOREIGN KEY ("product_id") REFERENCES ze_burguer.products(id)
 ); 

@@ -1,7 +1,7 @@
-package domain
+package entity
 
 type Client struct {
-	Id    int    `json:"id" gorm:"primaryKey;autoIncrement"`
+	ID    int    `json:"id" gorm:"primaryKey;autoIncrement"`
 	Cpf   int    `json:"cpf"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
