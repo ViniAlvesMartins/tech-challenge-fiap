@@ -51,7 +51,7 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")
 	router.HandleFunc("/order", orderController.CreateOrder).Methods("POST")
 
-	paymentController := controller.NewPaymentController(e.paymentService, e.logger)
+	paymentController := controller.NewPaymentController(e.paymentService, e.orderService, e.logger)
 	router.HandleFunc("/payments", paymentController.CreatePayment).Methods("POST")
 
 	return http.ListenAndServe(":8080", router)

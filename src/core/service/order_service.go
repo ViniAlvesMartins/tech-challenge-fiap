@@ -40,3 +40,13 @@ func (o *OrderService) GetAll() (*[]entity.Order, error) {
 
 	return &orders, nil
 }
+
+func (o *OrderService) GetById(id int) (*entity.Order, error) {
+	order, err := o.orderRepository.GetById(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return order, nil
+}
