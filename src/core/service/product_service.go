@@ -60,3 +60,13 @@ func (p *ProductService) GetProductByCategory(categoryId int) ([]entity.Product,
 
 	return prod, nil
 }
+
+func (p *ProductService) GetById(id int) (*entity.Product, error) {
+	prod, err := p.productRepository.GetById(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return prod, nil
+}

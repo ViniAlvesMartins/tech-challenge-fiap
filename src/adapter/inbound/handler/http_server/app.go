@@ -47,7 +47,7 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/product/{productId:[0-9]+}", productController.DeleteProduct).Methods("DELETE")
 	router.HandleFunc("/product/{categoryid:[0-9]+}", productController.GetProductByCategory).Methods("GET")
 
-	orderController := controller.NewOrderController(e.orderService, e.logger)
+	orderController := controller.NewOrderController(e.orderService, e.productService, e.logger)
 	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")
 	router.HandleFunc("/order", orderController.CreateOrder).Methods("POST")
 
