@@ -34,7 +34,7 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		p.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
-	errValidate := dto.ValidateProduct(productDto)
+	errValidate := dto.Validate(productDto)
 
 	fmt.Println(errValidate)
 
@@ -68,7 +68,7 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		p.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
-	errValidate := dto.ValidateProduct(productDto)
+	errValidate := dto.Validate(productDto)
 
 	fmt.Println(errValidate)
 
