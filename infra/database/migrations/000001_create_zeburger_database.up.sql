@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS ze_burguer.orders (
 ); 
 -- Sample data orders
 INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at", "amount")
-VALUES (1, 'AWAITING_PAYMENT', '2023-10-13 11:30:30', 17.50);
+VALUES (1, 'AWAITING_PAYMENT', '2023-10-13 11:30:30', 17.51);
 INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at", "amount")
 VALUES (2, 'PREPARING', '2023-10-13 11:31:30', 20.50);
 INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at", "amount")
