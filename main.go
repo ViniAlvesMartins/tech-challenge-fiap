@@ -46,7 +46,10 @@ func main() {
 	paymentRepository := repository.NewPaymentRepository(db, logger)
 	paymentService := service.NewPaymentService(paymentRepository)
 
-	app := http_server.NewApp(logger, clientService, productService, orderService, paymentService)
+	categoryRepository := repository.NewCategoryRepository(db, logger)
+	categoryService := service.NewCategoryService(categoryRepository, logger)
+
+	app := http_server.NewApp(logger, clientService, productService, orderService, paymentService, categoryService)
 
 	err = app.Run(ctx)
 

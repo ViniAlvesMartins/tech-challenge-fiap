@@ -20,6 +20,7 @@ func NewProductService(productRepository port.ProductRepository, logger *slog.Lo
 }
 
 func (p *ProductService) Create(product entity.Product) (*entity.Product, error) {
+
 	product.Active = true
 	productNew, err := p.productRepository.Create(product)
 

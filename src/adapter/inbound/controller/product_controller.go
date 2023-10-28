@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -14,19 +15,27 @@ import (
 )
 
 type ProductController struct {
-	productService port.ProductService
-	logger         *slog.Logger
+	productService  port.ProductService
+	categoryService port.CategoryService
+	logger          *slog.Logger
 }
 
-func NewProductController(productService port.ProductService, logger *slog.Logger) *ProductController {
+func NewProductController(productService port.ProductService, categoryService port.CategoryService, logger *slog.Logger) *ProductController {
 	return &ProductController{
-		productService: productService,
-		logger:         logger,
+		productService:  productService,
+		logger:          logger,
+		categoryService: categoryService,
 	}
+}
+
+type Response struct {
+	MessageError string
+	Data         *entity.Product
 }
 
 func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var productDto dto.ProductDto
+	var response Response
 
 	err := json.NewDecoder(r.Body).Decode(&productDto)
 
@@ -45,6 +54,26 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	category, errCategory := p.categoryService.GetById(productDto.CategoryId)
+
+	if errCategory != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if category.ID == 0 {
+		response = Response{
+			MessageError: "Category not found",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	p.logger.Info("category")
+	fmt.Println(category != nil)
+
 	productDomain := dto.ConvertDtoToDomain(productDto)
 
 	product, err := p.productService.Create(productDomain)
@@ -54,9 +83,14 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	response = Response{
+		MessageError: "",
+		Data:         product,
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(product)
+	json.NewEncoder(w).Encode(response)
 }
 
 func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request) {
