@@ -2,10 +2,11 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 	"net/http"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
 type OrderController struct {
@@ -47,7 +48,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
 	var orders *[]entity.Order
 
-	orders, err := o.orderService.Find()
+	orders, err := o.orderService.GetAll()
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
