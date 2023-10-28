@@ -4,30 +4,60 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"strconv"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
 type OrderController struct {
-	orderService port.OrderService
-	logger       *slog.Logger
+	orderService   port.OrderService
+	productService port.ProductService
+	logger         *slog.Logger
 }
 
-func NewOrderController(orderService port.OrderService, logger *slog.Logger) *OrderController {
+type Response struct {
+	MessageError string
+	Data         *entity.Order
+}
+
+func NewOrderController(orderService port.OrderService, productService port.ProductService, logger *slog.Logger) *OrderController {
 	return &OrderController{
-		orderService: orderService,
-		logger:       logger,
+		orderService:   orderService,
+		productService: productService,
+		logger:         logger,
 	}
 }
 
 func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	var orderDomain entity.Order
+	var response Response
 
 	err := json.NewDecoder(r.Body).Decode(&orderDomain)
 
 	if err != nil {
 		o.logger.Error("Unable to decode the request body.  %v", err)
+	}
+
+	for _, product := range orderDomain.Products {
+
+		prod, errProd := o.productService.GetById(product.ID)
+
+		if errProd != nil {
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		if prod.ID == 0 {
+			response = Response{
+				MessageError: "Product not found " + strconv.Itoa(product.ID),
+				Data:         nil,
+			}
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(response)
+			return
+		}
+
 	}
 
 	order, err := o.orderService.Create(orderDomain)
