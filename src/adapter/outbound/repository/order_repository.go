@@ -39,3 +39,16 @@ func (o *OrderRepository) GetAll() ([]entity.Order, error) {
 
 	return orders, nil
 }
+
+func (o *OrderRepository) GetById(id int) (*entity.Order, error) {
+	var order entity.Order
+
+	result := o.db.Model(&order).Where("id= ?", id).Find(&order)
+
+	if result.Error != nil {
+		o.logger.Error("get order by id (%s) from repository has failed", id)
+		return nil, errors.New("get order by id from repository has failed")
+	}
+
+	return &order, nil
+}
