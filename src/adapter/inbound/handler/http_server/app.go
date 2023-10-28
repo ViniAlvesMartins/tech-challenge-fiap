@@ -11,11 +11,12 @@ import (
 )
 
 type App struct {
-	logger         *slog.Logger
-	clientService  port.ClientService
-	productService port.ProductService
-	orderService   port.OrderService
-	paymentService port.PaymentService
+	logger          *slog.Logger
+	clientService   port.ClientService
+	productService  port.ProductService
+	orderService    port.OrderService
+	paymentService  port.PaymentService
+	categoryService port.CategoryService
 }
 
 func NewApp(logger *slog.Logger,
@@ -23,13 +24,15 @@ func NewApp(logger *slog.Logger,
 	productService port.ProductService,
 	orderService port.OrderService,
 	paymentService port.PaymentService,
+	categoryService port.CategoryService,
 ) *App {
 	return &App{
-		logger:         logger,
-		clientService:  clientService,
-		productService: productService,
-		orderService:   orderService,
-		paymentService: paymentService,
+		logger:          logger,
+		clientService:   clientService,
+		productService:  productService,
+		orderService:    orderService,
+		paymentService:  paymentService,
+		categoryService: categoryService,
 	}
 }
 
@@ -40,7 +43,7 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/client", clientController.CreateClient).Methods("POST")
 	router.HandleFunc("/client", clientController.GetClientByCpf).Methods("GET")
 
-	productController := controller.NewProductController(e.productService, e.logger)
+	productController := controller.NewProductController(e.productService, e.categoryService, e.logger)
 	router.HandleFunc("/product", productController.CreateProduct).Methods("POST")
 	router.HandleFunc("/product/{categoryid:[0-9]+}", productController.GetProductByCategory).Methods("GET")
 	router.HandleFunc("/product", productController.UpdateProduct).Methods("PATCH")
