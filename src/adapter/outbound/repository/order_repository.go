@@ -4,6 +4,8 @@ import (
 	"errors"
 	"log/slog"
 
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"gorm.io/gorm"
 )
@@ -32,7 +34,9 @@ func (o *OrderRepository) Create(order entity.Order) (entity.Order, error) {
 func (o *OrderRepository) GetAll() ([]entity.Order, error) {
 	var orders []entity.Order
 
-	if results := o.db.Preload("Products").Find(&orders); results.Error != nil {
+	results := o.db.Order("orders.created_at asc").Preload("Products").Not("orders.status_order= ?", enum.FINISHED).Find(&orders)
+
+	if results.Error != nil {
 		o.logger.Error("result.Error")
 		return orders, errors.New("find orders from repository has failed")
 	}
