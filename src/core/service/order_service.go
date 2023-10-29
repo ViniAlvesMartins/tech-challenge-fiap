@@ -50,3 +50,7 @@ func (o *OrderService) GetById(id int) (*entity.Order, error) {
 
 	return order, nil
 }
+
+func (o *OrderService) SetStatusToReceived(id int, status enum.StatusOrder) error {
+	return o.orderRepository.SetStatusToReceived(id, status)
+}

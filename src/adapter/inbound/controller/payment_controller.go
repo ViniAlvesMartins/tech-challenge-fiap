@@ -3,35 +3,26 @@ package controller
 import (
 	"encoding/json"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 	"net/http"
 )
 
 type PaymentController struct {
-	paymentService port.PaymentService
-	orderService   port.OrderService
-	logger         *slog.Logger
+	checkoutService port.CheckoutService
+	logger          *slog.Logger
 }
 
-type Response struct {
-	MessageError string
-}
-
-func NewPaymentController(p port.PaymentService, orderService port.OrderService, logger *slog.Logger) *PaymentController {
+func NewPaymentController(c port.CheckoutService, logger *slog.Logger) *PaymentController {
 	return &PaymentController{
-		paymentService: p,
-		orderService:   orderService,
-		logger:         logger,
+		checkoutService: c,
+		logger:          logger,
 	}
 }
 
 func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var paymentDTO dto.PaymentDto
-	var response Response
 
 	err = json.NewDecoder(r.Body).Decode(&paymentDTO)
 
@@ -39,31 +30,16 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		p.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
-	order, errOrder := p.orderService.GetById(paymentDTO.Order)
+	errValidate := dto.Validate(paymentDTO)
 
-	if errOrder != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+	if len(errValidate.Errors) > 0 {
+		p.logger.Error("validate error.  %v", errValidate)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errValidate)
 		return
 	}
 
-	if order.ID == 0 {
-		response = Response{
-			MessageError: "Order not found",
-		}
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-
-	payment := entity.Payment{
-		OrderID: paymentDTO.Order,
-		Type:    enum.PaymentType(paymentDTO.Type),
-		Amount:  order.Amount,
-	}
-
-	err = p.paymentService.Create(&payment)
-
-	if err != nil {
+	if err = p.checkoutService.PayWithQRCode(paymentDTO.Order); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -3,7 +3,6 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -26,11 +25,6 @@ func NewProductController(productService port.ProductService, categoryService po
 		logger:          logger,
 		categoryService: categoryService,
 	}
-}
-
-type Response struct {
-	MessageError string
-	Data         *entity.Product
 }
 
 func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request) {
