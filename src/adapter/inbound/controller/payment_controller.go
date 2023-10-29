@@ -30,6 +30,15 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		p.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
+	errValidate := dto.Validate(paymentDTO)
+
+	if len(errValidate.Errors) > 0 {
+		p.logger.Error("validate error.  %v", errValidate)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errValidate)
+		return
+	}
+
 	if err = p.checkoutService.PayWithQRCode(paymentDTO.Order); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
