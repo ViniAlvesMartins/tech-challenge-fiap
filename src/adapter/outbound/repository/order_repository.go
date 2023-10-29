@@ -56,3 +56,7 @@ func (o *OrderRepository) GetById(id int) (*entity.Order, error) {
 
 	return &order, nil
 }
+
+func (o *OrderRepository) SetStatusToReceived(id int, status enum.StatusOrder) error {
+	return o.db.Model(&entity.Order{}).Where("id = ?", id).Update("status_order", status).Error
+}
