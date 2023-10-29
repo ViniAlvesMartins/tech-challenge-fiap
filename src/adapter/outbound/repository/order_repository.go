@@ -47,9 +47,14 @@ func (o *OrderRepository) GetAll() ([]entity.Order, error) {
 func (o *OrderRepository) GetById(id int) (*entity.Order, error) {
 	var order entity.Order
 
-	result := o.db.Model(&order).Where("id= ?", id).Find(&order)
+	result := o.db.Model(&order).Where("id= ?", id).First(&order)
 
 	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			o.logger.Error("order not found", id)
+			return nil, nil
+		}
+
 		o.logger.Error("get order by id (%s) from repository has failed", id)
 		return nil, errors.New("get order by id from repository has failed")
 	}

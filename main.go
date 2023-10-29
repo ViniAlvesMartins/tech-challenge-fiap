@@ -49,7 +49,7 @@ func main() {
 	externalPaymentRepository := repository.NewExternalPaymentRepository()
 	externalPaymentService := service.NewExternalPayment(externalPaymentRepository)
 
-	checkoutService := service.NewCheckoutService(paymentService, orderService, externalPaymentService)
+	checkoutService := service.NewCheckoutService(logger, paymentService, orderService, externalPaymentService)
 
 	categoryRepository := repository.NewCategoryRepository(db, logger)
 	categoryService := service.NewCategoryService(categoryRepository, logger)

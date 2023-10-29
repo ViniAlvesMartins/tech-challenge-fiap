@@ -4,16 +4,19 @@ import (
 	"errors"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
+	"log/slog"
 )
 
 type CheckoutService struct {
+	logger                 *slog.Logger
 	paymentService         port.PaymentService
 	orderService           port.OrderService
 	externalPaymentService port.ExternalPaymentService
 }
 
-func NewCheckoutService(p port.PaymentService, o port.OrderService, e port.ExternalPaymentService) *CheckoutService {
+func NewCheckoutService(l *slog.Logger, p port.PaymentService, o port.OrderService, e port.ExternalPaymentService) *CheckoutService {
 	return &CheckoutService{
+		logger:                 l,
 		paymentService:         p,
 		orderService:           o,
 		externalPaymentService: e,
