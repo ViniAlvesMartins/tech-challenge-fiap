@@ -17,6 +17,7 @@ type App struct {
 	orderService    port.OrderService
 	paymentService  port.PaymentService
 	categoryService port.CategoryService
+	checkoutService port.CheckoutService
 }
 
 func NewApp(logger *slog.Logger,
@@ -25,6 +26,7 @@ func NewApp(logger *slog.Logger,
 	orderService port.OrderService,
 	paymentService port.PaymentService,
 	categoryService port.CategoryService,
+	checkoutService port.CheckoutService,
 ) *App {
 	return &App{
 		logger:          logger,
@@ -33,6 +35,7 @@ func NewApp(logger *slog.Logger,
 		orderService:    orderService,
 		paymentService:  paymentService,
 		categoryService: categoryService,
+		checkoutService: checkoutService,
 	}
 }
 
@@ -54,7 +57,7 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")
 	router.HandleFunc("/order", orderController.CreateOrder).Methods("POST")
 
-	paymentController := controller.NewPaymentController(e.paymentService, e.orderService, e.logger)
+	paymentController := controller.NewPaymentController(e.checkoutService, e.logger)
 	router.HandleFunc("/payments", paymentController.CreatePayment).Methods("POST")
 
 	return http.ListenAndServe(":8080", router)

@@ -17,7 +17,16 @@ func NewPaymentService(r port.PaymentRepository) *PaymentService {
 }
 
 func (p *PaymentService) Create(payment *entity.Payment) error {
-	payment.Status = enum.CONFIRMED
-
 	return p.repository.Create(payment)
+}
+
+func (p *PaymentService) PayWithQRCode(order *entity.Order) error {
+	payment := &entity.Payment{
+		Order:  order,
+		Type:   enum.PIX,
+		Status: enum.CONFIRMED,
+		Amount: order.Amount,
+	}
+
+	return p.Create(payment)
 }

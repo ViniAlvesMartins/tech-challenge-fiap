@@ -16,11 +16,6 @@ type OrderController struct {
 	logger         *slog.Logger
 }
 
-type Response struct {
-	MessageError string
-	Data         *entity.Order
-}
-
 func NewOrderController(orderService port.OrderService, productService port.ProductService, logger *slog.Logger) *OrderController {
 	return &OrderController{
 		orderService:   orderService,
