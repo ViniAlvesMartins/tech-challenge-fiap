@@ -9,14 +9,14 @@ import (
 )
 
 type PaymentController struct {
-	checkoutService port.CheckoutService
-	logger          *slog.Logger
+	paymentService port.PaymentService
+	logger         *slog.Logger
 }
 
-func NewPaymentController(c port.CheckoutService, logger *slog.Logger) *PaymentController {
+func NewPaymentController(p port.PaymentService, logger *slog.Logger) *PaymentController {
 	return &PaymentController{
-		checkoutService: c,
-		logger:          logger,
+		paymentService: p,
+		logger:         logger,
 	}
 }
 
@@ -39,7 +39,7 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err = p.checkoutService.PayWithQRCode(paymentDTO.Order); err != nil {
+	if err = p.paymentService.PayWithQRCode(paymentDTO.Order); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

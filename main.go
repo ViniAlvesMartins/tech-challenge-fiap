@@ -43,18 +43,16 @@ func main() {
 	orderRepository := repository.NewOrderRepository(db, logger)
 	orderService := service.NewOrderService(orderRepository, logger)
 
-	paymentRepository := repository.NewPaymentRepository(db, logger)
-	paymentService := service.NewPaymentService(paymentRepository)
-
 	externalPaymentRepository := repository.NewExternalPaymentRepository()
 	externalPaymentService := service.NewExternalPayment(externalPaymentRepository)
 
-	checkoutService := service.NewCheckoutService(logger, paymentService, orderService, externalPaymentService)
+	paymentRepository := repository.NewPaymentRepository(db, logger)
+	paymentService := service.NewPaymentService(paymentRepository, orderService, externalPaymentService)
 
 	categoryRepository := repository.NewCategoryRepository(db, logger)
 	categoryService := service.NewCategoryService(categoryRepository, logger)
 
-	app := http_server.NewApp(logger, clientService, productService, orderService, paymentService, categoryService, checkoutService)
+	app := http_server.NewApp(logger, clientService, productService, orderService, paymentService, categoryService)
 
 	err = app.Run(ctx)
 
