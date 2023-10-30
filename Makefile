@@ -7,11 +7,11 @@ run-dev:
 run-prod:
 	docker-compose -f docker-compose.prod.yaml up
 
-run-test:
-	mocks && test
-
 mocks:
 	docker-compose run dev-app go generate ./...
 
 test:
 	docker-compose run dev-app go test -v ./...
+
+run-test:
+	$(MAKE) mocks && $(MAKE) test
