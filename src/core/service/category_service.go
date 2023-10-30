@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
@@ -26,9 +25,6 @@ func (c *CategoryService) GetById(id int) (*entity.Category, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	c.logger.Info("category")
-	fmt.Println(category)
 
 	return category, nil
 }

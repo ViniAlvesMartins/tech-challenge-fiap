@@ -3,7 +3,6 @@ package repository
 import (
 	"errors"
 	"log/slog"
-	"strconv"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
 
@@ -48,7 +47,7 @@ func (o *OrderRepository) GetAll() ([]entity.Order, error) {
 func (o *OrderRepository) GetById(id int) (*entity.Order, error) {
 	var order entity.Order
 
-	result := o.db.Model(&order).Where("id= ?", strconv.Itoa(id)).First(&order)
+	result := o.db.Model(&order).Where("id= ?", id).First(&order)
 
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -56,7 +55,7 @@ func (o *OrderRepository) GetById(id int) (*entity.Order, error) {
 			return nil, nil
 		}
 
-		o.logger.Error("get order by id from repository has failed", slog.Int("id", id))
+		o.logger.Error("get order by id (%s) from repository has failed", slog.Int("id", id))
 		return nil, errors.New("get order by id from repository has failed")
 	}
 
@@ -64,5 +63,5 @@ func (o *OrderRepository) GetById(id int) (*entity.Order, error) {
 }
 
 func (o *OrderRepository) SetStatusToReceived(id int, status enum.StatusOrder) error {
-	return o.db.Model(&entity.Order{}).Where("id = ?", strconv.Itoa(id)).Update("status_order", status).Error
+	return o.db.Model(&entity.Order{}).Where("id = ?", id).Update("status_order", status).Error
 }
