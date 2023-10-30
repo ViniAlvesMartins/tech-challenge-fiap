@@ -27,13 +27,13 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 	err = json.NewDecoder(r.Body).Decode(&paymentDTO)
 
 	if err != nil {
-		p.logger.Error("Unable to decode the request body.  %v", err)
+		p.logger.Error("Unable to decode the request body.  %v", slog.Any("error", err))
 	}
 
 	errValidate := dto.Validate(paymentDTO)
 
 	if len(errValidate.Errors) > 0 {
-		p.logger.Error("validate error.  %v", errValidate)
+		p.logger.Error("validate error", slog.Any("error", errValidate))
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(errValidate)
 		return

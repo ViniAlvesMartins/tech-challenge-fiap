@@ -34,7 +34,7 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 	errValidate := dto.ValidateClient(clientDto)
 
 	if len(errValidate.Errors) > 0 {
-		c.logger.Error("validate error.  %v", errValidate)
+		c.logger.Error("validate error", slog.Any("error", errValidate))
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(errValidate)
 		return

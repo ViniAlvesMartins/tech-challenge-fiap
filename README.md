@@ -1,10 +1,19 @@
 # Tech Challenge FIAP
 
-### Runing dev environment
-`$ docker-compose up`
+### Building image
+`$ make build`
 
-### Runing prod environment
-`$ docker-compose -f docker-compose.prod.yaml up`
+### Running dev environment
+`$ make run-dev`
+
+### Running prod environment
+`$ make run-prod`
+
+### Generate mocks
+`$ make mocks`
+
+### Running tests
+`$ make test`
 
 ### Database structure 
 
