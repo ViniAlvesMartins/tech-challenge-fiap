@@ -83,6 +83,13 @@ Inicie a aplicação
 [Collection_Insomnia](./doc/apis/insomnia.json)
 #### Base URL: http://localhost:8080
 
+#### Domains:
+[Cliente](#cliente)
+
+[Produto](#produto)
+
+[Pedido](#pedido)
+
 ### Cliente
 
 #### Cadastro de Cliente

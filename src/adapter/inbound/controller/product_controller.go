@@ -223,7 +223,7 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 
 func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.Request) {
 	var response Response
-	categoryId := mux.Vars(r)["categoryid"]
+	categoryId := mux.Vars(r)["categoryId"]
 
 	categoryIdInt, ok := strconv.Atoi(categoryId)
 
