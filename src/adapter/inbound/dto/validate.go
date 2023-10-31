@@ -4,8 +4,19 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func Validate(dto interface{}) IValidateError {
-	var validateError IValidateError
+var validate *validator.Validate
+
+type ValidateError struct {
+	Errors []Fields
+}
+
+type Fields struct {
+	Field   string
+	Message string
+}
+
+func Validate(dto interface{}) ValidateError {
+	var validateError ValidateError
 	var errList []Fields
 
 	validate = validator.New(validator.WithRequiredStructEnabled())

@@ -10,8 +10,8 @@ type PaymentDto struct {
 	Type  string `json:"type" validate:"required" error:"Tipo de pagamento é obrigatorio"`
 }
 
-func (p *PaymentDto) ConvertToEntity() *entity.Payment {
-	return &entity.Payment{
+func (p *PaymentDto) ConvertToEntity() entity.Payment {
+	return entity.Payment{
 		OrderID: p.Order,
 		Type:    enum.PaymentType(p.Type),
 	}
