@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 
 	"log/slog"
 
@@ -34,6 +35,7 @@ func (p *ProductRepository) Create(product entity.Product) (entity.Product, erro
 }
 
 func (p *ProductRepository) Update(product entity.Product) (entity.Product, error) {
+	fmt.Println(product)
 	result := p.db.Save(&product)
 
 	if result.Error != nil {
@@ -47,7 +49,11 @@ func (p *ProductRepository) Update(product entity.Product) (entity.Product, erro
 func (p *ProductRepository) GetById(id int) (*entity.Product, error) {
 	var product entity.Product
 
-	result := p.db.Model(&product).Where("id = ?", id).Find(&product)
+	result := p.db.Model(&product).Where("id = ?", id).First(&product)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
 
 	if result.Error != nil {
 		p.logger.Error("result.Error")

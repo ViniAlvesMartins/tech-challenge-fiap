@@ -2,22 +2,6 @@
 
 Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer via totem de auto atendimento.
 
-### Building image
-`$ make build`
-
-### Running dev environment
-`$ make run-dev`
-
-### Running prod environment
-`$ make run-prod`
-
-### Generate mocks
-`$ make mocks`
-
-### Running tests
-`$ make test`
-
-
 ## Documentação
 
 [DDD](https://miro.com/app/board/uXjVMjkFsPU=/?share_link_id=958233804889)
@@ -48,8 +32,7 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
             - **Controller**: Camada responsável por processar a validação dos dados e direcionar a requisição para o serviço;
             - **Handler**: Camada responsável por definir o meio de recepção das requisições; ex: REST API, GraphQL, Mensageria
         - **Outbound**: Camada onde realizamos a implementação das ports **repository** e **external**
-            - **Repository**: Camada responsável por realizar a integração com o banco de dados; Ex: MySQL, PostgreSQL, DynamoDB
-            - **External**: Camada responsável por realizar a integração com sistema ou serviços de terceiros; Ex: Integração com Mercado Pago, Integração com Mensageria
+            - **Repository**: Camada responsável por realizar a integração com o banco de dados e serviços externos; Ex: MySQL, PostgreSQL, DynamoDB, Integração com Mercado Pago, Integração com Mensageria
     - **Core**: Módulo responsável pelo coração do negócio
         - **Domain**: Camada responsável pelas entidades do negócio; 
         - **Port**: Camada responsável por definir as interfaces de **Service**, **Repository** e **External**;
@@ -63,7 +46,8 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 **Banco de dados:** PostgreSQL
 
-**Ambiente:** Docker
+**Ambiente:** Docker v24.0.5 | Docker-compose v2.20.2
+
 
 ---
 
@@ -81,16 +65,9 @@ Entre no diretório do projeto
   cd tech-challenge-fiap
 ```
 
-Inicie a aplicação com o ambiente de DEV
+Inicie a aplicação
 
 ```bash
   docker-compose up
 ```
 
-ou inicie a aplicação com o ambiente de PROD (sem seeder, apenas com a seed de categoria)
-
-```bash
-  docker-compose -f docker-compose.prod.yaml up
-```
-
----

@@ -2,11 +2,12 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 	"net/http"
 	"strconv"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
 type ClientController struct {
@@ -23,6 +24,7 @@ func NewClientController(clientService port.ClientService, logger *slog.Logger) 
 
 func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) {
 	var clientDto dto.ClientDto
+	var response Response
 
 	err := json.NewDecoder(r.Body).Decode(&clientDto)
 
@@ -39,6 +41,23 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	validClient, errValidClient := c.clientService.GetAlreadyExists(clientDto.Cpf, clientDto.Email)
+
+	if errValidClient != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if validClient != nil {
+		response = Response{
+			MessageError: "Client already exists",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusConflict)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
 	clientDomain := clientDto.ConvertEntity()
 
 	client, err := c.clientService.Create(clientDomain)
@@ -48,9 +67,14 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	response = Response{
+		MessageError: "",
+		Data:         client,
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(w).Encode(client)
+	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
 		return
 	}
@@ -58,6 +82,7 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 
 func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request) {
 	cpf := r.URL.Query().Get("cpf")
+	var response Response
 
 	cpfInt, err := strconv.Atoi(cpf)
 
@@ -69,11 +94,27 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if client == nil {
+		response = Response{
+			MessageError: "Not found",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	response = Response{
+		MessageError: "",
+		Data:         client,
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(client)
+	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
 		return
 	}

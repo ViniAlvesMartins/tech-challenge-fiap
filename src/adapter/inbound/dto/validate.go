@@ -25,7 +25,7 @@ func Validate(dto interface{}) ValidateError {
 		for _, e := range err.(validator.ValidationErrors) {
 			errList = append(errList, Fields{
 				Field:   e.Field(),
-				Message: e.Param(),
+				Message: e.Tag(),
 			})
 		}
 	}

@@ -24,9 +24,13 @@ func NewCategoryRepository(db *gorm.DB, logger *slog.Logger) *CategoryRepository
 func (c *CategoryRepository) GetById(id int) (*entity.Category, error) {
 	var category entity.Category
 
-	result := c.db.Model(&category).Where("id= ?", id).Find(&category)
+	result := c.db.Model(&category).Where("id= ?", id).First(&category)
 
 	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+
 		c.logger.Error(fmt.Sprintf("get category by id (%s) from repository has failed", strconv.Itoa(id)))
 		return nil, errors.New("get category by id from repository has failed")
 	}
