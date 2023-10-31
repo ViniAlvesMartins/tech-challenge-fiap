@@ -55,7 +55,7 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if category.ID == 0 {
+	if category == nil {
 		response = Response{
 			MessageError: "Category not found",
 			Data:         nil,
@@ -88,12 +88,42 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 }
 
 func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request) {
+	var response Response
+	vars := mux.Vars(r)
+
+	productIdParam, ok := vars["productId"]
+
+	if !ok {
+		response := Response{
+			MessageError: "id is missing in parameters",
+			Data:         nil,
+		}
+
+		p.logger.Error("id is missing in parameters")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
 	var productDto dto.ProductDto
 
 	err := json.NewDecoder(r.Body).Decode(&productDto)
 
 	if err != nil {
 		p.logger.Error("Unable to decode the request body.  %v", err)
+	}
+
+	convertId, err := strconv.Atoi(productIdParam)
+
+	if err != nil {
+		response := Response{
+			MessageError: "Id not is number",
+			Data:         nil,
+		}
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
 
 	errValidate := dto.Validate(productDto)
@@ -107,8 +137,25 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	productDomain := productDto.ConvertToEntity()
+	validateProduct, errProduct := p.productService.GetById(convertId)
 
+	if errProduct != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if validateProduct == nil {
+		response = Response{
+			MessageError: "Not found",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	productDto.SetID(convertId)
+	productDomain := productDto.ConvertToEntity()
 	product, err := p.productService.Update(productDomain)
 
 	if err != nil {
@@ -116,12 +163,18 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	response = Response{
+		MessageError: "",
+		Data:         product,
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(product)
+	json.NewEncoder(w).Encode(response)
 }
 
 func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request) {
+	var response Response
 	vars := mux.Vars(r)
 	productIdParam, ok := vars["productId"]
 
@@ -133,6 +186,23 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 
 	if err != nil {
 		p.logger.Error("Error to convert productId to int.  %v", err)
+	}
+
+	validateProduct, errProduct := p.productService.GetById(productId)
+
+	if errProduct != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if validateProduct == nil || validateProduct.Active == false {
+		response = Response{
+			MessageError: "Not found",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
 
 	err = p.productService.Delete(productId)
@@ -152,9 +222,38 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 }
 
 func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.Request) {
+	var response Response
 	categoryId := mux.Vars(r)["categoryid"]
 
-	categoryIdInt, err := strconv.Atoi(categoryId)
+	categoryIdInt, ok := strconv.Atoi(categoryId)
+
+	if ok != nil {
+		response := Response{
+			MessageError: "id is missing in parameters",
+			Data:         nil,
+		}
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	category, errCateg := p.categoryService.GetById(categoryIdInt)
+
+	if errCateg != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if category == nil {
+		response = Response{
+			MessageError: "Category Not found",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 
 	prod, err := p.productService.GetProductByCategory(categoryIdInt)
 
@@ -162,9 +261,26 @@ func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
+	lenProd := len(prod)
+
+	if lenProd == 0 {
+		response = Response{
+			MessageError: "Product Not found",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	response = Response{
+		MessageError: "",
+		Data:         prod,
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(prod)
+	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
 		return
 	}

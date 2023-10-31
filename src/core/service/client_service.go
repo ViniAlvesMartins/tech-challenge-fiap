@@ -39,3 +39,14 @@ func (c *ClientService) GetClientByCpf(cpf int) (*entity.Client, error) {
 	return client, nil
 
 }
+
+func (c *ClientService) GetAlreadyExists(cpf int, email string) (*entity.Client, error) {
+	client, err := c.clientRepository.GetAlreadyExists(cpf, email)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
+
+}

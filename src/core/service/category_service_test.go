@@ -5,10 +5,11 @@ import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port/mock"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/golang/mock/gomock"
 	"log/slog"
 	"os"
 	"testing"
+
+	"github.com/golang/mock/gomock"
 )
 
 func TestCatgoryService(t *testing.T) {

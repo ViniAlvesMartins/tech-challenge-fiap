@@ -3,29 +3,29 @@ CREATE SCHEMA IF NOT EXISTS ze_burguer;
 -- Create clients table
 CREATE TABLE IF NOT EXISTS ze_burguer.clients (
     "id" BIGSERIAL NOT NULL,
-    "cpf" INT NOT NULL UNIQUE,
+    "cpf" BIGINT NOT NULL UNIQUE,
     "name" VARCHAR(55) NOT NULL,
     "email" VARCHAR(55) NOT NULL UNIQUE,
     CONSTRAINT "PK_Clients" PRIMARY KEY ("id")
 ); 
 -- Sample data clients
 INSERT INTO ze_burguer.clients( "cpf", "name", "email")
-VALUES (142358967, 'dbmussarelo', 'dbmussarelo@emailo.com');
+VALUES (14235896700, 'dbmussarelo', 'dbmussarelo@emailo.com');
 
 INSERT INTO ze_burguer.clients ( "cpf", "name", "email")
-VALUES (142358987, 'dbcalabresso', 'dbcalabresso@emailo.com');
+VALUES (14235898700, 'dbcalabresso', 'dbcalabresso@emailo.com');
 
 INSERT INTO ze_burguer.clients ( "cpf", "name", "email")
-VALUES (185358987, 'dbtroncudo', 'dbtroncudo@emailo.com');
+VALUES (18535898700, 'dbtroncudo', 'dbtroncudo@emailo.com');
 
 INSERT INTO ze_burguer.clients ( "cpf", "name", "email")
-VALUES (185898987, 'dbcasosbahio', 'dbcasosbahio@emailo.com');
+VALUES (18589898700, 'dbcasosbahio', 'dbcasosbahio@emailo.com');
 
 INSERT INTO ze_burguer.clients ( "cpf", "name", "email")
-VALUES (185898222, 'dbludmilo', 'dbludmilo@emailo.com');
+VALUES (18589822200, 'dbludmilo', 'dbludmilo@emailo.com');
 
 INSERT INTO ze_burguer.clients ( "cpf", "name", "email")
-VALUES (185898224, 'dbdelicio', 'dbdelicio@emailo.com');
+VALUES (18589822400, 'dbdelicio', 'dbdelicio@emailo.com');
 
 -- Create enum status
 CREATE TYPE status_order AS ENUM ('AWAITING_PAYMENT', 'RECEIVED', 'PREPARING', 'READY', 'FINISHED');
@@ -62,6 +62,8 @@ INSERT INTO ze_burguer.categories( "id", "name")
 VALUES (2, 'bebida');
 INSERT INTO ze_burguer.categories( "id", "name")
 VALUES (3, 'acompanhamento');
+INSERT INTO ze_burguer.categories( "id", "name")
+VALUES (4, 'sobremesa');
 
 -- Create category product table
 CREATE TABLE IF NOT EXISTS ze_burguer.products (
@@ -70,7 +72,6 @@ CREATE TABLE IF NOT EXISTS ze_burguer.products (
     "name_product" VARCHAR(255) NOT NULL,
     "price" FLOAT NOT NULL,
     "description" VARCHAR(300) NOT NULL,
-    "image_product" VARCHAR(10) NULL,
     "active" BOOLEAN NOT NULL,
     CONSTRAINT "PK_products" PRIMARY KEY ("id"),
     CONSTRAINT "FK_category" FOREIGN KEY ("category_id") REFERENCES ze_burguer.categories(id)
