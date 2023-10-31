@@ -54,6 +54,7 @@ func (e *App) Run(ctx context.Context) error {
 
 	orderController := controller.NewOrderController(e.orderService, e.productService, e.logger)
 	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")
+	router.HandleFunc("/order/{orderId:[0-9]+}", orderController.GetOrderById).Methods("GET")
 	router.HandleFunc("/order", orderController.CreateOrder).Methods("POST")
 
 	paymentController := controller.NewPaymentController(e.checkoutService, e.logger)
