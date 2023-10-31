@@ -74,6 +74,7 @@ Inicie a aplicação
 
 ## Documentação da API
 
+[Collection_Insomnia](./doc/apis/insomnia.json)
 #### Base URL: http://localhost:8080
 
 ### Cliente
