@@ -2,9 +2,11 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"gorm.io/gorm"
 	"log/slog"
+	"strconv"
 )
 
 type CategoryRepository struct {
@@ -25,7 +27,7 @@ func (c *CategoryRepository) GetById(id int) (*entity.Category, error) {
 	result := c.db.Model(&category).Where("id= ?", id).Find(&category)
 
 	if result.Error != nil {
-		c.logger.Error("get category by id (%s) from repository has failed", id)
+		c.logger.Error(fmt.Sprintf("get category by id (%s) from repository has failed", strconv.Itoa(id)))
 		return nil, errors.New("get category by id from repository has failed")
 	}
 

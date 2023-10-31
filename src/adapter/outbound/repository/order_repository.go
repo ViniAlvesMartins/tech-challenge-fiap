@@ -51,11 +51,11 @@ func (o *OrderRepository) GetById(id int) (*entity.Order, error) {
 
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			o.logger.Error("order not found", id)
+			o.logger.Error("order not found", slog.Int("id", id))
 			return nil, nil
 		}
 
-		o.logger.Error("get order by id (%s) from repository has failed", id)
+		o.logger.Error("get order by id (%s) from repository has failed", slog.Int("id", id))
 		return nil, errors.New("get order by id from repository has failed")
 	}
 

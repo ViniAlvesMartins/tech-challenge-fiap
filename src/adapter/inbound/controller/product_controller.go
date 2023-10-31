@@ -42,7 +42,7 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 	fmt.Println(errValidate)
 
 	if len(errValidate.Errors) > 0 {
-		p.logger.Error("validate error.  %v", errValidate)
+		p.logger.Error("validate error", slog.Any("error", errValidate))
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(errValidate)
 		return
@@ -101,7 +101,7 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 	fmt.Println(errValidate)
 
 	if len(errValidate.Errors) > 0 {
-		p.logger.Error("validate error.  %v", errValidate)
+		p.logger.Error("validate error", slog.Any("error", errValidate))
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(errValidate)
 		return
