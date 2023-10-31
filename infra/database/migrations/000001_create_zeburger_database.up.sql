@@ -72,7 +72,6 @@ CREATE TABLE IF NOT EXISTS ze_burguer.products (
     "name_product" VARCHAR(255) NOT NULL,
     "price" FLOAT NOT NULL,
     "description" VARCHAR(300) NOT NULL,
-    "image_product" VARCHAR(10) NULL,
     "active" BOOLEAN NOT NULL,
     CONSTRAINT "PK_products" PRIMARY KEY ("id"),
     CONSTRAINT "FK_category" FOREIGN KEY ("category_id") REFERENCES ze_burguer.categories(id)

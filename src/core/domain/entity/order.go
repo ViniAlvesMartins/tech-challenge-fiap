@@ -14,3 +14,7 @@ type Order struct {
 	CreatedAt   time.Time        `json:"created_at,omitempty"`
 	Products    []*Product       `json:"products" gorm:"many2many:orders_products"`
 }
+
+func (o *Order) SetAmount(amount float32) {
+	o.Amount = amount
+}

@@ -20,8 +20,18 @@ func NewOrderService(orderRepository port.OrderRepository, logger *slog.Logger) 
 	}
 }
 
-func (o *OrderService) Create(order entity.Order) (*entity.Order, error) {
+func (o *OrderService) Create(order entity.Order, products []*entity.Product) (*entity.Order, error) {
 	order.StatusOrder = enum.AWAITING_PAYMENT
+
+	var amount float32
+	amount = 0
+
+	for _, prod := range products {
+		amount += prod.Price
+	}
+
+	order.SetAmount(amount)
+
 	orderNew, err := o.orderRepository.Create(order)
 
 	if err != nil {

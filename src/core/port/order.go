@@ -13,7 +13,7 @@ type OrderRepository interface {
 }
 
 type OrderService interface {
-	Create(order entity.Order) (*entity.Order, error)
+	Create(order entity.Order, products []*entity.Product) (*entity.Order, error)
 	GetAll() (*[]entity.Order, error)
 	GetById(id int) (*entity.Order, error)
 	SetStatusToReceived(id int, status enum.StatusOrder) error

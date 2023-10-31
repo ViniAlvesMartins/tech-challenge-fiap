@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"log/slog"
 	"net/http"
@@ -35,6 +36,19 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		o.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
+	validateLengthProds := len(orderDomain.Products)
+
+	if validateLengthProds <= 0 {
+		response = Response{
+			MessageError: "Product is required",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	var products []*entity.Product
 	for _, product := range orderDomain.Products {
 		prod, errProd := o.productService.GetById(product.ID)
 
@@ -43,7 +57,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if prod.ID == 0 {
+		if prod == nil {
 			response = Response{
 				MessageError: "Product not found " + strconv.Itoa(product.ID),
 				Data:         nil,
@@ -53,18 +67,25 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		products = append(products, prod)
 	}
 
-	order, err := o.orderService.Create(orderDomain)
+	order, err := o.orderService.Create(orderDomain, products)
 
 	if err != nil {
+		fmt.Println("ersa")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	response = Response{
+		MessageError: "",
+		Data:         order,
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(w).Encode(order)
+	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
 		return
 	}
