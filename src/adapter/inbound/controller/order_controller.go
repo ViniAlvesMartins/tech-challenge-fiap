@@ -35,7 +35,6 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, product := range orderDomain.Products {
-
 		prod, errProd := o.productService.GetById(product.ID)
 
 		if errProd != nil {

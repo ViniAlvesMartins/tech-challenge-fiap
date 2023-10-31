@@ -8,7 +8,7 @@ import (
 
 type Order struct {
 	ID          int              `json:"id" gorm:"primaryKey;autoIncrement"`
-	ClientId    int              `json:"client_id"`
+	ClientId    *int             `json:"client_id,omitempty"`
 	StatusOrder enum.StatusOrder `json:"status_order"`
 	Amount      float32          `json:"amount"`
 	CreatedAt   time.Time        `json:"created_at,omitempty"`
