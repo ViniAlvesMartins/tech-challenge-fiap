@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/gorilla/mux"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -35,7 +36,6 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, product := range orderDomain.Products {
-
 		prod, errProd := o.productService.GetById(product.ID)
 
 		if errProd != nil {
@@ -83,6 +83,33 @@ func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(orders)
+	if err != nil {
+		return
+	}
+}
+
+func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
+	orderId := mux.Vars(r)["orderId"]
+	orderIdInt, err := strconv.Atoi(orderId)
+
+	if err != nil {
+		http.Error(w, "Error to convert id order to int.  %v", http.StatusInternalServerError)
+	}
+
+	order, err := o.orderService.GetById(orderIdInt)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if order == nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(order)
 	if err != nil {
 		return
 	}

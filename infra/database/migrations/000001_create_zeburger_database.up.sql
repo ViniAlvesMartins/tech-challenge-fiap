@@ -32,7 +32,7 @@ CREATE TYPE status_order AS ENUM ('AWAITING_PAYMENT', 'RECEIVED', 'PREPARING', '
 -- Create orders table
 CREATE TABLE IF NOT EXISTS ze_burguer.orders (
     "id" BIGSERIAL NOT NULL,
-    "client_id" INT NOT NULL,
+    "client_id" INT NULL,
     "status_order" status_order NOT NULL,
     "created_at" TIMESTAMP NOT NULL,
     "amount" FLOAT NOT NULL,
