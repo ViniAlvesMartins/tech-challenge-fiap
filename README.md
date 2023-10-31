@@ -65,6 +65,12 @@ Entre no diretório do projeto
   cd tech-challenge-fiap
 ```
 
+Crie o arquivo `.env` apartir do `.env.example`
+
+```bash
+  cp .env.example .env
+```
+
 Inicie a aplicação
 
 ```bash
