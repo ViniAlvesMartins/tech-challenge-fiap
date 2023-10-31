@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
+	"log/slog"
+	"os"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/database/postgres"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/handler/http_server"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/outbound/repository"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service"
 	"gorm.io/gorm"
-	"log/slog"
-	"os"
 )
 
 func main() {
@@ -45,7 +46,15 @@ func main() {
 	paymentRepository := repository.NewPaymentRepository(db, logger)
 	paymentService := service.NewPaymentService(paymentRepository)
 
-	app := http_server.NewApp(logger, clientService, productService, orderService, paymentService)
+	externalPaymentRepository := repository.NewExternalPaymentRepository()
+	externalPaymentService := service.NewExternalPayment(externalPaymentRepository)
+
+	checkoutService := service.NewCheckoutService(logger, paymentService, orderService, externalPaymentService)
+
+	categoryRepository := repository.NewCategoryRepository(db, logger)
+	categoryService := service.NewCategoryService(categoryRepository, logger)
+
+	app := http_server.NewApp(logger, clientService, productService, orderService, paymentService, categoryService, checkoutService)
 
 	err = app.Run(ctx)
 

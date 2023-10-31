@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"log/slog"
-	"time"
 
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
@@ -21,8 +21,7 @@ func NewOrderService(orderRepository port.OrderRepository, logger *slog.Logger) 
 }
 
 func (o *OrderService) Create(order entity.Order) (*entity.Order, error) {
-	order.CreatedAt = time.Now()
-	order.StatusOrder = "WAITING"
+	order.StatusOrder = enum.AWAITING_PAYMENT
 	orderNew, err := o.orderRepository.Create(order)
 
 	if err != nil {
@@ -32,12 +31,26 @@ func (o *OrderService) Create(order entity.Order) (*entity.Order, error) {
 	return &orderNew, nil
 }
 
-func (o *OrderService) Find() (*[]entity.Order, error) {
-	orders, err := o.orderRepository.Find()
+func (o *OrderService) GetAll() (*[]entity.Order, error) {
+	orders, err := o.orderRepository.GetAll()
 
 	if err != nil {
 		return nil, err
 	}
 
 	return &orders, nil
+}
+
+func (o *OrderService) GetById(id int) (*entity.Order, error) {
+	order, err := o.orderRepository.GetById(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return order, nil
+}
+
+func (o *OrderService) SetStatusToReceived(id int, status enum.StatusOrder) error {
+	return o.orderRepository.SetStatusToReceived(id, status)
 }

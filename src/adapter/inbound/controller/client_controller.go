@@ -22,7 +22,6 @@ func NewClientController(clientService port.ClientService, logger *slog.Logger) 
 }
 
 func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) {
-
 	var clientDto dto.ClientDto
 
 	err := json.NewDecoder(r.Body).Decode(&clientDto)
@@ -31,16 +30,16 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		c.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
-	errValidate := dto.ValidateClient(clientDto)
+	errValidate := dto.Validate(clientDto)
 
 	if len(errValidate.Errors) > 0 {
-		c.logger.Error("validate error.  %v", errValidate)
+		c.logger.Error("validate error", slog.Any("error", errValidate))
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(errValidate)
 		return
 	}
 
-	clientDomain := dto.ConvertClientDtoToDomain(clientDto)
+	clientDomain := clientDto.ConvertEntity()
 
 	client, err := c.clientService.Create(clientDomain)
 

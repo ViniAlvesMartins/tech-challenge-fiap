@@ -9,14 +9,14 @@ import (
 )
 
 type PaymentController struct {
-	paymentService port.PaymentService
-	logger         *slog.Logger
+	checkoutService port.CheckoutService
+	logger          *slog.Logger
 }
 
-func NewPaymentController(p port.PaymentService, logger *slog.Logger) *PaymentController {
+func NewPaymentController(c port.CheckoutService, logger *slog.Logger) *PaymentController {
 	return &PaymentController{
-		paymentService: p,
-		logger:         logger,
+		checkoutService: c,
+		logger:          logger,
 	}
 }
 
@@ -27,12 +27,19 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 	err = json.NewDecoder(r.Body).Decode(&paymentDTO)
 
 	if err != nil {
-		p.logger.Error("Unable to decode the request body.  %v", err)
+		p.logger.Error("Unable to decode the request body.  %v", slog.Any("error", err))
 	}
 
-	err = p.paymentService.Create(paymentDTO.ConvertToEntity())
+	errValidate := dto.Validate(paymentDTO)
 
-	if err != nil {
+	if len(errValidate.Errors) > 0 {
+		p.logger.Error("validate error", slog.Any("error", errValidate))
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errValidate)
+		return
+	}
+
+	if err = p.checkoutService.PayWithQRCode(paymentDTO.Order); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

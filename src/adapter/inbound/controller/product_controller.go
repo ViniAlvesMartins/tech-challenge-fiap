@@ -14,19 +14,22 @@ import (
 )
 
 type ProductController struct {
-	productService port.ProductService
-	logger         *slog.Logger
+	productService  port.ProductService
+	categoryService port.CategoryService
+	logger          *slog.Logger
 }
 
-func NewProductController(productService port.ProductService, logger *slog.Logger) *ProductController {
+func NewProductController(productService port.ProductService, categoryService port.CategoryService, logger *slog.Logger) *ProductController {
 	return &ProductController{
-		productService: productService,
-		logger:         logger,
+		productService:  productService,
+		logger:          logger,
+		categoryService: categoryService,
 	}
 }
 
 func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var productDto dto.ProductDto
+	var response Response
 
 	err := json.NewDecoder(r.Body).Decode(&productDto)
 
@@ -34,18 +37,38 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		p.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
-	errValidate := dto.ValidateProduct(productDto)
+	errValidate := dto.Validate(productDto)
 
 	fmt.Println(errValidate)
 
 	if len(errValidate.Errors) > 0 {
-		p.logger.Error("validate error.  %v", errValidate)
+		p.logger.Error("validate error", slog.Any("error", errValidate))
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(errValidate)
 		return
 	}
 
-	productDomain := dto.ConvertDtoToDomain(productDto)
+	category, errCategory := p.categoryService.GetById(productDto.CategoryId)
+
+	if errCategory != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if category.ID == 0 {
+		response = Response{
+			MessageError: "Category not found",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	p.logger.Info("category")
+	fmt.Println(category != nil)
+
+	productDomain := productDto.ConvertToEntity()
 
 	product, err := p.productService.Create(productDomain)
 
@@ -54,9 +77,14 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	response = Response{
+		MessageError: "",
+		Data:         product,
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(product)
+	json.NewEncoder(w).Encode(response)
 }
 
 func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request) {
@@ -68,18 +96,18 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		p.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
-	errValidate := dto.ValidateProduct(productDto)
+	errValidate := dto.Validate(productDto)
 
 	fmt.Println(errValidate)
 
 	if len(errValidate.Errors) > 0 {
-		p.logger.Error("validate error.  %v", errValidate)
+		p.logger.Error("validate error", slog.Any("error", errValidate))
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(errValidate)
 		return
 	}
 
-	productDomain := dto.ConvertDtoToDomain(productDto)
+	productDomain := productDto.ConvertToEntity()
 
 	product, err := p.productService.Update(productDomain)
 

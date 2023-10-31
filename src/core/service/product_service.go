@@ -1,9 +1,10 @@
 package service
 
 import (
+	"log/slog"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
-	"log/slog"
 )
 
 type ProductService struct {
@@ -18,15 +19,16 @@ func NewProductService(productRepository port.ProductRepository, logger *slog.Lo
 	}
 }
 
-func (p *ProductService) Create(product entity.Product) (entity.Product, error) {
+func (p *ProductService) Create(product entity.Product) (*entity.Product, error) {
+
 	product.Active = true
 	productNew, err := p.productRepository.Create(product)
 
 	if err != nil {
-		return productNew, err
+		return nil, err
 	}
 
-	return productNew, nil
+	return &productNew, nil
 }
 
 func (p *ProductService) Update(product entity.Product) (entity.Product, error) {
@@ -52,6 +54,16 @@ func (p *ProductService) Delete(id int) error {
 
 func (p *ProductService) GetProductByCategory(categoryId int) ([]entity.Product, error) {
 	prod, err := p.productRepository.GetProductByCategory(categoryId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return prod, nil
+}
+
+func (p *ProductService) GetById(id int) (*entity.Product, error) {
+	prod, err := p.productRepository.GetById(id)
 
 	if err != nil {
 		return nil, err

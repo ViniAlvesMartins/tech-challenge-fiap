@@ -8,4 +8,5 @@ type PaymentRepository interface {
 
 type PaymentService interface {
 	Create(payment *entity.Payment) error
+	PayWithQRCode(order *entity.Order) error
 }

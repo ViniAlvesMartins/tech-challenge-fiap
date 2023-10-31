@@ -2,6 +2,20 @@
 
 Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer via totem de auto atendimento.
 
+### Building image
+`$ make build`
+
+### Running dev environment
+`$ make run-dev`
+
+### Running prod environment
+`$ make run-prod`
+
+### Generate mocks
+`$ make mocks`
+
+### Running tests
+`$ make test`
 
 
 ## Documentação
