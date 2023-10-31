@@ -23,7 +23,7 @@ func NewOrderRepository(db *gorm.DB, logger *slog.Logger) *OrderRepository {
 }
 
 func (o *OrderRepository) Create(order entity.Order) (entity.Order, error) {
-	if result := o.db.Create(&order); result.Error != nil {
+	if result := o.db.Create(&order).Model(&order).Preload("Products").Where("id= ?", order.ID).First(&order); result.Error != nil {
 		o.logger.Error("result.Error")
 		return order, errors.New("create order from repository has failed")
 	}
@@ -47,7 +47,7 @@ func (o *OrderRepository) GetAll() ([]entity.Order, error) {
 func (o *OrderRepository) GetById(id int) (*entity.Order, error) {
 	var order entity.Order
 
-	result := o.db.Model(&order).Where("id= ?", id).First(&order)
+	result := o.db.Model(&order).Preload("Products").Where("id= ?", id).First(&order)
 
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
