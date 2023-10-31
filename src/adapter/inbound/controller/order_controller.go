@@ -104,6 +104,10 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if order == nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(order)
