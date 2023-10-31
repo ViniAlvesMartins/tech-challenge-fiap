@@ -25,7 +25,7 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 ### Estrutura do projeto
 
 - doc 
-- infra
+- infra: Módulo responsável pela gestão da infra e configurações externas utilizadas na aplicação. Ex: Migrations, docker, config.go
 - src
     - **Adapter**: Módulo responsável por realizar a recepção e armazenamento de dados, e a integração com sistemas ou serviços de terceiros
         - **Inbound**
@@ -372,27 +372,27 @@ StatusCode: 200
 Response: {
 	"MessageError": "",
 	"Data": {
-		"id": 37,
+		"id": 10,
 		"client_id": null,
 		"status_order": "AWAITING_PAYMENT",
 		"amount": 6,
-		"created_at": "2023-10-31T04:09:21.493587439Z",
+		"created_at": "2023-10-31T22:50:08.853088Z",
 		"products": [
 			{
 				"id": 2,
-				"name_product": "",
-				"description": "",
-				"price": 0,
-				"category_id": 0,
-				"active": false
+				"name_product": "suco de laranja",
+				"description": "gelado",
+				"price": 2.5,
+				"category_id": 2,
+				"active": true
 			},
 			{
 				"id": 5,
-				"name_product": "",
-				"description": "",
-				"price": 0,
-				"category_id": 0,
-				"active": false
+				"name_product": "suco de limão",
+				"description": "gelado",
+				"price": 3.5,
+				"category_id": 2,
+				"active": true
 			}
 		]
 	}
