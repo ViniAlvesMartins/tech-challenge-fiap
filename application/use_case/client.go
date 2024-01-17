@@ -1,24 +1,24 @@
-package service
+package use_case
 
 import (
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 )
 
-type ClientService struct {
-	clientRepository port.ClientRepository
+type ClientUseCase struct {
+	clientRepository contract.ClientRepository
 	logger           *slog.Logger
 }
 
-func NewClientService(clientRepository port.ClientRepository, logger *slog.Logger) *ClientService {
-	return &ClientService{
+func NewClientUseCase(clientRepository contract.ClientRepository, logger *slog.Logger) *ClientUseCase {
+	return &ClientUseCase{
 		clientRepository: clientRepository,
 		logger:           logger,
 	}
 }
 
-func (c *ClientService) Create(client entity.Client) (*entity.Client, error) {
+func (c *ClientUseCase) Create(client entity.Client) (*entity.Client, error) {
 
 	clientNew, err := c.clientRepository.Create(client)
 
@@ -29,7 +29,7 @@ func (c *ClientService) Create(client entity.Client) (*entity.Client, error) {
 	return &clientNew, nil
 }
 
-func (c *ClientService) GetClientByCpf(cpf int) (*entity.Client, error) {
+func (c *ClientUseCase) GetClientByCpf(cpf int) (*entity.Client, error) {
 	client, err := c.clientRepository.GetClientByCpf(cpf)
 
 	if err != nil {
@@ -40,7 +40,7 @@ func (c *ClientService) GetClientByCpf(cpf int) (*entity.Client, error) {
 
 }
 
-func (c *ClientService) GetAlreadyExists(cpf int, email string) (*entity.Client, error) {
+func (c *ClientUseCase) GetAlreadyExists(cpf int, email string) (*entity.Client, error) {
 	client, err := c.clientRepository.GetAlreadyExists(cpf, email)
 
 	if err != nil {

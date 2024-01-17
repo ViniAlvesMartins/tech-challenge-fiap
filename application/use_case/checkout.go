@@ -1,21 +1,21 @@
-package service
+package use_case
 
 import (
 	"errors"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 )
 
-type CheckoutService struct {
+type CheckoutUseCase struct {
 	logger                 *slog.Logger
-	paymentService         port.PaymentService
-	orderService           port.OrderService
-	externalPaymentService port.ExternalPaymentService
+	paymentService         contract.PaymentUseCase
+	orderService           contract.OrderUseCase
+	externalPaymentService contract.ExternalPaymentService
 }
 
-func NewCheckoutService(l *slog.Logger, p port.PaymentService, o port.OrderService, e port.ExternalPaymentService) *CheckoutService {
-	return &CheckoutService{
+func NewCheckoutUseCase(l *slog.Logger, p contract.PaymentUseCase, o contract.OrderUseCase, e contract.ExternalPaymentService) *CheckoutUseCase {
+	return &CheckoutUseCase{
 		logger:                 l,
 		paymentService:         p,
 		orderService:           o,
@@ -23,7 +23,7 @@ func NewCheckoutService(l *slog.Logger, p port.PaymentService, o port.OrderServi
 	}
 }
 
-func (c *CheckoutService) PayWithQRCode(id int) error {
+func (c *CheckoutUseCase) PayWithQRCode(id int) error {
 	var err error
 
 	order, err := c.orderService.GetById(id)

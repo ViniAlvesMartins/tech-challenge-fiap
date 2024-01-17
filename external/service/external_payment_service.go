@@ -1,16 +1,16 @@
 package service
 
 import (
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
 type ExternalPayment struct {
-	repository port.ExternalPaymentRepository
+	repository contract.ExternalPaymentRepository
 }
 
-func NewExternalPayment(r port.ExternalPaymentRepository) *ExternalPayment {
+func NewExternalPayment(r contract.ExternalPaymentRepository) *ExternalPayment {
 	return &ExternalPayment{
 		repository: r,
 	}

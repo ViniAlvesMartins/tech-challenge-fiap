@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer"
+	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer/input"
+
 	"log/slog"
 	"net/http"
 	"strconv"
 
-	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer/input"
 	"github.com/gorilla/mux"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"

@@ -1,26 +1,26 @@
-package service
+package use_case
 
 import (
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
 	"log/slog"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
-type OrderService struct {
-	orderRepository port.OrderRepository
+type OrderUseCase struct {
+	orderRepository contract.OrderRepository
 	logger          *slog.Logger
 }
 
-func NewOrderService(orderRepository port.OrderRepository, logger *slog.Logger) *OrderService {
-	return &OrderService{
+func NewOrderUseCase(orderRepository contract.OrderRepository, logger *slog.Logger) *OrderUseCase {
+	return &OrderUseCase{
 		orderRepository: orderRepository,
 		logger:          logger,
 	}
 }
 
-func (o *OrderService) Create(order entity.Order, products []*entity.Product) (*entity.Order, error) {
+func (o *OrderUseCase) Create(order entity.Order, products []*entity.Product) (*entity.Order, error) {
 	order.StatusOrder = enum.AWAITING_PAYMENT
 
 	var amount float32
@@ -41,7 +41,7 @@ func (o *OrderService) Create(order entity.Order, products []*entity.Product) (*
 	return &orderNew, nil
 }
 
-func (o *OrderService) GetAll() (*[]entity.Order, error) {
+func (o *OrderUseCase) GetAll() (*[]entity.Order, error) {
 	orders, err := o.orderRepository.GetAll()
 
 	if err != nil {
@@ -51,7 +51,7 @@ func (o *OrderService) GetAll() (*[]entity.Order, error) {
 	return &orders, nil
 }
 
-func (o *OrderService) GetById(id int) (*entity.Order, error) {
+func (o *OrderUseCase) GetById(id int) (*entity.Order, error) {
 	order, err := o.orderRepository.GetById(id)
 
 	if err != nil {
@@ -61,6 +61,6 @@ func (o *OrderService) GetById(id int) (*entity.Order, error) {
 	return order, nil
 }
 
-func (o *OrderService) SetStatusToReceived(id int, status enum.StatusOrder) error {
+func (o *OrderUseCase) SetStatusToReceived(id int, status enum.StatusOrder) error {
 	return o.orderRepository.SetStatusToReceived(id, status)
 }
