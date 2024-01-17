@@ -3,22 +3,21 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/entities/entity"
 	"github.com/gorilla/mux"
 	"log/slog"
 	"net/http"
 	"strconv"
-
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
 type OrderController struct {
-	orderService   port.OrderService
-	productService port.ProductService
+	orderService   contract.OrderUseCase
+	productService contract.ProductUseCase
 	logger         *slog.Logger
 }
 
-func NewOrderController(orderService port.OrderService, productService port.ProductService, logger *slog.Logger) *OrderController {
+func NewOrderController(orderService contract.OrderUseCase, productService contract.ProductUseCase, logger *slog.Logger) *OrderController {
 	return &OrderController{
 		orderService:   orderService,
 		productService: productService,

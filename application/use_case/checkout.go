@@ -3,7 +3,8 @@ package use_case
 import (
 	"errors"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/entities/enum"
+
 	"log/slog"
 )
 

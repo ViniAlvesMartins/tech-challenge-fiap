@@ -2,31 +2,31 @@ package http_server
 
 import (
 	"context"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/controller/controller"
 	"log/slog"
 	"net/http"
 
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"github.com/gorilla/mux"
 )
 
 type App struct {
 	logger          *slog.Logger
-	clientService   port.ClientService
-	productService  port.ProductService
-	orderService    port.OrderService
-	paymentService  port.PaymentService
-	categoryService port.CategoryService
-	checkoutService port.CheckoutService
+	clientService   contract.ClientUseCase
+	productService  contract.ProductUseCase
+	orderService    contract.OrderUseCase
+	paymentService  contract.PaymentUseCase
+	categoryService contract.CategoryUseCase
+	checkoutService contract.CheckoutUseCase
 }
 
 func NewApp(logger *slog.Logger,
-	clientService port.ClientService,
-	productService port.ProductService,
-	orderService port.OrderService,
-	paymentService port.PaymentService,
-	categoryService port.CategoryService,
-	checkoutService port.CheckoutService,
+	clientService contract.ClientUseCase,
+	productService contract.ProductUseCase,
+	orderService contract.OrderUseCase,
+	paymentService contract.PaymentUseCase,
+	categoryService contract.CategoryUseCase,
+	checkoutService contract.CheckoutUseCase,
 ) *App {
 	return &App{
 		logger:          logger,

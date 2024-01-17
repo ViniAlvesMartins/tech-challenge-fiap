@@ -2,21 +2,21 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer"
 	"log/slog"
 	"net/http"
 	"strconv"
 
 	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer/input"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
 type ClientController struct {
-	clientService port.ClientService
+	clientService contract.ClientUseCase
 	logger        *slog.Logger
 }
 
-func NewClientController(clientService port.ClientService, logger *slog.Logger) *ClientController {
+func NewClientController(clientService contract.ClientUseCase, logger *slog.Logger) *ClientController {
 	return &ClientController{
 		clientService: clientService,
 		logger:        logger,

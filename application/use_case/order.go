@@ -2,10 +2,9 @@ package use_case
 
 import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/entities/entity"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/entities/enum"
 	"log/slog"
-
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
 )
 
 type OrderUseCase struct {

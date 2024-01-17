@@ -1,8 +1,6 @@
 package input
 
-import (
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
-)
+import "github.com/ViniAlvesMartins/tech-challenge-fiap/entities/entity"
 
 type ClientDto struct {
 	ID    int    `json:"id"`
