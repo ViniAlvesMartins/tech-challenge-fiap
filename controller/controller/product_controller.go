@@ -3,11 +3,12 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer"
 	"log/slog"
 	"net/http"
 	"strconv"
 
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
+	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer/input"
 	"github.com/gorilla/mux"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
@@ -37,7 +38,7 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		p.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
-	errValidate := dto.Validate(productDto)
+	errValidate := serializer.Validate(productDto)
 
 	fmt.Println(errValidate)
 
@@ -126,7 +127,7 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	errValidate := dto.Validate(productDto)
+	errValidate := serializer.Validate(productDto)
 
 	fmt.Println(errValidate)
 

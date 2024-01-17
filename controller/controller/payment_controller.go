@@ -2,7 +2,8 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer"
+	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer/input"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"log/slog"
 	"net/http"
@@ -30,7 +31,7 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		p.logger.Error("Unable to decode the request body.  %v", slog.Any("error", err))
 	}
 
-	errValidate := dto.Validate(paymentDTO)
+	errValidate := serializer.Validate(paymentDTO)
 
 	if len(errValidate.Errors) > 0 {
 		p.logger.Error("validate error", slog.Any("error", errValidate))
