@@ -1,4 +1,4 @@
-package dto
+package input
 
 import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"

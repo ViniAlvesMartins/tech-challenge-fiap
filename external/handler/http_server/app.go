@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/controller"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/controller/controller"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 	"github.com/gorilla/mux"
 )

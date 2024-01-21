@@ -2,11 +2,12 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer"
 	"log/slog"
 	"net/http"
 	"strconv"
 
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/adapter/inbound/dto"
+	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer/input"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
@@ -32,7 +33,7 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		c.logger.Error("Unable to decode the request body.  %v", err)
 	}
 
-	errValidate := dto.Validate(clientDto)
+	errValidate := serializer.Validate(clientDto)
 
 	if len(errValidate.Errors) > 0 {
 		c.logger.Error("validate error", slog.Any("error", errValidate))
