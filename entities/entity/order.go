@@ -1,9 +1,8 @@
 package entity
 
 import (
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/entities/enum"
 	"time"
-
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/enum"
 )
 
 type Order struct {

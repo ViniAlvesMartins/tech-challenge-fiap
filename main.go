@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/use_case"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/external/service"
+
 	"log/slog"
 	"os"
 
@@ -9,7 +12,7 @@ import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/external/handler/http_server"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/external/repository"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/service"
+
 	"gorm.io/gorm"
 )
 
@@ -35,24 +38,24 @@ func main() {
 	postgres.MigrationExecute(&cfg, logger)
 
 	clientRepository := repository.NewClientRepository(db, logger)
-	clientService := service.NewClientService(clientRepository, logger)
+	clientService := use_case.NewClientUseCase(clientRepository, logger)
 
 	productRepository := repository.NewProductRepository(db, logger)
-	productService := service.NewProductService(productRepository, logger)
+	productService := use_case.NewProductUseCase(productRepository, logger)
 
 	orderRepository := repository.NewOrderRepository(db, logger)
-	orderService := service.NewOrderService(orderRepository, logger)
+	orderService := use_case.NewOrderUseCase(orderRepository, logger)
 
 	paymentRepository := repository.NewPaymentRepository(db, logger)
-	paymentService := service.NewPaymentService(paymentRepository)
+	paymentService := use_case.NewPaymentUseCase(paymentRepository)
 
 	externalPaymentRepository := repository.NewExternalPaymentRepository()
 	externalPaymentService := service.NewExternalPayment(externalPaymentRepository)
 
-	checkoutService := service.NewCheckoutService(logger, paymentService, orderService, externalPaymentService)
+	checkoutService := use_case.NewCheckoutUseCase(logger, paymentService, orderService, externalPaymentService)
 
 	categoryRepository := repository.NewCategoryRepository(db, logger)
-	categoryService := service.NewCategoryService(categoryRepository, logger)
+	categoryService := use_case.NewCategoryUseCase(categoryRepository, logger)
 
 	app := http_server.NewApp(logger, clientService, productService, orderService, paymentService, categoryService, checkoutService)
 

@@ -2,19 +2,20 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer"
 	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer/input"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
+
 	"log/slog"
 	"net/http"
 )
 
 type PaymentController struct {
-	checkoutService port.CheckoutService
+	checkoutService contract.CheckoutUseCase
 	logger          *slog.Logger
 }
 
-func NewPaymentController(c port.CheckoutService, logger *slog.Logger) *PaymentController {
+func NewPaymentController(c contract.CheckoutUseCase, logger *slog.Logger) *PaymentController {
 	return &PaymentController{
 		checkoutService: c,
 		logger:          logger,

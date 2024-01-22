@@ -1,25 +1,24 @@
-package service
+package use_case
 
 import (
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/entities/entity"
 	"log/slog"
-
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
-type ProductService struct {
-	productRepository port.ProductRepository
+type ProductUseCase struct {
+	productRepository contract.ProductRepository
 	logger            *slog.Logger
 }
 
-func NewProductService(productRepository port.ProductRepository, logger *slog.Logger) *ProductService {
-	return &ProductService{
+func NewProductUseCase(productRepository contract.ProductRepository, logger *slog.Logger) *ProductUseCase {
+	return &ProductUseCase{
 		productRepository: productRepository,
 		logger:            logger,
 	}
 }
 
-func (p *ProductService) Create(product entity.Product) (*entity.Product, error) {
+func (p *ProductUseCase) Create(product entity.Product) (*entity.Product, error) {
 
 	product.Active = true
 	productNew, err := p.productRepository.Create(product)
@@ -31,7 +30,7 @@ func (p *ProductService) Create(product entity.Product) (*entity.Product, error)
 	return &productNew, nil
 }
 
-func (p *ProductService) Update(product entity.Product) (entity.Product, error) {
+func (p *ProductUseCase) Update(product entity.Product) (entity.Product, error) {
 	product.Active = true
 	productUpdated, err := p.productRepository.Update(product)
 
@@ -42,7 +41,7 @@ func (p *ProductService) Update(product entity.Product) (entity.Product, error) 
 	return productUpdated, nil
 }
 
-func (p *ProductService) Delete(id int) error {
+func (p *ProductUseCase) Delete(id int) error {
 	err := p.productRepository.Delete(id)
 
 	if err != nil {
@@ -52,7 +51,7 @@ func (p *ProductService) Delete(id int) error {
 	return nil
 }
 
-func (p *ProductService) GetProductByCategory(categoryId int) ([]entity.Product, error) {
+func (p *ProductUseCase) GetProductByCategory(categoryId int) ([]entity.Product, error) {
 	prod, err := p.productRepository.GetProductByCategory(categoryId)
 
 	if err != nil {
@@ -62,7 +61,7 @@ func (p *ProductService) GetProductByCategory(categoryId int) ([]entity.Product,
 	return prod, nil
 }
 
-func (p *ProductService) GetById(id int) (*entity.Product, error) {
+func (p *ProductUseCase) GetById(id int) (*entity.Product, error) {
 	prod, err := p.productRepository.GetById(id)
 
 	if err != nil {

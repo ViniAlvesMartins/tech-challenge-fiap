@@ -3,10 +3,9 @@ package repository
 import (
 	"errors"
 	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/entities/entity"
 
 	"log/slog"
-
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/domain/entity"
 
 	"gorm.io/gorm"
 )

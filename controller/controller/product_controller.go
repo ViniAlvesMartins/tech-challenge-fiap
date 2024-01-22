@@ -3,24 +3,24 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer"
+	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer/input"
+
 	"log/slog"
 	"net/http"
 	"strconv"
 
-	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/controller/serializer/input"
 	"github.com/gorilla/mux"
-
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/core/port"
 )
 
 type ProductController struct {
-	productService  port.ProductService
-	categoryService port.CategoryService
+	productService  contract.ProductUseCase
+	categoryService contract.CategoryUseCase
 	logger          *slog.Logger
 }
 
-func NewProductController(productService port.ProductService, categoryService port.CategoryService, logger *slog.Logger) *ProductController {
+func NewProductController(productService contract.ProductUseCase, categoryService contract.CategoryUseCase, logger *slog.Logger) *ProductController {
 	return &ProductController{
 		productService:  productService,
 		logger:          logger,
