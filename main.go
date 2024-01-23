@@ -2,16 +2,17 @@ package main
 
 import (
 	"context"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/application/use_case"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/external/service"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/use_case"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/external/service"
 
 	"log/slog"
 	"os"
 
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/external/database/postgres"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/external/handler/http_server"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/external/repository"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/external/database/postgres"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/external/handler/http_server"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/external/repository"
 
 	"gorm.io/gorm"
 )
@@ -38,26 +39,26 @@ func main() {
 	postgres.MigrationExecute(&cfg, logger)
 
 	clientRepository := repository.NewClientRepository(db, logger)
-	clientService := use_case.NewClientUseCase(clientRepository, logger)
+	clientUseCase := use_case.NewClientUseCase(clientRepository, logger)
 
 	productRepository := repository.NewProductRepository(db, logger)
-	productService := use_case.NewProductUseCase(productRepository, logger)
+	productUseCase := use_case.NewProductUseCase(productRepository, logger)
 
 	orderRepository := repository.NewOrderRepository(db, logger)
-	orderService := use_case.NewOrderUseCase(orderRepository, logger)
+	orderUseCase := use_case.NewOrderUseCase(orderRepository, logger)
 
 	paymentRepository := repository.NewPaymentRepository(db, logger)
-	paymentService := use_case.NewPaymentUseCase(paymentRepository)
+	paymentUseCase := use_case.NewPaymentUseCase(paymentRepository)
 
 	externalPaymentRepository := repository.NewExternalPaymentRepository()
-	externalPaymentService := service.NewExternalPayment(externalPaymentRepository)
+	externalPaymentUseCase := service.NewExternalPayment(externalPaymentRepository)
 
-	checkoutService := use_case.NewCheckoutUseCase(logger, paymentService, orderService, externalPaymentService)
+	checkoutUseCase := use_case.NewCheckoutUseCase(logger, paymentUseCase, orderUseCase, externalPaymentUseCase)
 
 	categoryRepository := repository.NewCategoryRepository(db, logger)
-	categoryService := use_case.NewCategoryUseCase(categoryRepository, logger)
+	categoryUseCase := use_case.NewCategoryUseCase(categoryRepository, logger)
 
-	app := http_server.NewApp(logger, clientService, productService, orderService, paymentService, categoryService, checkoutService)
+	app := http_server.NewApp(logger, clientUseCase, productUseCase, orderUseCase, paymentUseCase, categoryUseCase, checkoutUseCase)
 
 	err = app.Run(ctx)
 
