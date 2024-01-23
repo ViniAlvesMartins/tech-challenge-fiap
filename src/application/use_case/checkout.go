@@ -46,7 +46,7 @@ func (c *CheckoutUseCase) PayWithQRCode(id int) error {
 		return err
 	}
 
-	if err = c.orderService.SetStatusToReceived(order.ID, enum.RECEIVED); err != nil {
+	if err = c.orderService.UpdateStatusById(order.ID, enum.RECEIVED); err != nil {
 		return err
 	}
 

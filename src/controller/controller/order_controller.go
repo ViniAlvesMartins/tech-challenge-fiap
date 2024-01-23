@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/enum"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -13,15 +14,15 @@ import (
 )
 
 type OrderController struct {
-	orderService   contract.OrderUseCase
-	productService contract.ProductUseCase
+	orderUseCase   contract.OrderUseCase
+	productUseCase contract.ProductUseCase
 	logger         *slog.Logger
 }
 
-func NewOrderController(orderService contract.OrderUseCase, productService contract.ProductUseCase, logger *slog.Logger) *OrderController {
+func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contract.ProductUseCase, logger *slog.Logger) *OrderController {
 	return &OrderController{
-		orderService:   orderService,
-		productService: productService,
+		orderUseCase:   orderUseCase,
+		productUseCase: productUseCase,
 		logger:         logger,
 	}
 }
@@ -50,7 +51,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 	var products []*entity.Product
 	for _, product := range orderDomain.Products {
-		prod, errProd := o.productService.GetById(product.ID)
+		prod, errProd := o.productUseCase.GetById(product.ID)
 
 		if errProd != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -70,7 +71,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		products = append(products, prod)
 	}
 
-	order, err := o.orderService.Create(orderDomain, products)
+	order, err := o.orderUseCase.Create(orderDomain, products)
 
 	if err != nil {
 		fmt.Println("ersa")
@@ -94,7 +95,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
 	var orders *[]entity.Order
 
-	orders, err := o.orderService.GetAll()
+	orders, err := o.orderUseCase.GetAll()
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -110,6 +111,7 @@ func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
 }
 
 func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
+	var response Response
 	orderId := mux.Vars(r)["orderId"]
 	orderIdInt, err := strconv.Atoi(orderId)
 
@@ -117,7 +119,7 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error to convert id order to int.  %v", http.StatusInternalServerError)
 	}
 
-	order, err := o.orderService.GetById(orderIdInt)
+	order, err := o.orderUseCase.GetById(orderIdInt)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -125,13 +127,62 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if order == nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		response = Response{
+			MessageError: "Order Not found",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	response = Response{
+		MessageError: "",
+		Data:         order,
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(order)
+	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
 		return
 	}
+}
+
+func (o *OrderController) UpdateOrderStatusById(w http.ResponseWriter, r *http.Request) {
+	var response Response
+	orderId := mux.Vars(r)["orderId"]
+	orderIdInt, err := strconv.Atoi(orderId)
+	status := r.URL.Query().Get("status")
+
+	if err != nil {
+		http.Error(w, "Error to convert id order to int.  %v", http.StatusInternalServerError)
+	}
+
+	order, errOrder := o.orderUseCase.GetById(orderIdInt)
+
+	if errOrder != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if order == nil {
+		response = Response{
+			MessageError: "Not found",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	err = o.orderUseCase.UpdateStatusById(orderIdInt, enum.StatusOrder(status))
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
 }

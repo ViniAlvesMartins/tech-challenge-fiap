@@ -66,7 +66,7 @@ func (p *PaymentUseCase) Checkout(id int) error {
 		return err
 	}
 
-	if err = p.orderUseCase.SetStatusToReceived(order.ID, enum.RECEIVED); err != nil {
+	if err = p.orderUseCase.UpdateStatusById(order.ID, enum.RECEIVED); err != nil {
 		return err
 	}
 
