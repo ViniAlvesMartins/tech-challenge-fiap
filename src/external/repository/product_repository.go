@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/entity"
 
@@ -35,7 +34,6 @@ func (p *ProductRepository) Create(product entity.Product) (entity.Product, erro
 }
 
 func (p *ProductRepository) Update(product entity.Product) (entity.Product, error) {
-	fmt.Println(product)
 	result := p.db.Save(&product)
 
 	if result.Error != nil {

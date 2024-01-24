@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -32,6 +33,7 @@ func NewPaymentController(p contract.PaymentUseCase, logger *slog.Logger, orderU
 func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var paymentDTO dto.PaymentDto
+	var response Response
 
 	orderId := mux.Vars(r)["orderId"]
 
@@ -70,9 +72,16 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	response := Response{
-		MessageError: "",
-		Data:         qrCode,
+	if qrCode == nil {
+		response = Response{
+			MessageError: "O pagamento para o pedido já foi efetuado",
+			Data:         "",
+		}
+	} else {
+		response = Response{
+			MessageError: "",
+			Data:         qrCode,
+		}
 	}
 
 	w.Header().Add("Content-Type", "application/json")
@@ -96,6 +105,8 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 
 	paymentStatus, err := p.paymentUseCase.GetLastPaymentStatus(orderIdInt)
 
+	fmt.Println(paymentStatus)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -115,6 +126,31 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 		return
 	}
 
+}
+
+func (p *PaymentController) Notification(w http.ResponseWriter, r *http.Request) {
+	orderId := mux.Vars(r)["orderId"]
+
+	orderIdInt, err := strconv.Atoi(orderId)
+
+	order, err := p.orderUseCase.GetById(orderIdInt)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if order == nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+	}
+
+	if err = p.paymentUseCase.PaymentNotification(order); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 }
 
 type GetLastPaymentStatus struct {

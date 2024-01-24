@@ -68,7 +68,6 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 		products = append(products, prod)
 	}
-	o.logger.Info("ersa", orderDomain)
 
 	order, err := o.orderUseCase.Create(orderDomain, products)
 
