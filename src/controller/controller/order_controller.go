@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/enum"
 	"log/slog"
 	"net/http"
@@ -16,13 +15,15 @@ import (
 type OrderController struct {
 	orderUseCase   contract.OrderUseCase
 	productUseCase contract.ProductUseCase
+	clientUseCase  contract.ClientUseCase
 	logger         *slog.Logger
 }
 
-func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contract.ProductUseCase, logger *slog.Logger) *OrderController {
+func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contract.ProductUseCase, clientUseCase contract.ClientUseCase, logger *slog.Logger) *OrderController {
 	return &OrderController{
 		orderUseCase:   orderUseCase,
 		productUseCase: productUseCase,
+		clientUseCase:  clientUseCase,
 		logger:         logger,
 	}
 }
@@ -71,10 +72,21 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		products = append(products, prod)
 	}
 
+	client, err := o.clientUseCase.GetClientById(orderDomain.ClientId)
+
+	if client == nil && orderDomain.ClientId != nil {
+		response = Response{
+			MessageError: "Client not exists",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
 	order, err := o.orderUseCase.Create(orderDomain, products)
 
 	if err != nil {
-		fmt.Println("ersa")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
