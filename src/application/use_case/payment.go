@@ -13,13 +13,15 @@ type PaymentUseCase struct {
 	repository             contract.PaymentRepository
 	externalPaymentService contract.ExternalPaymentService
 	logger                 *slog.Logger
+	orderUseCase           contract.OrderUseCase
 }
 
-func NewPaymentUseCase(r contract.PaymentRepository, e contract.ExternalPaymentService, logger *slog.Logger) *PaymentUseCase {
+func NewPaymentUseCase(r contract.PaymentRepository, e contract.ExternalPaymentService, logger *slog.Logger, orderUseCase contract.OrderUseCase) *PaymentUseCase {
 	return &PaymentUseCase{
 		repository:             r,
 		externalPaymentService: e,
 		logger:                 logger,
+		orderUseCase:           orderUseCase,
 	}
 }
 
@@ -78,6 +80,8 @@ func (p *PaymentUseCase) PaymentNotification(order *entity.Order) error {
 	}
 
 	p.Create(payment)
+
+	p.orderUseCase.UpdateStatusById(order.ID, enum.RECEIVED)
 
 	return nil
 }
