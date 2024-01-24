@@ -153,10 +153,22 @@ func (o *OrderController) UpdateOrderStatusById(w http.ResponseWriter, r *http.R
 	var response Response
 	orderId := mux.Vars(r)["orderId"]
 	orderIdInt, err := strconv.Atoi(orderId)
-	status := r.URL.Query().Get("status")
 
 	if err != nil {
 		http.Error(w, "Error to convert id order to int.  %v", http.StatusInternalServerError)
+	}
+
+	status := r.URL.Query().Get("status")
+	validateStatus, err := enum.ValidateStatus(status)
+
+	if validateStatus == false {
+		response = Response{
+			MessageError: err.Error(),
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
 
 	order, errOrder := o.orderUseCase.GetById(orderIdInt)
