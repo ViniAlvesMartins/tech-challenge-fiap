@@ -33,9 +33,7 @@ func (o *OrderRepository) Create(order entity.Order) (entity.Order, error) {
 
 func (o *OrderRepository) GetAll() ([]entity.Order, error) {
 	var orders []entity.Order
-
-	results := o.db.Order("orders.created_at asc").Preload("Products").Not("orders.status_order= ?", enum.FINISHED).Find(&orders)
-
+	results := o.db.Raw("select * from ze_burguer.orders where not status_order = 'FINISHED' order by case when status_order = 'READY' then 1 when status_order = 'PREPARING' then 2 when status_order = 'RECEIVED' then 3 else 4 end asc, created_at asc").Find(&orders)
 	if results.Error != nil {
 		o.logger.Error("result.Error")
 		return orders, errors.New("find orders from repository has failed")
