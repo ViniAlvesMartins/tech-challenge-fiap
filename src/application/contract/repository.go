@@ -23,7 +23,7 @@ type OrderRepository interface {
 }
 
 type PaymentRepository interface {
-	Create(payment *entity.Payment) error
+	Create(payment entity.Payment) (entity.Payment, error)
 	GetLastPaymentStatus(orderId int) (*entity.Payment, error)
 }
 

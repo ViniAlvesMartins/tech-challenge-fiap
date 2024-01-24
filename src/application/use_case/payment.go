@@ -1,8 +1,10 @@
 package use_case
 
 import (
-	"errors"
+	"log/slog"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
+	response_payment_service "github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/modules/response/payment_service"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/enum"
 )
@@ -10,65 +12,61 @@ import (
 type PaymentUseCase struct {
 	repository             contract.PaymentRepository
 	externalPaymentService contract.ExternalPaymentService
-	orderUseCase           contract.OrderUseCase
+	logger                 *slog.Logger
 }
 
-func NewPaymentUseCase(r contract.PaymentRepository) *PaymentUseCase {
+func NewPaymentUseCase(r contract.PaymentRepository, e contract.ExternalPaymentService, logger *slog.Logger) *PaymentUseCase {
 	return &PaymentUseCase{
-		repository: r,
+		repository:             r,
+		externalPaymentService: e,
+		logger:                 logger,
 	}
 }
 
 func (p *PaymentUseCase) Create(payment *entity.Payment) error {
-	return p.repository.Create(payment)
+	p.repository.Create(*payment)
+	return nil
 }
 
-func (p *PaymentUseCase) GetLastPaymentStatus(orderId int) (*enum.PaymentStatus, error) {
+func (p *PaymentUseCase) GetLastPaymentStatus(orderId int) (enum.PaymentStatus, error) {
 
 	payment, err := p.repository.GetLastPaymentStatus(orderId)
 
 	if err != nil {
-		return &payment.Status, err
+		return payment.Status, err
 	}
 
-	return &payment.Status, nil
+	p.logger.Info("teste", payment.Status)
+
+	if payment.Status == "" {
+		return enum.PENDING, nil
+	}
+
+	return payment.Status, nil
 }
 
-func (p *PaymentUseCase) PayWithQRCode(order *entity.Order) error {
+func (p *PaymentUseCase) CreateQRCode(order *entity.Order) (*response_payment_service.CreateQRCode, error) {
 	payment := &entity.Payment{
 		Order:  order,
-		Type:   enum.PIX,
-		Status: enum.CONFIRMED,
+		Type:   enum.QRCODE,
+		Status: enum.PENDING,
 		Amount: order.Amount,
 	}
 
-	return p.Create(payment)
+	p.Create(payment)
+
+	p.logger.Info("tests", payment)
+
+	qrCode, _ := p.externalPaymentService.CreateQRCode(*payment)
+
+	return &qrCode, nil
 }
 
-func (p *PaymentUseCase) Checkout(id int) error {
-	var err error
-
-	order, err := p.orderUseCase.GetById(id)
-
-	if err != nil {
-		return err
-	}
-
-	if order == nil {
-		return errors.New("order not found")
-	}
-
-	if err = p.PayWithQRCode(order); err != nil {
-		return err
-	}
-
-	if err = p.externalPaymentService.PayOrder(*order, enum.PIX); err != nil {
-		return err
-	}
-
-	if err = p.orderUseCase.SetStatusToReceived(order.ID, enum.RECEIVED); err != nil {
-		return err
-	}
-
+func (p *PaymentUseCase) PaymentNotification() error {
 	return nil
 }
+
+/*
+	if err = p.orderUseCase.SetStatusToReceived(order.ID, enum.RECEIVED); err != nil {
+		return err
+*/

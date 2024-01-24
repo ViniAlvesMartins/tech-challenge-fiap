@@ -18,7 +18,6 @@ type App struct {
 	orderUseCase    contract.OrderUseCase
 	paymentUseCase  contract.PaymentUseCase
 	categoryUseCase contract.CategoryUseCase
-	checkoutUseCase contract.CheckoutUseCase
 }
 
 func NewApp(logger *slog.Logger,
@@ -27,7 +26,6 @@ func NewApp(logger *slog.Logger,
 	orderUseCase contract.OrderUseCase,
 	paymentUseCase contract.PaymentUseCase,
 	categoryUseCase contract.CategoryUseCase,
-	checkoutUseCase contract.CheckoutUseCase,
 ) *App {
 	return &App{
 		logger:          logger,
@@ -36,7 +34,6 @@ func NewApp(logger *slog.Logger,
 		orderUseCase:    orderUseCase,
 		paymentUseCase:  paymentUseCase,
 		categoryUseCase: categoryUseCase,
-		checkoutUseCase: checkoutUseCase,
 	}
 }
 
@@ -58,8 +55,8 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/order/{orderId:[0-9]+}", orderController.GetOrderById).Methods("GET")
 	router.HandleFunc("/order", orderController.CreateOrder).Methods("POST")
 
-	paymentController := controller.NewPaymentController(e.paymentUseCase, e.logger)
-	router.HandleFunc("/payments", paymentController.CreatePayment).Methods("POST")
+	paymentController := controller.NewPaymentController(e.paymentUseCase, e.logger, e.orderUseCase)
+	router.HandleFunc("/order/{orderId:[0-9]+}/payments", paymentController.CreatePayment).Methods("POST")
 	router.HandleFunc("/order/{orderId:[0-9]+}/status-payment", paymentController.GetLastPaymentStatus).Methods("GET")
 
 	return http.ListenAndServe(":8080", router)

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -69,11 +68,11 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 		products = append(products, prod)
 	}
+	o.logger.Info("ersa", orderDomain)
 
 	order, err := o.orderService.Create(orderDomain, products)
 
 	if err != nil {
-		fmt.Println("ersa")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
