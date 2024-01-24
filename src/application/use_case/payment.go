@@ -77,7 +77,37 @@ func (p *PaymentUseCase) PaymentNotification(order *entity.Order) error {
 		Amount: order.Amount,
 	}
 
+<<<<<<< HEAD
 	p.Create(payment)
+=======
+	return p.Create(payment)
+}
+
+func (p *PaymentUseCase) Checkout(id int) error {
+	var err error
+
+	order, err := p.orderUseCase.GetById(id)
+
+	if err != nil {
+		return err
+	}
+
+	if order == nil {
+		return errors.New("order not found")
+	}
+
+	if err = p.PayWithQRCode(order); err != nil {
+		return err
+	}
+
+	if err = p.externalPaymentService.PayOrder(*order, enum.PIX); err != nil {
+		return err
+	}
+
+	if err = p.orderUseCase.UpdateStatusById(order.ID, enum.RECEIVED); err != nil {
+		return err
+	}
+>>>>>>> main
 
 	return nil
 }

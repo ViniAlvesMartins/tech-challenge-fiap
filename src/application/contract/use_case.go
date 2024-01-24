@@ -10,7 +10,7 @@ type OrderUseCase interface {
 	Create(order entity.Order, products []*entity.Product) (*entity.Order, error)
 	GetAll() (*[]entity.Order, error)
 	GetById(id int) (*entity.Order, error)
-	SetStatusToReceived(id int, status enum.StatusOrder) error
+	UpdateStatusById(id int, status enum.StatusOrder) error
 }
 
 type PaymentUseCase interface {
