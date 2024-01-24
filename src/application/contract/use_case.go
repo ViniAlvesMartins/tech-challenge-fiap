@@ -1,6 +1,7 @@
 package contract
 
 import (
+	response_payment_service "github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/modules/response/payment_service"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/enum"
 )
@@ -12,15 +13,11 @@ type OrderUseCase interface {
 	UpdateStatusById(id int, status enum.StatusOrder) error
 }
 
-type CheckoutUseCase interface {
-	PayWithQRCode(id int) error
-}
-
 type PaymentUseCase interface {
 	Create(payment *entity.Payment) error
-	Checkout(id int) error
-	PayWithQRCode(order *entity.Order) error
-	GetLastPaymentStatus(orderId int) (*enum.PaymentStatus, error)
+	CreateQRCode(order *entity.Order) (*response_payment_service.CreateQRCode, error)
+	GetLastPaymentStatus(orderId int) (enum.PaymentStatus, error)
+	PaymentNotification(order *entity.Order) error
 }
 
 type CategoryUseCase interface {

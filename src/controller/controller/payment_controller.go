@@ -2,12 +2,15 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
+	"fmt"
 	"strconv"
+
+	"github.com/gorilla/mux"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer"
 	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/input"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/enum"
 
 	"log/slog"
 	"net/http"
@@ -16,18 +19,25 @@ import (
 type PaymentController struct {
 	paymentUseCase contract.PaymentUseCase
 	logger         *slog.Logger
+	orderUseCase   contract.OrderUseCase
 }
 
-func NewPaymentController(p contract.PaymentUseCase, logger *slog.Logger) *PaymentController {
+func NewPaymentController(p contract.PaymentUseCase, logger *slog.Logger, orderUseCase contract.OrderUseCase) *PaymentController {
 	return &PaymentController{
 		paymentUseCase: p,
 		logger:         logger,
+		orderUseCase:   orderUseCase,
 	}
 }
 
 func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var paymentDTO dto.PaymentDto
+	var response Response
+
+	orderId := mux.Vars(r)["orderId"]
+
+	orderIdInt, err := strconv.Atoi(orderId)
 
 	err = json.NewDecoder(r.Body).Decode(&paymentDTO)
 
@@ -44,18 +54,49 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err = p.paymentUseCase.Checkout(paymentDTO.Order); err != nil {
+	order, err := p.orderUseCase.GetById(orderIdInt)
+
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	if order == nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+	}
+
+	qrCode, error := p.paymentUseCase.CreateQRCode(order)
+
+	if error != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if qrCode == nil {
+		response = Response{
+			MessageError: "O pagamento para o pedido já foi efetuado",
+			Data:         "",
+		}
+	} else {
+		response = Response{
+			MessageError: "",
+			Data:         qrCode,
+		}
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(response)
+
+	if err != nil {
+		return
+	}
 }
 
 func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.Request) {
 	var response Response
 	orderId := mux.Vars(r)["orderId"]
+
 	orderIdInt, err := strconv.Atoi(orderId)
 
 	if err != nil {
@@ -64,13 +105,18 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 
 	paymentStatus, err := p.paymentUseCase.GetLastPaymentStatus(orderIdInt)
 
+	fmt.Println(paymentStatus)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	response = Response{
 		MessageError: "",
-		Data:         paymentStatus,
+		Data: GetLastPaymentStatus{
+			OrderId:       orderIdInt,
+			PaymentStatus: paymentStatus,
+		},
 	}
 
 	w.Header().Add("Content-Type", "application/json")
@@ -80,4 +126,34 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 		return
 	}
 
+}
+
+func (p *PaymentController) Notification(w http.ResponseWriter, r *http.Request) {
+	orderId := mux.Vars(r)["orderId"]
+
+	orderIdInt, err := strconv.Atoi(orderId)
+
+	order, err := p.orderUseCase.GetById(orderIdInt)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if order == nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+	}
+
+	if err = p.paymentUseCase.PaymentNotification(order); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+}
+
+type GetLastPaymentStatus struct {
+	OrderId       int
+	PaymentStatus enum.PaymentStatus
 }

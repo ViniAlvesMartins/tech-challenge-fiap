@@ -1,4 +1,4 @@
-CREATE TYPE ze_burguer.payment_type AS ENUM ('CREDIT', 'DEBIT', 'CASH', 'PIX');
+CREATE TYPE ze_burguer.payment_type AS ENUM ('CREDIT', 'DEBIT', 'CASH', 'PIX', 'QRCODE');
 
 CREATE TYPE ze_burguer.payment_status AS ENUM ('PENDING', 'CONFIRMED', 'CANCELED');
 

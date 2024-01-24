@@ -2,13 +2,15 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/enum"
 	"log/slog"
 	"net/http"
 	"strconv"
 
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/enum"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/entity"
+
 	"github.com/gorilla/mux"
 )
 
