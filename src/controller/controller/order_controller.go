@@ -12,15 +12,15 @@ import (
 )
 
 type OrderController struct {
-	orderService   contract.OrderUseCase
-	productService contract.ProductUseCase
+	orderUseCase   contract.OrderUseCase
+	productUseCase contract.ProductUseCase
 	logger         *slog.Logger
 }
 
-func NewOrderController(orderService contract.OrderUseCase, productService contract.ProductUseCase, logger *slog.Logger) *OrderController {
+func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contract.ProductUseCase, logger *slog.Logger) *OrderController {
 	return &OrderController{
-		orderService:   orderService,
-		productService: productService,
+		orderUseCase:   orderUseCase,
+		productUseCase: productUseCase,
 		logger:         logger,
 	}
 }
@@ -49,7 +49,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 	var products []*entity.Product
 	for _, product := range orderDomain.Products {
-		prod, errProd := o.productService.GetById(product.ID)
+		prod, errProd := o.productUseCase.GetById(product.ID)
 
 		if errProd != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -70,7 +70,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 	o.logger.Info("ersa", orderDomain)
 
-	order, err := o.orderService.Create(orderDomain, products)
+	order, err := o.orderUseCase.Create(orderDomain, products)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -93,7 +93,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
 	var orders *[]entity.Order
 
-	orders, err := o.orderService.GetAll()
+	orders, err := o.orderUseCase.GetAll()
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -116,7 +116,7 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error to convert id order to int.  %v", http.StatusInternalServerError)
 	}
 
-	order, err := o.orderService.GetById(orderIdInt)
+	order, err := o.orderUseCase.GetById(orderIdInt)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
