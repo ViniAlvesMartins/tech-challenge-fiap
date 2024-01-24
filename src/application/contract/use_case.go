@@ -29,6 +29,7 @@ type CategoryUseCase interface {
 
 type ClientUseCase interface {
 	GetClientByCpf(cpf int) (*entity.Client, error)
+	GetClientById(id *int) (*entity.Client, error)
 	Create(client entity.Client) (*entity.Client, error)
 	GetAlreadyExists(cpf int, email string) (*entity.Client, error)
 }

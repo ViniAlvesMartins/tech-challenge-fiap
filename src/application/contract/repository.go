@@ -11,6 +11,7 @@ type CategoryRepository interface {
 
 type ClientRepository interface {
 	Create(client entity.Client) (entity.Client, error)
+	GetClientById(id *int) (*entity.Client, error)
 	GetClientByCpf(cpf int) (*entity.Client, error)
 	GetAlreadyExists(cpf int, email string) (*entity.Client, error)
 }
