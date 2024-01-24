@@ -50,7 +50,7 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/product/{productId:[0-9]+}", productController.UpdateProduct).Methods("PUT")
 	router.HandleFunc("/product/{productId:[0-9]+}", productController.DeleteProduct).Methods("DELETE")
 
-	orderController := controller.NewOrderController(e.orderUseCase, e.productUseCase, e.logger)
+	orderController := controller.NewOrderController(e.orderUseCase, e.productUseCase, e.clientUseCase, e.logger)
 	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")
 	router.HandleFunc("/order/{orderId:[0-9]+}", orderController.GetOrderById).Methods("GET")
 	router.HandleFunc("/order", orderController.CreateOrder).Methods("POST")
