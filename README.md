@@ -106,6 +106,8 @@ Deployments
  - ze-burguer: HPA (2-5 Pods) - CPU Average Usage metrics
  - postgres: 1 Pod
 
+![K8S](./doc/infra/kubernetes.png)
+
 ## Documentação da API
 
 [Collection_Insomnia](./doc/apis/insomnia.json)
