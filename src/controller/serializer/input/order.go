@@ -5,7 +5,7 @@ import (
 )
 
 type OrderDto struct {
-	ClientId int `json:"client_id"`
+	ClientId *int `json:"client_id"`
 	Products []struct {
 		ID int `json:"id"`
 	} `json:"products"`
@@ -19,7 +19,7 @@ func (o OrderDto) ConvertToEntity() entity.Order {
 	}
 
 	return entity.Order{
-		ClientId: &o.ClientId,
+		ClientId: o.ClientId,
 		Products: products,
 	}
 }

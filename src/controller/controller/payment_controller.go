@@ -35,6 +35,7 @@ func NewPaymentController(p contract.PaymentUseCase, logger *slog.Logger, orderU
 
 func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request) {
 	var paymentDTO dto.PaymentDto
+	var response Response
 
 	orderIdParam := mux.Vars(r)["orderId"]
 	orderId, err := strconv.Atoi(orderIdParam)
@@ -109,15 +110,17 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 			})
 
 		return
+	}
+
 	if qrCode == nil {
 		response = Response{
-			MessageError: "O pagamento para o pedido já foi efetuado",
-			Data:         "",
+			Error: "O pagamento para o pedido já foi efetuado",
+			Data:  "",
 		}
 	} else {
 		response = Response{
-			MessageError: "",
-			Data:         qrCode,
+			Error: "",
+			Data:  qrCode,
 		}
 	}
 
@@ -126,7 +129,7 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(
 		Response{
 			Error: "",
-			Data:  qrCode,
+			Data:  response,
 		})
 }
 
@@ -160,7 +163,7 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(
+	json.NewEncoder(w).Encode(
 		Response{
 			Error: "",
 			Data: GetLastPaymentStatus{
@@ -168,39 +171,59 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 				PaymentStatus: paymentStatus,
 			},
 		})
-	err = json.NewEncoder(w).Encode(response)
-	if err != nil {
-		return
-	}
-
 }
 
 func (p *PaymentController) Notification(w http.ResponseWriter, r *http.Request) {
-	orderId := mux.Vars(r)["orderId"]
+	orderIdParam := mux.Vars(r)["orderId"]
 
-	orderIdInt, err := strconv.Atoi(orderId)
-
-	order, err := p.orderUseCase.GetById(orderIdInt)
-
+	orderId, err := strconv.Atoi(orderIdParam)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		p.logger.Error("error to convert id order to int", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Order id must be an integer",
+				Data:  nil,
+			})
+		return
+	}
+
+	order, err := p.orderUseCase.GetById(orderId)
+	if err != nil {
+		p.logger.Error("error getting order by id", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Error getting order by id",
+				Data:  nil,
+			})
 		return
 	}
 
 	if order == nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Order not found",
+				Data:  nil,
+			})
+		return
 	}
 
 	if err = p.paymentUseCase.PaymentNotification(order); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		p.logger.Error("error processing payment notification", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Error processing payment notification",
+				Data:  nil,
+			})
 		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-}
-
-type GetLastPaymentStatus struct {
-	OrderId       int
-	PaymentStatus enum.PaymentStatus
 }

@@ -1,6 +1,8 @@
 package enum
 
-import "errors"
+import (
+	"slices"
+)
 
 type StatusOrder string
 
@@ -12,9 +14,7 @@ const (
 	FINISHED         StatusOrder = "FINISHED"
 )
 
-func ValidateStatus(val string) (bool, error) {
-	if v := StatusOrder(val); v == AWAITING_PAYMENT || v == RECEIVED || v == PREPARING || v == READY || v == FINISHED {
-		return true, nil
-	}
-	return false, errors.New("invalid StatusType")
+func ValidateStatus(val string) bool {
+	validStatus := []StatusOrder{AWAITING_PAYMENT, RECEIVED, PREPARING, READY, FINISHED}
+	return slices.Contains(validStatus, StatusOrder(val))
 }

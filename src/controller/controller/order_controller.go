@@ -85,15 +85,14 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		products = append(products, product)
 	}
 
-	client, err := o.clientUseCase.GetClientById(orderDomain.ClientId)
-
-	if client == nil && orderDomain.ClientId != nil {
-		response = Response{
-			MessageError: "Client not exists",
-			Data:         nil,
-		}
+	client, err := o.clientUseCase.GetClientById(orderDto.ClientId)
+	if client == nil && orderDto.ClientId != nil {
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Client not found",
+				Data:  nil,
+			})
 		return
 	}
 
@@ -192,55 +191,63 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 		Error: "",
 		Data:  orderOutput,
 	})
-	err = json.NewEncoder(w).Encode(response)
-	if err != nil {
-		return
-	}
 }
 
 func (o *OrderController) UpdateOrderStatusById(w http.ResponseWriter, r *http.Request) {
-	var response Response
-	orderId := mux.Vars(r)["orderId"]
-	orderIdInt, err := strconv.Atoi(orderId)
+	orderIdParam := mux.Vars(r)["orderId"]
+	orderId, err := strconv.Atoi(orderIdParam)
 
 	if err != nil {
-		http.Error(w, "Error to convert id order to int.  %v", http.StatusInternalServerError)
-	}
+		o.logger.Error("error converting orderId to int", slog.Any("error", err.Error()))
 
-	status := r.URL.Query().Get("status")
-	validateStatus, err := enum.ValidateStatus(status)
-
-	if validateStatus == false {
-		response = Response{
-			MessageError: err.Error(),
-			Data:         nil,
-		}
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(Response{
+			Error: "Error to convert orderId to int",
+			Data:  nil,
+		})
 		return
 	}
 
-	order, errOrder := o.orderUseCase.GetById(orderIdInt)
+	status := r.URL.Query().Get("status")
+	if !enum.ValidateStatus(status) {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(Response{
+			Error: "Invalid status",
+			Data:  nil,
+		})
+		return
+	}
 
-	if errOrder != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+	order, err := o.orderUseCase.GetById(orderId)
+	if err != nil {
+		o.logger.Error("error getting order by id", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(Response{
+			Error: "Error to get order",
+			Data:  nil,
+		})
 		return
 	}
 
 	if order == nil {
-		response = Response{
-			MessageError: "Not found",
-			Data:         nil,
-		}
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Order not found",
+				Data:  nil,
+			})
 		return
 	}
 
-	err = o.orderUseCase.UpdateStatusById(orderIdInt, enum.StatusOrder(status))
+	if err := o.orderUseCase.UpdateStatusById(orderId, enum.StatusOrder(status)); err != nil {
+		o.logger.Error("error updating status by id", slog.Any("error", err.Error()))
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(Response{
+			Error: "Error updating status",
+			Data:  nil,
+		})
 		return
 	}
 
