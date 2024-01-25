@@ -26,99 +26,121 @@ func NewClientController(clientUseCase contract.ClientUseCase, logger *slog.Logg
 
 func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) {
 	var clientDto dto.ClientDto
-	var response Response
 
-	err := json.NewDecoder(r.Body).Decode(&clientDto)
+	if err := json.NewDecoder(r.Body).Decode(&clientDto); err != nil {
+		c.logger.Error("unable to decode the request body", slog.Any("error", err.Error()))
 
-	if err != nil {
-		c.logger.Error("Unable to decode the request body.  %v", err)
-	}
-
-	errValidate := serializer.Validate(clientDto)
-
-	if len(errValidate.Errors) > 0 {
-		c.logger.Error("validate error", slog.Any("error", errValidate))
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(errValidate)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Unable to decode the request body",
+				Data:         nil,
+			})
 		return
 	}
 
-	validClient, errValidClient := c.clientUseCase.GetAlreadyExists(clientDto.Cpf, clientDto.Email)
+	validate := serializer.Validate(clientDto)
+	if len(validate.Errors) > 0 {
+		c.logger.Error("validate error", slog.Any("error", validate))
 
-	if errValidClient != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Invalid body, make sure all required fields are sent",
+				Data:         nil,
+			})
+		return
+	}
+
+	validClient, err := c.clientUseCase.GetAlreadyExists(clientDto.Cpf, clientDto.Email)
+	if err != nil {
+		c.logger.Error("error validating client", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error validating client",
+				Data:         nil,
+			})
 		return
 	}
 
 	if validClient != nil {
-		response = Response{
-			MessageError: "Client already exists",
-			Data:         nil,
-		}
 		w.WriteHeader(http.StatusConflict)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Client already exists",
+				Data:         nil,
+			})
 		return
 	}
 
-	clientDomain := clientDto.ConvertEntity()
-
-	client, err := c.clientUseCase.Create(clientDomain)
-
+	client, err := c.clientUseCase.Create(clientDto.ConvertEntity())
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+		c.logger.Error("error creating client", slog.Any("error", err.Error()))
 
-	response = Response{
-		MessageError: "",
-		Data:         client,
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: err.Error(),
+				Data:         nil,
+			})
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(w).Encode(response)
-	if err != nil {
-		return
-	}
+	json.NewEncoder(w).Encode(
+		Response{
+			ErrorMessage: "",
+			Data:         client,
+		})
 }
 
 func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request) {
-	cpf := r.URL.Query().Get("cpf")
-	var response Response
+	cpfParam := r.URL.Query().Get("cpf")
 
-	cpfInt, err := strconv.Atoi(cpf)
-
+	cpf, err := strconv.Atoi(cpfParam)
 	if err != nil {
-		c.logger.Error("Error to convert cpf to int.  %v", err)
+		c.logger.Error("error to convert cpf to int", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Make sure document is an int",
+				Data:         nil,
+			})
+		return
 	}
 
-	client, err := c.clientUseCase.GetClientByCpf(cpfInt)
-
+	client, err := c.clientUseCase.GetClientByCpf(cpf)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		c.logger.Error("error finding client", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error finding client",
+				Data:         nil,
+			})
 		return
 	}
 
 	if client == nil {
-		response = Response{
-			MessageError: "Not found",
-			Data:         nil,
-		}
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(response)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Client not found",
+				Data:         nil,
+			})
 		return
-	}
-
-	response = Response{
-		MessageError: "",
-		Data:         client,
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(response)
-	if err != nil {
-		return
-	}
-
+	json.NewEncoder(w).Encode(
+		Response{
+			ErrorMessage: "",
+			Data:         client,
+		})
 }

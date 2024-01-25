@@ -2,8 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
-
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer"
 	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/input"
@@ -31,259 +29,306 @@ func NewProductController(productUseCase contract.ProductUseCase, categoryUseCas
 
 func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var productDto dto.ProductDto
-	var response Response
 
-	err := json.NewDecoder(r.Body).Decode(&productDto)
+	if err := json.NewDecoder(r.Body).Decode(&productDto); err != nil {
+		p.logger.Error("Unable to decode the request body.  %v", slog.Any("error", err))
 
-	if err != nil {
-		p.logger.Error("Unable to decode the request body.  %v", err)
-	}
-
-	errValidate := serializer.Validate(productDto)
-
-	fmt.Println(errValidate)
-
-	if len(errValidate.Errors) > 0 {
-		p.logger.Error("validate error", slog.Any("error", errValidate))
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(errValidate)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error decoding request body",
+				Data:         nil,
+			})
 		return
 	}
 
-	category, errCategory := p.categoryUseCase.GetById(productDto.CategoryId)
+	if serialize := serializer.Validate(productDto); len(serialize.Errors) > 0 {
+		p.logger.Error("validate error", slog.Any("error", serialize))
 
-	if errCategory != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Make all required fields are sent correctly",
+				Data:         nil,
+			})
+		return
+	}
+
+	category, err := p.categoryUseCase.GetById(productDto.CategoryId)
+	if err != nil {
+		p.logger.Error("validate getting category by id", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error getting category",
+				Data:         nil,
+			})
 		return
 	}
 
 	if category == nil {
-		response = Response{
-			MessageError: "Category not found",
-			Data:         nil,
-		}
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Category not found",
+				Data:         nil,
+			})
 		return
 	}
 
-	p.logger.Info("category")
-	fmt.Println(category != nil)
-
-	productDomain := productDto.ConvertToEntity()
-
-	product, err := p.productUseCase.Create(productDomain)
-
+	product, err := p.productUseCase.Create(productDto.ConvertToEntity())
 	if err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+		p.logger.Error("error creating product", slog.Any("error", err.Error()))
 
-	response = Response{
-		MessageError: "",
-		Data:         product,
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error creating product",
+				Data:         nil,
+			})
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(
+		Response{
+			ErrorMessage: "",
+			Data:         product,
+		})
 }
 
 func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request) {
-	var response Response
-	vars := mux.Vars(r)
-
-	productIdParam, ok := vars["productId"]
-
-	if !ok {
-		response := Response{
-			MessageError: "id is missing in parameters",
-			Data:         nil,
-		}
-
-		p.logger.Error("id is missing in parameters")
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-
 	var productDto dto.ProductDto
 
-	err := json.NewDecoder(r.Body).Decode(&productDto)
-
-	if err != nil {
-		p.logger.Error("Unable to decode the request body.  %v", err)
-	}
-
-	convertId, err := strconv.Atoi(productIdParam)
-
-	if err != nil {
-		response := Response{
-			MessageError: "Id not is number",
-			Data:         nil,
-		}
+	productIdParam, ok := mux.Vars(r)["productId"]
+	if !ok {
+		p.logger.Error("id is missing in parameters")
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Id is missing in parameters",
+				Data:         nil,
+			})
 		return
 	}
 
-	errValidate := serializer.Validate(productDto)
+	if err := json.NewDecoder(r.Body).Decode(&productDto); err != nil {
+		p.logger.Error("Unable to decode the request body.  %v", slog.Any("error", err))
 
-	fmt.Println(errValidate)
-
-	if len(errValidate.Errors) > 0 {
-		p.logger.Error("validate error", slog.Any("error", errValidate))
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(errValidate)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error decoding request body",
+				Data:         nil,
+			})
 		return
 	}
 
-	validateProduct, errProduct := p.productUseCase.GetById(convertId)
+	productId, err := strconv.Atoi(productIdParam)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Id is not a number",
+				Data:         nil,
+			})
+		return
+	}
 
-	if errProduct != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+	if serialize := serializer.Validate(productDto); len(serialize.Errors) > 0 {
+		p.logger.Error("validate error", slog.Any("error", serialize))
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Make sure all required fields are sent correctly",
+				Data:         nil,
+			})
+		return
+	}
+
+	validateProduct, err := p.productUseCase.GetById(productId)
+	if err != nil {
+		p.logger.Error("error getting product by id", slog.Any("error", err))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error finding product",
+				Data:         nil,
+			})
 		return
 	}
 
 	if validateProduct == nil {
-		response = Response{
-			MessageError: "Not found",
-			Data:         nil,
-		}
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Product not found",
+				Data:         nil,
+			})
 		return
 	}
 
-	productDto.SetID(convertId)
+	productDto.SetID(productId)
 	productDomain := productDto.ConvertToEntity()
+
 	product, err := p.productUseCase.Update(productDomain)
-
 	if err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+		p.logger.Error("error updating product data", slog.Any("error", err))
 
-	response = Response{
-		MessageError: "",
-		Data:         product,
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error updating product data",
+				Data:         nil,
+			})
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(
+		Response{
+			ErrorMessage: "",
+			Data:         product,
+		})
 }
 
 func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request) {
-	var response Response
-	vars := mux.Vars(r)
-	productIdParam, ok := vars["productId"]
-
+	productIdParam, ok := mux.Vars(r)["productId"]
 	if !ok {
-		fmt.Println("id is missing in parameters")
+		p.logger.Error("id is missing in parameters")
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Id is missing in parameters",
+				Data:         nil,
+			})
+		return
 	}
 
 	productId, err := strconv.Atoi(productIdParam)
-
 	if err != nil {
 		p.logger.Error("Error to convert productId to int.  %v", err)
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Id is not a number",
+				Data:         nil,
+			})
+		return
 	}
 
-	validateProduct, errProduct := p.productUseCase.GetById(productId)
+	validateProduct, err := p.productUseCase.GetById(productId)
+	if err != nil {
+		p.logger.Error("error getting product by id", slog.Any("error", err))
 
-	if errProduct != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error finding product",
+				Data:         nil,
+			})
 		return
 	}
 
 	if validateProduct == nil || validateProduct.Active == false {
-		response = Response{
-			MessageError: "Not found",
-			Data:         nil,
-		}
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Product not found",
+				Data:         nil,
+			})
 		return
 	}
 
-	err = p.productUseCase.Delete(productId)
-	if err != nil {
-		return
-	}
+	if err := p.productUseCase.Delete(productId); err != nil {
+		p.logger.Error("error deleting product", slog.Any("error", err.Error()))
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error deleting product",
+				Data:         nil,
+			})
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	if err != nil {
-		return
-	}
 }
 
 func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.Request) {
-	var response Response
-	categoryId := mux.Vars(r)["categoryId"]
+	categoryIdParam := mux.Vars(r)["categoryId"]
 
-	categoryIdInt, ok := strconv.Atoi(categoryId)
-
-	if ok != nil {
-		response := Response{
-			MessageError: "id is missing in parameters",
-			Data:         nil,
-		}
-
+	categoryId, err := strconv.Atoi(categoryIdParam)
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Id is missing in parameters",
+				Data:         nil,
+			})
 		return
 	}
 
-	category, errCateg := p.categoryUseCase.GetById(categoryIdInt)
+	category, err := p.categoryUseCase.GetById(categoryId)
+	if err != nil {
+		p.logger.Error("error getting category by id", slog.Any("error", err.Error()))
 
-	if errCateg != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error finding category",
+				Data:         nil,
+			})
 		return
 	}
 
 	if category == nil {
-		response = Response{
-			MessageError: "Category Not found",
-			Data:         nil,
-		}
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Category not found",
+				Data:         nil,
+			})
 		return
 	}
 
-	prod, err := p.productUseCase.GetProductByCategory(categoryIdInt)
-
+	products, err := p.productUseCase.GetProductByCategory(categoryId)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+		p.logger.Error("error getting products by category", slog.Any("error", err.Error()))
 
-	lenProd := len(prod)
-
-	if lenProd == 0 {
-		response = Response{
-			MessageError: "Product Not found",
-			Data:         nil,
-		}
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(response)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error finding products",
+				Data:         nil,
+			})
 		return
 	}
 
-	response = Response{
-		MessageError: "",
-		Data:         prod,
+	if len(products) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Product not found",
+				Data:         nil,
+			})
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(response)
-	if err != nil {
-		return
-	}
+	json.NewEncoder(w).Encode(
+		Response{
+			ErrorMessage: "",
+			Data:         products,
+		})
 }

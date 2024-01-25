@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -27,110 +28,143 @@ func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contr
 
 func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	var orderDomain entity.Order
-	var response Response
 
-	err := json.NewDecoder(r.Body).Decode(&orderDomain)
+	if err := json.NewDecoder(r.Body).Decode(&orderDomain); err != nil {
+		o.logger.Error("unable to decode the request body", slog.Any("error", err.Error()))
 
-	if err != nil {
-		o.logger.Error("Unable to decode the request body.  %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Unable to decode the request body",
+				Data:         nil,
+			})
+		return
 	}
 
-	validateLengthProds := len(orderDomain.Products)
-
-	if validateLengthProds <= 0 {
-		response = Response{
-			MessageError: "Product is required",
-			Data:         nil,
-		}
+	if prods := len(orderDomain.Products); prods < 1 {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(Response{
+			ErrorMessage: "Product is required",
+			Data:         nil,
+		})
 		return
 	}
 
 	var products []*entity.Product
-	for _, product := range orderDomain.Products {
-		prod, errProd := o.productUseCase.GetById(product.ID)
+	for _, p := range orderDomain.Products {
+		product, err := o.productUseCase.GetById(p.ID)
 
-		if errProd != nil {
-			http.Error(w, "internal server error", http.StatusInternalServerError)
-			return
-		}
+		if err != nil {
+			o.logger.Error("error getting product by id", slog.String("message", err.Error()))
 
-		if prod == nil {
-			response = Response{
-				MessageError: "Product not found " + strconv.Itoa(product.ID),
-				Data:         nil,
-			}
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(response)
+			json.NewEncoder(w).Encode(Response{
+				ErrorMessage: "Error finding product",
+				Data:         nil,
+			})
 			return
 		}
 
-		products = append(products, prod)
+		if product == nil {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(
+				Response{
+					ErrorMessage: fmt.Sprintf("Product of id %d not found", p.ID),
+					Data:         nil,
+				})
+			return
+		}
+
+		products = append(products, product)
 	}
-	o.logger.Info("ersa", orderDomain)
 
 	order, err := o.orderUseCase.Create(orderDomain, products)
-
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+		o.logger.Error("error creating order", slog.Any("error", err.Error()))
 
-	response = Response{
-		MessageError: "",
-		Data:         order,
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error creating order",
+				Data:         nil,
+			})
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(w).Encode(response)
-	if err != nil {
-		return
-	}
+	json.NewEncoder(w).Encode(
+		Response{
+			ErrorMessage: "",
+			Data:         order,
+		})
 }
 
 func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
-	var orders *[]entity.Order
-
 	orders, err := o.orderUseCase.GetAll()
-
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		o.logger.Error("error listing orders", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error listing orders",
+				Data:         nil,
+			})
 		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(orders)
-	if err != nil {
-		return
-	}
+	json.NewEncoder(w).Encode(Response{
+		ErrorMessage: "",
+		Data:         orders,
+	})
 }
 
 func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
-	orderId := mux.Vars(r)["orderId"]
-	orderIdInt, err := strconv.Atoi(orderId)
+	orderIdParam := mux.Vars(r)["orderId"]
 
+	id, err := strconv.Atoi(orderIdParam)
 	if err != nil {
-		http.Error(w, "Error to convert id order to int.  %v", http.StatusInternalServerError)
+		o.logger.Error("error to convert id order to int", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Order id must be an integer",
+				Data:         nil,
+			})
+		return
 	}
 
-	order, err := o.orderUseCase.GetById(orderIdInt)
-
+	order, err := o.orderUseCase.GetById(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		o.logger.Error("error finding order", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Error finding order",
+				Data:         nil,
+			})
 		return
 	}
 
 	if order == nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(
+			Response{
+				ErrorMessage: "Order not found",
+				Data:         nil,
+			})
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(order)
-	if err != nil {
-		return
-	}
+	json.NewEncoder(w).Encode(Response{
+		ErrorMessage: "",
+		Data:         order,
+	})
 }
