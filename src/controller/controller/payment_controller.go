@@ -109,6 +109,16 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 			})
 
 		return
+	if qrCode == nil {
+		response = Response{
+			MessageError: "O pagamento para o pedido já foi efetuado",
+			Data:         "",
+		}
+	} else {
+		response = Response{
+			MessageError: "",
+			Data:         qrCode,
+		}
 	}
 
 	w.Header().Add("Content-Type", "application/json")
@@ -158,4 +168,39 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 				PaymentStatus: paymentStatus,
 			},
 		})
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		return
+	}
+
+}
+
+func (p *PaymentController) Notification(w http.ResponseWriter, r *http.Request) {
+	orderId := mux.Vars(r)["orderId"]
+
+	orderIdInt, err := strconv.Atoi(orderId)
+
+	order, err := p.orderUseCase.GetById(orderIdInt)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if order == nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+	}
+
+	if err = p.paymentUseCase.PaymentNotification(order); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+}
+
+type GetLastPaymentStatus struct {
+	OrderId       int
+	PaymentStatus enum.PaymentStatus
 }

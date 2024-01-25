@@ -11,6 +11,7 @@ type CategoryRepository interface {
 
 type ClientRepository interface {
 	Create(client entity.Client) (entity.Client, error)
+	GetClientById(id *int) (*entity.Client, error)
 	GetClientByCpf(cpf int) (*entity.Client, error)
 	GetAlreadyExists(cpf int, email string) (*entity.Client, error)
 }
@@ -19,7 +20,7 @@ type OrderRepository interface {
 	Create(order entity.Order) (entity.Order, error)
 	GetAll() ([]entity.Order, error)
 	GetById(id int) (*entity.Order, error)
-	SetStatusToReceived(id int, status enum.StatusOrder) error
+	UpdateStatusById(id int, status enum.StatusOrder) error
 }
 
 type PaymentRepository interface {

@@ -9,21 +9,26 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/enum"
+
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/entity"
+
 	"github.com/gorilla/mux"
 )
 
 type OrderController struct {
 	orderUseCase   contract.OrderUseCase
 	productUseCase contract.ProductUseCase
+	clientUseCase  contract.ClientUseCase
 	logger         *slog.Logger
 }
 
-func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contract.ProductUseCase, logger *slog.Logger) *OrderController {
+func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contract.ProductUseCase, clientUseCase contract.ClientUseCase, logger *slog.Logger) *OrderController {
 	return &OrderController{
 		orderUseCase:   orderUseCase,
 		productUseCase: productUseCase,
+		clientUseCase:  clientUseCase,
 		logger:         logger,
 	}
 }
@@ -78,6 +83,18 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		}
 
 		products = append(products, product)
+	}
+
+	client, err := o.clientUseCase.GetClientById(orderDomain.ClientId)
+
+	if client == nil && orderDomain.ClientId != nil {
+		response = Response{
+			MessageError: "Client not exists",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
 	}
 
 	order, err := o.orderUseCase.Create(orderDto.ConvertToEntity(), products)
@@ -175,4 +192,58 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 		Error: "",
 		Data:  orderOutput,
 	})
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		return
+	}
+}
+
+func (o *OrderController) UpdateOrderStatusById(w http.ResponseWriter, r *http.Request) {
+	var response Response
+	orderId := mux.Vars(r)["orderId"]
+	orderIdInt, err := strconv.Atoi(orderId)
+
+	if err != nil {
+		http.Error(w, "Error to convert id order to int.  %v", http.StatusInternalServerError)
+	}
+
+	status := r.URL.Query().Get("status")
+	validateStatus, err := enum.ValidateStatus(status)
+
+	if validateStatus == false {
+		response = Response{
+			MessageError: err.Error(),
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	order, errOrder := o.orderUseCase.GetById(orderIdInt)
+
+	if errOrder != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if order == nil {
+		response = Response{
+			MessageError: "Not found",
+			Data:         nil,
+		}
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	err = o.orderUseCase.UpdateStatusById(orderIdInt, enum.StatusOrder(status))
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
 }

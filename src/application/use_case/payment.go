@@ -13,13 +13,15 @@ type PaymentUseCase struct {
 	repository             contract.PaymentRepository
 	externalPaymentService contract.ExternalPaymentService
 	logger                 *slog.Logger
+	orderUseCase           contract.OrderUseCase
 }
 
-func NewPaymentUseCase(r contract.PaymentRepository, e contract.ExternalPaymentService, logger *slog.Logger) *PaymentUseCase {
+func NewPaymentUseCase(r contract.PaymentRepository, e contract.ExternalPaymentService, logger *slog.Logger, orderUseCase contract.OrderUseCase) *PaymentUseCase {
 	return &PaymentUseCase{
 		repository:             r,
 		externalPaymentService: e,
 		logger:                 logger,
+		orderUseCase:           orderUseCase,
 	}
 }
 
@@ -36,8 +38,6 @@ func (p *PaymentUseCase) GetLastPaymentStatus(orderId int) (enum.PaymentStatus, 
 		return payment.Status, err
 	}
 
-	p.logger.Info("teste", payment.Status)
-
 	if payment.Status == "" {
 		return enum.PENDING, nil
 	}
@@ -46,6 +46,17 @@ func (p *PaymentUseCase) GetLastPaymentStatus(orderId int) (enum.PaymentStatus, 
 }
 
 func (p *PaymentUseCase) CreateQRCode(order *entity.Order) (*response_payment_service.CreateQRCode, error) {
+	lastPaymentStatus, err := p.GetLastPaymentStatus(order.ID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if lastPaymentStatus == enum.CONFIRMED {
+		p.logger.Error("Last payment status: %v", lastPaymentStatus)
+		return nil, nil
+	}
+
 	payment := &entity.Payment{
 		Order:  order,
 		Type:   enum.QRCODE,
@@ -55,18 +66,22 @@ func (p *PaymentUseCase) CreateQRCode(order *entity.Order) (*response_payment_se
 
 	p.Create(payment)
 
-	p.logger.Info("tests", payment)
-
 	qrCode, _ := p.externalPaymentService.CreateQRCode(*payment)
 
 	return &qrCode, nil
 }
 
-func (p *PaymentUseCase) PaymentNotification() error {
+func (p *PaymentUseCase) PaymentNotification(order *entity.Order) error {
+	payment := &entity.Payment{
+		Order:  order,
+		Type:   enum.QRCODE,
+		Status: enum.CONFIRMED,
+		Amount: order.Amount,
+	}
+
+	p.Create(payment)
+
+	p.orderUseCase.UpdateStatusById(order.ID, enum.RECEIVED)
+
 	return nil
 }
-
-/*
-	if err = p.orderUseCase.SetStatusToReceived(order.ID, enum.RECEIVED); err != nil {
-		return err
-*/

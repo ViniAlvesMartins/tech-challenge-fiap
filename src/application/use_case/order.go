@@ -61,6 +61,12 @@ func (o *OrderUseCase) GetById(id int) (*entity.Order, error) {
 	return order, nil
 }
 
-func (o *OrderUseCase) SetStatusToReceived(id int, status enum.StatusOrder) error {
-	return o.orderRepository.SetStatusToReceived(id, status)
+func (o *OrderUseCase) UpdateStatusById(id int, status enum.StatusOrder) error {
+	err := o.orderRepository.UpdateStatusById(id, status)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -50,14 +50,16 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/products/{productId:[0-9]+}", productController.UpdateProduct).Methods("PUT")
 	router.HandleFunc("/products/{productId:[0-9]+}", productController.DeleteProduct).Methods("DELETE")
 
-	orderController := controller.NewOrderController(e.orderUseCase, e.productUseCase, e.logger)
+	orderController := controller.NewOrderController(e.orderUseCase, e.productUseCase, e.clientUseCase, e.logger)
 	router.HandleFunc("/orders", orderController.FindOrders).Methods("GET")
 	router.HandleFunc("/orders/{orderId:[0-9]+}", orderController.GetOrderById).Methods("GET")
 	router.HandleFunc("/orders", orderController.CreateOrder).Methods("POST")
+	router.HandleFunc("/orders/{orderId:[0-9]+}", orderController.UpdateOrderStatusById).Methods("PATCH")
 
 	paymentController := controller.NewPaymentController(e.paymentUseCase, e.logger, e.orderUseCase)
 	router.HandleFunc("/orders/{orderId:[0-9]+}/payments", paymentController.CreatePayment).Methods("POST")
 	router.HandleFunc("/orders/{orderId:[0-9]+}/status-payment", paymentController.GetLastPaymentStatus).Methods("GET")
+	router.HandleFunc("/orders/{orderId:[0-9]+}/notification-payments", paymentController.Notification).Methods("POST")
 
 	return http.ListenAndServe(":8080", router)
 }

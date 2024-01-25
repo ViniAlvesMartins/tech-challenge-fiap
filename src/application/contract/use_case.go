@@ -10,14 +10,14 @@ type OrderUseCase interface {
 	Create(order entity.Order, products []*entity.Product) (*entity.Order, error)
 	GetAll() (*[]entity.Order, error)
 	GetById(id int) (*entity.Order, error)
-	SetStatusToReceived(id int, status enum.StatusOrder) error
+	UpdateStatusById(id int, status enum.StatusOrder) error
 }
 
 type PaymentUseCase interface {
 	Create(payment *entity.Payment) error
 	CreateQRCode(order *entity.Order) (*response_payment_service.CreateQRCode, error)
 	GetLastPaymentStatus(orderId int) (enum.PaymentStatus, error)
-	PaymentNotification() error
+	PaymentNotification(order *entity.Order) error
 }
 
 type CategoryUseCase interface {
@@ -26,6 +26,7 @@ type CategoryUseCase interface {
 
 type ClientUseCase interface {
 	GetClientByCpf(cpf int) (*entity.Client, error)
+	GetClientById(id *int) (*entity.Client, error)
 	Create(client entity.Client) (*entity.Client, error)
 	GetAlreadyExists(cpf int, email string) (*entity.Client, error)
 }
