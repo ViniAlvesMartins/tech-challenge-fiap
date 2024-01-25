@@ -33,8 +33,8 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Unable to decode the request body",
-				Data:         nil,
+				Error: "Unable to decode the request body",
+				Data:  nil,
 			})
 		return
 	}
@@ -46,8 +46,8 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Invalid body, make sure all required fields are sent",
-				Data:         nil,
+				Error: "Invalid body, make sure all required fields are sent",
+				Data:  nil,
 			})
 		return
 	}
@@ -59,8 +59,8 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error validating client",
-				Data:         nil,
+				Error: "Error validating client",
+				Data:  nil,
 			})
 		return
 	}
@@ -69,8 +69,8 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusConflict)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Client already exists",
-				Data:         nil,
+				Error: "Client already exists",
+				Data:  nil,
 			})
 		return
 	}
@@ -82,8 +82,8 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: err.Error(),
-				Data:         nil,
+				Error: err.Error(),
+				Data:  nil,
 			})
 		return
 	}
@@ -92,8 +92,8 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(
 		Response{
-			ErrorMessage: "",
-			Data:         client,
+			Error: "",
+			Data:  client,
 		})
 }
 
@@ -107,8 +107,8 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Make sure document is an int",
-				Data:         nil,
+				Error: "Make sure document is an int",
+				Data:  nil,
 			})
 		return
 	}
@@ -120,8 +120,8 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error finding client",
-				Data:         nil,
+				Error: "Error finding client",
+				Data:  nil,
 			})
 		return
 	}
@@ -130,8 +130,8 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Client not found",
-				Data:         nil,
+				Error: "Client not found",
+				Data:  nil,
 			})
 		return
 	}
@@ -140,7 +140,7 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(
 		Response{
-			ErrorMessage: "",
-			Data:         client,
+			Error: "",
+			Data:  client,
 		})
 }

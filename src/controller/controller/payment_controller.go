@@ -44,8 +44,8 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Order id must be an integer",
-				Data:         nil,
+				Error: "Order id must be an integer",
+				Data:  nil,
 			})
 		return
 	}
@@ -56,8 +56,8 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error decoding request body",
-				Data:         nil,
+				Error: "Error decoding request body",
+				Data:  nil,
 			})
 		return
 	}
@@ -68,8 +68,8 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Make sure all required fields are sent correctly",
-				Data:         nil,
+				Error: "Make sure all required fields are sent correctly",
+				Data:  nil,
 			})
 		return
 	}
@@ -81,8 +81,8 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error getting order details",
-				Data:         nil,
+				Error: "Error getting order details",
+				Data:  nil,
 			})
 		return
 	}
@@ -91,8 +91,8 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Order not found",
-				Data:         nil,
+				Error: "Order not found",
+				Data:  nil,
 			})
 		return
 	}
@@ -104,8 +104,8 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error creating qr code",
-				Data:         nil,
+				Error: "Error creating qr code",
+				Data:  nil,
 			})
 
 		return
@@ -115,8 +115,8 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(
 		Response{
-			ErrorMessage: "",
-			Data:         qrCode,
+			Error: "",
+			Data:  qrCode,
 		})
 }
 
@@ -129,8 +129,8 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Order id must be an integer",
-				Data:         nil,
+				Error: "Order id must be an integer",
+				Data:  nil,
 			})
 		return
 	}
@@ -142,8 +142,8 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error getting last payment status",
-				Data:         nil,
+				Error: "Error getting last payment status",
+				Data:  nil,
 			})
 		return
 	}
@@ -152,7 +152,7 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(
 		Response{
-			ErrorMessage: "",
+			Error: "",
 			Data: GetLastPaymentStatus{
 				OrderId:       orderId,
 				PaymentStatus: paymentStatus,

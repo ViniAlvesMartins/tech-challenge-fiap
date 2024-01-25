@@ -35,8 +35,8 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Unable to decode the request body",
-				Data:         nil,
+				Error: "Unable to decode the request body",
+				Data:  nil,
 			})
 		return
 	}
@@ -44,8 +44,8 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	if prods := len(orderDomain.Products); prods < 1 {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(Response{
-			ErrorMessage: "Product is required",
-			Data:         nil,
+			Error: "Product is required",
+			Data:  nil,
 		})
 		return
 	}
@@ -59,8 +59,8 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(Response{
-				ErrorMessage: "Error finding product",
-				Data:         nil,
+				Error: "Error finding product",
+				Data:  nil,
 			})
 			return
 		}
@@ -69,8 +69,8 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(
 				Response{
-					ErrorMessage: fmt.Sprintf("Product of id %d not found", p.ID),
-					Data:         nil,
+					Error: fmt.Sprintf("Product of id %d not found", p.ID),
+					Data:  nil,
 				})
 			return
 		}
@@ -85,8 +85,8 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error creating order",
-				Data:         nil,
+				Error: "Error creating order",
+				Data:  nil,
 			})
 		return
 	}
@@ -95,8 +95,8 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(
 		Response{
-			ErrorMessage: "",
-			Data:         order,
+			Error: "",
+			Data:  order,
 		})
 }
 
@@ -108,8 +108,8 @@ func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error listing orders",
-				Data:         nil,
+				Error: "Error listing orders",
+				Data:  nil,
 			})
 		return
 	}
@@ -117,8 +117,8 @@ func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(Response{
-		ErrorMessage: "",
-		Data:         orders,
+		Error: "",
+		Data:  orders,
 	})
 }
 
@@ -132,8 +132,8 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Order id must be an integer",
-				Data:         nil,
+				Error: "Order id must be an integer",
+				Data:  nil,
 			})
 		return
 	}
@@ -145,8 +145,8 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error finding order",
-				Data:         nil,
+				Error: "Error finding order",
+				Data:  nil,
 			})
 		return
 	}
@@ -155,8 +155,8 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Order not found",
-				Data:         nil,
+				Error: "Order not found",
+				Data:  nil,
 			})
 		return
 	}
@@ -164,7 +164,7 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(Response{
-		ErrorMessage: "",
-		Data:         order,
+		Error: "",
+		Data:  order,
 	})
 }

@@ -2,9 +2,8 @@ package repository
 
 import (
 	"errors"
-	"fmt"
-
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/entity"
+	"gorm.io/gorm/clause"
 
 	"log/slog"
 
@@ -24,53 +23,49 @@ func NewProductRepository(db *gorm.DB, logger *slog.Logger) *ProductRepository {
 }
 
 func (p *ProductRepository) Create(product entity.Product) (entity.Product, error) {
-	result := p.db.Create(&product)
-
-	if result.Error != nil {
-		p.logger.Error("result.Error")
-		return product, errors.New("create product from repository has failed")
+	if result := p.db.Create(&product); result.Error != nil {
+		return product, result.Error
 	}
 
 	return product, nil
 }
 
-func (p *ProductRepository) Update(product entity.Product) (entity.Product, error) {
-	fmt.Println(product)
-	result := p.db.Save(&product)
+func (p *ProductRepository) Update(product entity.Product) (*entity.Product, error) {
+	var uptProduct entity.Product
+	result := p.db.Model(&uptProduct).Where("id = ?", product.ID).Clauses(clause.Returning{}).Updates(entity.Product{
+		NameProduct: product.NameProduct,
+		Description: product.Description,
+		Price:       product.Price,
+		CategoryId:  product.CategoryId,
+		Active:      product.Active,
+	})
 
 	if result.Error != nil {
-		p.logger.Error("result.Error")
-		return product, errors.New("update product from repository has failed")
+		return nil, result.Error
 	}
 
-	return product, nil
+	return &uptProduct, nil
 }
 
 func (p *ProductRepository) GetById(id int) (*entity.Product, error) {
 	var product entity.Product
-
 	result := p.db.Model(&product).Where("id = ?", id).First(&product)
 
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil, nil
-	}
-
 	if result.Error != nil {
-		p.logger.Error("result.Error")
-		return nil, errors.New("get product by id from repository has failed")
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+
+		return nil, result.Error
 	}
 
 	return &product, nil
 }
 
 func (p *ProductRepository) Delete(id int) error {
-	var product entity.Product
-
-	result := p.db.Model(&product).Where("id = ?", id).Update("active", false)
-
+	result := p.db.Model(&entity.Product{}).Where("id = ?", id).Update("active", false)
 	if result.Error != nil {
-		p.logger.Error("result.Error")
-		return errors.New("delete product from repository has failed")
+		return result.Error
 	}
 
 	return nil
@@ -80,13 +75,11 @@ func (p *ProductRepository) GetProductByCategory(categoryId int) ([]entity.Produ
 	var product []entity.Product
 
 	if result := p.db.Where("category_id=? AND active=true", categoryId).Find(&product); result.Error != nil {
-
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
 
-		p.logger.Error("result.Error")
-		return nil, errors.New("an error occurred from repository")
+		return nil, result.Error
 	}
 
 	return product, nil

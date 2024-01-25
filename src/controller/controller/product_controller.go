@@ -5,6 +5,7 @@ import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer"
 	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/input"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/output"
 
 	"log/slog"
 	"net/http"
@@ -36,8 +37,8 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error decoding request body",
-				Data:         nil,
+				Error: "Error decoding request body",
+				Data:  nil,
 			})
 		return
 	}
@@ -48,8 +49,8 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Make all required fields are sent correctly",
-				Data:         nil,
+				Error: "Make all required fields are sent correctly",
+				Data:  nil,
 			})
 		return
 	}
@@ -61,8 +62,8 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error getting category",
-				Data:         nil,
+				Error: "Error getting category",
+				Data:  nil,
 			})
 		return
 	}
@@ -71,8 +72,8 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Category not found",
-				Data:         nil,
+				Error: "Category not found",
+				Data:  nil,
 			})
 		return
 	}
@@ -84,18 +85,20 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error creating product",
-				Data:         nil,
+				Error: "Error creating product",
+				Data:  nil,
 			})
 		return
 	}
+
+	productOutput := output.ProductFromEntity(*product)
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(
 		Response{
-			ErrorMessage: "",
-			Data:         product,
+			Error: "",
+			Data:  productOutput,
 		})
 }
 
@@ -109,8 +112,8 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Id is missing in parameters",
-				Data:         nil,
+				Error: "Id is missing in parameters",
+				Data:  nil,
 			})
 		return
 	}
@@ -121,8 +124,8 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error decoding request body",
-				Data:         nil,
+				Error: "Error decoding request body",
+				Data:  nil,
 			})
 		return
 	}
@@ -132,8 +135,8 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Id is not a number",
-				Data:         nil,
+				Error: "Id is not a number",
+				Data:  nil,
 			})
 		return
 	}
@@ -144,8 +147,8 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Make sure all required fields are sent correctly",
-				Data:         nil,
+				Error: "Make sure all required fields are sent correctly",
+				Data:  nil,
 			})
 		return
 	}
@@ -157,8 +160,8 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error finding product",
-				Data:         nil,
+				Error: "Error finding product",
+				Data:  nil,
 			})
 		return
 	}
@@ -167,34 +170,34 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Product not found",
-				Data:         nil,
+				Error: "Product not found",
+				Data:  nil,
 			})
 		return
 	}
 
-	productDto.SetID(productId)
 	productDomain := productDto.ConvertToEntity()
-
-	product, err := p.productUseCase.Update(productDomain)
+	product, err := p.productUseCase.Update(productDomain, productId)
 	if err != nil {
 		p.logger.Error("error updating product data", slog.Any("error", err))
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error updating product data",
-				Data:         nil,
+				Error: "Error updating product data",
+				Data:  nil,
 			})
 		return
 	}
+
+	productOutput := output.ProductFromEntity(*product)
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(
 		Response{
-			ErrorMessage: "",
-			Data:         product,
+			Error: "",
+			Data:  productOutput,
 		})
 }
 
@@ -206,8 +209,8 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Id is missing in parameters",
-				Data:         nil,
+				Error: "Id is missing in parameters",
+				Data:  nil,
 			})
 		return
 	}
@@ -219,8 +222,8 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Id is not a number",
-				Data:         nil,
+				Error: "Id is not a number",
+				Data:  nil,
 			})
 		return
 	}
@@ -232,8 +235,8 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error finding product",
-				Data:         nil,
+				Error: "Error finding product",
+				Data:  nil,
 			})
 		return
 	}
@@ -242,8 +245,8 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Product not found",
-				Data:         nil,
+				Error: "Product not found",
+				Data:  nil,
 			})
 		return
 	}
@@ -254,8 +257,8 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error deleting product",
-				Data:         nil,
+				Error: "Error deleting product",
+				Data:  nil,
 			})
 		return
 	}
@@ -272,8 +275,8 @@ func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Id is missing in parameters",
-				Data:         nil,
+				Error: "Id is missing in parameters",
+				Data:  nil,
 			})
 		return
 	}
@@ -285,8 +288,8 @@ func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error finding category",
-				Data:         nil,
+				Error: "Error finding category",
+				Data:  nil,
 			})
 		return
 	}
@@ -295,8 +298,8 @@ func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Category not found",
-				Data:         nil,
+				Error: "Category not found",
+				Data:  nil,
 			})
 		return
 	}
@@ -308,8 +311,8 @@ func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Error finding products",
-				Data:         nil,
+				Error: "Error finding products",
+				Data:  nil,
 			})
 		return
 	}
@@ -318,17 +321,19 @@ func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(
 			Response{
-				ErrorMessage: "Product not found",
-				Data:         nil,
+				Error: "Product not found",
+				Data:  nil,
 			})
 		return
 	}
+
+	productsOutput := output.ProductListFromEntity(products)
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(
 		Response{
-			ErrorMessage: "",
-			Data:         products,
+			Error: "",
+			Data:  productsOutput,
 		})
 }

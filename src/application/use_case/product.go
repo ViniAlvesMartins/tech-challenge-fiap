@@ -31,12 +31,13 @@ func (p *ProductUseCase) Create(product entity.Product) (*entity.Product, error)
 	return &productNew, nil
 }
 
-func (p *ProductUseCase) Update(product entity.Product) (entity.Product, error) {
+func (p *ProductUseCase) Update(product entity.Product, id int) (*entity.Product, error) {
 	product.Active = true
-	productUpdated, err := p.productRepository.Update(product)
+	product.ID = id
 
+	productUpdated, err := p.productRepository.Update(product)
 	if err != nil {
-		return productUpdated, err
+		return nil, err
 	}
 
 	return productUpdated, nil
