@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/output"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -88,12 +89,14 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	clientOutput := output.ClientFromEntity(*client)
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(
 		Response{
 			Error: "",
-			Data:  client,
+			Data:  clientOutput,
 		})
 }
 
@@ -136,11 +139,13 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	clientOutput := output.ClientFromEntity(*client)
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(
 		Response{
 			Error: "",
-			Data:  client,
+			Data:  clientOutput,
 		})
 }

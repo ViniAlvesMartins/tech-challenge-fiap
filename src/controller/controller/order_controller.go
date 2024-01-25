@@ -3,6 +3,8 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/input"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/output"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -27,9 +29,9 @@ func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contr
 }
 
 func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
-	var orderDomain entity.Order
+	var orderDto input.OrderDto
 
-	if err := json.NewDecoder(r.Body).Decode(&orderDomain); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&orderDto); err != nil {
 		o.logger.Error("unable to decode the request body", slog.Any("error", err.Error()))
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -41,7 +43,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if prods := len(orderDomain.Products); prods < 1 {
+	if prods := len(orderDto.Products); prods < 1 {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(Response{
 			Error: "Product is required",
@@ -51,7 +53,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var products []*entity.Product
-	for _, p := range orderDomain.Products {
+	for _, p := range orderDto.Products {
 		product, err := o.productUseCase.GetById(p.ID)
 
 		if err != nil {
@@ -78,7 +80,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		products = append(products, product)
 	}
 
-	order, err := o.orderUseCase.Create(orderDomain, products)
+	order, err := o.orderUseCase.Create(orderDto.ConvertToEntity(), products)
 	if err != nil {
 		o.logger.Error("error creating order", slog.Any("error", err.Error()))
 
@@ -91,12 +93,14 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	orderOutput := output.OrderFromEntity(*order)
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(
 		Response{
 			Error: "",
-			Data:  order,
+			Data:  orderOutput,
 		})
 }
 
@@ -114,11 +118,13 @@ func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ordersOutput := output.OrderListFromEntity(*orders)
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(Response{
 		Error: "",
-		Data:  orders,
+		Data:  ordersOutput,
 	})
 }
 
@@ -161,10 +167,12 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	orderOutput := output.OrderFromEntity(*order)
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(Response{
 		Error: "",
-		Data:  order,
+		Data:  orderOutput,
 	})
 }
