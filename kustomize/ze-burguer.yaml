@@ -1,36 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: zeburguer-app
+  name: ze-burguer-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app:  zeburguer
+      app:  ze-burguer
   template:
     metadata:
       labels:
-        app: zeburguer
+        app: ze-burguer
     spec:
       containers:
-        - name: zeburguer
+        - name: ze-burguer
           image: marcosilva/ze_burguer:latest
           ports:
             - containerPort: 8080
           envFrom:
           - configMapRef:
-              name: zeburguer
+              name: ze-burguer
           - secretRef:
-              name: zeburguer
+              name: ze-burguer
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: zeburguer
+  name: ze-burguer
 spec:
   type: NodePort
   selector:
-    app: zeburguer
+    app: ze-burguer
   ports:
     - protocol: TCP
       port: 80
@@ -39,7 +39,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: zeburguer
+  name: ze-burguer
 data:
   DATABASE_HOST: "postgres.tech-challenge"
   DATABASE_PORT: "5432"
@@ -51,7 +51,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: zeburguer
+  name: ze-burguer
 type: Opaque
 data:
   DATABASE_PASSWORD: bXlzZWNyZXQxMjMK

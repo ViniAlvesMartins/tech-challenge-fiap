@@ -2,6 +2,10 @@
 
 Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer via totem de auto atendimento.
 
+## Oficial Image
+
+[Docker Image](https://hub.docker.com/repository/docker/marcosilva/ze_burguer/general)
+
 ## Documentação
 
 [DDD](https://miro.com/app/board/uXjVMjkFsPU=/?share_link_id=958233804889)
@@ -10,7 +14,9 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 [Stack](#stack-utilizada)
 
-[Instalação](#instalação)
+[Instalação Docker](#instalação)
+
+[Instalação Kubernetes](#instalação-k8s)
 
 [APIs](#documentação-da-api)
 
@@ -51,7 +57,7 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 ---
 
-## Instalação
+## Instalação Docker
 
 Clone o projeto
 
@@ -76,7 +82,31 @@ Inicie a aplicação
 ```bash
   docker-compose up
 ```
+## Instalação Kubernetes
 
+Requisitos Cluster Kubernetes:
+
+- Docker Kubernetes
+- Metrics Server (Instalado)
+
+
+Para criar os recursos 
+
+```bash
+  kubectl apply -k kustomize/
+```
+
+Com a execução acima será criado a seguinte infraestrutura:
+
+Services
+ - ze-burguer: NodePort 30443
+ - postgres: ClusterIP 5432
+
+Deployments
+ - ze-burguer: HPA (2-5 Pods) - CPU Average Usage metrics
+ - postgres: 1 Pod
+
+![K8S](./doc/infra/kubernetes.png)
 
 ## Documentação da API
 
