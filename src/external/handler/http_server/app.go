@@ -18,7 +18,6 @@ type App struct {
 	orderUseCase    contract.OrderUseCase
 	paymentUseCase  contract.PaymentUseCase
 	categoryUseCase contract.CategoryUseCase
-	checkoutUseCase contract.CheckoutUseCase
 }
 
 func NewApp(logger *slog.Logger,
@@ -27,7 +26,6 @@ func NewApp(logger *slog.Logger,
 	orderUseCase contract.OrderUseCase,
 	paymentUseCase contract.PaymentUseCase,
 	categoryUseCase contract.CategoryUseCase,
-	checkoutUseCase contract.CheckoutUseCase,
 ) *App {
 	return &App{
 		logger:          logger,
@@ -36,7 +34,6 @@ func NewApp(logger *slog.Logger,
 		orderUseCase:    orderUseCase,
 		paymentUseCase:  paymentUseCase,
 		categoryUseCase: categoryUseCase,
-		checkoutUseCase: checkoutUseCase,
 	}
 }
 
@@ -53,15 +50,16 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/product/{productId:[0-9]+}", productController.UpdateProduct).Methods("PUT")
 	router.HandleFunc("/product/{productId:[0-9]+}", productController.DeleteProduct).Methods("DELETE")
 
-	orderController := controller.NewOrderController(e.orderUseCase, e.productUseCase, e.logger)
+	orderController := controller.NewOrderController(e.orderUseCase, e.productUseCase, e.clientUseCase, e.logger)
 	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")
 	router.HandleFunc("/order/{orderId:[0-9]+}", orderController.GetOrderById).Methods("GET")
 	router.HandleFunc("/order", orderController.CreateOrder).Methods("POST")
 	router.HandleFunc("/order/{orderId:[0-9]+}", orderController.UpdateOrderStatusById).Methods("PATCH")
 
-	paymentController := controller.NewPaymentController(e.paymentUseCase, e.logger)
-	router.HandleFunc("/payments", paymentController.CreatePayment).Methods("POST")
-	router.HandleFunc("/order/{orderId:[0-9]+}/status-payment", paymentController.GetLastPaymentStatus).Methods("GET")
+	paymentController := controller.NewPaymentController(e.paymentUseCase, e.logger, e.orderUseCase)
+	router.HandleFunc("/order/{orderId:[0-9]+}/payments", paymentController.CreatePayment).Methods("POST")
+	router.HandleFunc("/order/{orderId:[0-9]+}/status-payments", paymentController.GetLastPaymentStatus).Methods("GET")
+	router.HandleFunc("/order/{orderId:[0-9]+}/notification-payments", paymentController.Notification).Methods("POST")
 
 	return http.ListenAndServe(":8080", router)
 }

@@ -16,16 +16,16 @@ import (
 )
 
 type ProductController struct {
-	productService  contract.ProductUseCase
-	categoryService contract.CategoryUseCase
+	productUseCase  contract.ProductUseCase
+	categoryUseCase contract.CategoryUseCase
 	logger          *slog.Logger
 }
 
-func NewProductController(productService contract.ProductUseCase, categoryService contract.CategoryUseCase, logger *slog.Logger) *ProductController {
+func NewProductController(productUseCase contract.ProductUseCase, categoryUseCase contract.CategoryUseCase, logger *slog.Logger) *ProductController {
 	return &ProductController{
-		productService:  productService,
+		productUseCase:  productUseCase,
 		logger:          logger,
-		categoryService: categoryService,
+		categoryUseCase: categoryUseCase,
 	}
 }
 
@@ -50,7 +50,7 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	category, errCategory := p.categoryService.GetById(productDto.CategoryId)
+	category, errCategory := p.categoryUseCase.GetById(productDto.CategoryId)
 
 	if errCategory != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -72,7 +72,7 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 
 	productDomain := productDto.ConvertToEntity()
 
-	product, err := p.productService.Create(productDomain)
+	product, err := p.productUseCase.Create(productDomain)
 
 	if err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -139,7 +139,7 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	validateProduct, errProduct := p.productService.GetById(convertId)
+	validateProduct, errProduct := p.productUseCase.GetById(convertId)
 
 	if errProduct != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -158,7 +158,7 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 
 	productDto.SetID(convertId)
 	productDomain := productDto.ConvertToEntity()
-	product, err := p.productService.Update(productDomain)
+	product, err := p.productUseCase.Update(productDomain)
 
 	if err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -190,7 +190,7 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 		p.logger.Error("Error to convert productId to int.  %v", err)
 	}
 
-	validateProduct, errProduct := p.productService.GetById(productId)
+	validateProduct, errProduct := p.productUseCase.GetById(productId)
 
 	if errProduct != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -207,7 +207,7 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = p.productService.Delete(productId)
+	err = p.productUseCase.Delete(productId)
 	if err != nil {
 		return
 	}
@@ -240,7 +240,7 @@ func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.
 		return
 	}
 
-	category, errCateg := p.categoryService.GetById(categoryIdInt)
+	category, errCateg := p.categoryUseCase.GetById(categoryIdInt)
 
 	if errCateg != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -257,7 +257,7 @@ func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.
 		return
 	}
 
-	prod, err := p.productService.GetProductByCategory(categoryIdInt)
+	prod, err := p.productUseCase.GetProductByCategory(categoryIdInt)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

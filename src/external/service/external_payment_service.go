@@ -1,31 +1,21 @@
 package service
 
 import (
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
+	response_payment_service "github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/modules/response/payment_service"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/entity"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/enum"
 )
 
 type ExternalPayment struct {
-	repository contract.ExternalPaymentRepository
 }
 
-func NewExternalPayment(r contract.ExternalPaymentRepository) *ExternalPayment {
-	return &ExternalPayment{
-		repository: r,
-	}
+func NewExternalPayment() *ExternalPayment {
+	return &ExternalPayment{}
 }
 
-func (e *ExternalPayment) Create(p entity.ExternalPayment) error {
-	return e.repository.Create(p)
-}
-
-func (e *ExternalPayment) PayOrder(order entity.Order, paymentType enum.PaymentType) error {
-	payment := entity.ExternalPayment{
-		Order:  &order,
-		Type:   paymentType,
-		Amount: order.Amount,
+func (e *ExternalPayment) CreateQRCode(p entity.Payment) (response_payment_service.CreateQRCode, error) {
+	response := response_payment_service.CreateQRCode{
+		Qr_data: "00020101021243650016COM.MERCADOLIBRE02013063638f1192a-5fd1-4180-a180-8bcae3556bc35204000053039865802BR5925IZABEL AAAA DE MELO6007BARUERI62070503***63040B6D",
 	}
 
-	return e.Create(payment)
+	return response, nil
 }

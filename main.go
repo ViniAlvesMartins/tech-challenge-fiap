@@ -48,17 +48,13 @@ func main() {
 	orderUseCase := use_case.NewOrderUseCase(orderRepository, logger)
 
 	paymentRepository := repository.NewPaymentRepository(db, logger)
-	paymentUseCase := use_case.NewPaymentUseCase(paymentRepository)
-
-	externalPaymentRepository := repository.NewExternalPaymentRepository()
-	externalPaymentUseCase := service.NewExternalPayment(externalPaymentRepository)
-
-	checkoutUseCase := use_case.NewCheckoutUseCase(logger, paymentUseCase, orderUseCase, externalPaymentUseCase)
+	externalPaymentService := service.NewExternalPayment()
+	paymentUseCase := use_case.NewPaymentUseCase(paymentRepository, externalPaymentService, logger, orderUseCase)
 
 	categoryRepository := repository.NewCategoryRepository(db, logger)
 	categoryUseCase := use_case.NewCategoryUseCase(categoryRepository, logger)
 
-	app := http_server.NewApp(logger, clientUseCase, productUseCase, orderUseCase, paymentUseCase, categoryUseCase, checkoutUseCase)
+	app := http_server.NewApp(logger, clientUseCase, productUseCase, orderUseCase, paymentUseCase, categoryUseCase)
 
 	err = app.Run(ctx)
 
