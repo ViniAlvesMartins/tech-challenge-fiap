@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "f9da13ac-e460-41c4-aaca-fd87bd974969",
+		"_postman_id": "e05a3804-1daa-4960-810d-90ec2da383b7",
 		"name": "Ze_burguer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "10068266"
+		"_exporter_id": "4580887"
 	},
 	"item": [
 		{
@@ -36,7 +36,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders/19/status-payments",
+							"raw": "http://localhost:{{PORT}}/orders/1/status-payment",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -44,8 +44,8 @@
 							"port": "{{PORT}}",
 							"path": [
 								"orders",
-								"19",
-								"status-payments"
+								"1",
+								"status-payment"
 							]
 						}
 					},
@@ -91,7 +91,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders/19/payments",
+							"raw": "http://localhost:{{PORT}}/orders/1/payments",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -99,7 +99,7 @@
 							"port": "{{PORT}}",
 							"path": [
 								"orders",
-								"19",
+								"1",
 								"payments"
 							]
 						}
@@ -146,7 +146,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders/19/notification-payments",
+							"raw": "http://localhost:{{PORT}}/orders/1/notification-payments",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -154,7 +154,7 @@
 							"port": "{{PORT}}",
 							"path": [
 								"orders",
-								"19",
+								"1",
 								"notification-payments"
 							]
 						}
@@ -452,7 +452,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/products/7",
+							"raw": "http://localhost:{{PORT}}/products/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -460,7 +460,7 @@
 							"port": "{{PORT}}",
 							"path": [
 								"products",
-								"7"
+								"2"
 							]
 						}
 					},
@@ -631,7 +631,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"client_id\": 7,\n\t\"products\": [\n\t\t{\n\t\t\t\"id\": 1\n\t\t},\n\t\t{\n\t\t\t\"id\": 4\n\t\t}\n\t]\n}",
+							"raw": "{\n\t\"client_id\": 1,\n\t\"products\": [\n\t\t{\n\t\t\t\"id\": 1\n\t\t},\n\t\t{\n\t\t\t\"id\": 4\n\t\t}\n\t]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
