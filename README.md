@@ -24,25 +24,31 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 ## Arquitetura
 
-### Hexagonal
+### Clean Architecture
 
-![Hexagonal](./doc/arquitetura/hexagonal.svg)
+![Clean_Architecture](./doc/arquitetura/clean_arch.svg)
 
 ### Estrutura do projeto
 
-- doc 
+- doc
 - infra: Módulo responsável pela gestão da infra e configurações externas utilizadas na aplicação. Ex: Migrations, docker, config.go
+- kustomize: Módulo responsável pela gestão dos arquivos kubernetes
 - src
-    - **Adapter**: Módulo responsável por realizar a recepção e armazenamento de dados, e a integração com sistemas ou serviços de terceiros
-        - **Inbound**
-            - **Controller**: Camada responsável por processar a validação dos dados e direcionar a requisição para o serviço;
-            - **Handler**: Camada responsável por definir o meio de recepção das requisições; ex: REST API, GraphQL, Mensageria
-        - **Outbound**: Camada onde realizamos a implementação das ports **repository** e **external**
-            - **Repository**: Camada responsável por realizar a integração com o banco de dados e serviços externos; Ex: MySQL, PostgreSQL, DynamoDB, Integração com Mercado Pago, Integração com Mensageria
-    - **Core**: Módulo responsável pelo coração do negócio
-        - **Domain**: Camada responsável pelas entidades do negócio; 
-        - **Port**: Camada responsável por definir as interfaces de **Service**, **Repository** e **External**;
-        - **Service**: Camada responsável pela implementação da regra de negócio;
+	- **External**: Módulo responsável por realizar a recepção dos dados e realizar a chamada para a controller
+		- **Handler**: Camada responsável por definir o meio de recepção das requisições; ex: REST API, GraphQL, Mensageria
+        - **Database**: Camada onde realizamos a configuração do banco de dados;
+		- **Repository**: Camada responsável por realizar a integração com o banco de dados ; Ex: MySQL, PostgreSQL, DynamoDB, etc;
+		- **Service**: Camada responsável por realizar a integração com serviços externos; Ex: Integração com mercado pago, integração com serviços AWS, etc;
+    - **Controller**: Módulo responsável por realizar a validação dos dados e realizar a chamada para as UseCases necessárias
+		- **Controller**: Camada responsável por realizar a validação dos dados e realizar a chamada para as UseCases necessárias;
+		- **Serializer**: Camada responsável por definir o **Input** e **Output** da API;
+    - **Application**: Módulo responsável pelo coração do negócio
+        - **Modules**: Camada responsável pelos responses do **Service**; 
+        - **Contract**: Camada responsável por definir as interfaces de **Service** e **Repository**;
+        - **UseCases**: Camada responsável pela implementação da regra de negócio;
+	- **Entities**: Módulo responsável pela definição das entidades da aplicação
+        - **Entity**: Camada responsável pela definição das entidades que o sistema vai utilizar; Ex: Pedido, cliente
+        - **Enum**: Camada responsável por definir os enums utilizados pelo negócio. Ex: Status do pedido, status do pagamento
 
 ---
 
@@ -54,6 +60,7 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 **Ambiente:** Docker v24.0.5 | Docker-compose v2.20.2
 
+**Kubernetes:** V1.27.2
 
 ---
 
