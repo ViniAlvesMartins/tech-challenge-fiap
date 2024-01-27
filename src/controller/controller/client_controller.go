@@ -100,6 +100,18 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		})
 }
 
+// GetClientByCpf godoc
+// @Summary      Show client details
+// @Description  Get client by ID
+// @Tags         Clients
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Account ID"
+// @Param        apiKey header string true "Api key"
+// @Success      200  {object}  output.ClientDto
+// @Failure      500
+// @Failure      404
+// @Router       /clients/{id} [get]
 func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request) {
 	cpfParam := r.URL.Query().Get("cpf")
 

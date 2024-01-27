@@ -5,8 +5,10 @@ import (
 	"log/slog"
 	"net/http"
 
+	_ "github.com/ViniAlvesMartins/tech-challenge-fiap/doc/swagger"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/controller"
+	"github.com/swaggo/http-swagger/v2"
 
 	"github.com/gorilla/mux"
 )
@@ -60,6 +62,8 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/orders/{orderId:[0-9]+}/payments", paymentController.CreatePayment).Methods("POST")
 	router.HandleFunc("/orders/{orderId:[0-9]+}/status-payment", paymentController.GetLastPaymentStatus).Methods("GET")
 	router.HandleFunc("/orders/{orderId:[0-9]+}/notification-payments", paymentController.Notification).Methods("POST")
+
+	router.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
 
 	return http.ListenAndServe(":8080", router)
 }
