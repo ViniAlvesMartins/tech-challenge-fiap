@@ -20,8 +20,7 @@ spec:
           - configMapRef:
               name: ze-burguer
           - secretRef:
-<<<<<<< HEAD:kustomize/zeburguer.yaml
-              name: zeburguer
+              name: ze-burguer
           resources:
             requests:
               cpu: "50m"
@@ -46,9 +45,7 @@ spec:
       target:
         type: Utilization
         averageUtilization: 50
-=======
               name: ze-burguer
->>>>>>> main:kustomize/ze-burguer.yaml
 ---
 apiVersion: v1
 kind: Service
