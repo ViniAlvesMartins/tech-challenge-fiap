@@ -1,5 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS ze_burguer;
 
+CREATE TYPE ze_burguer.status_order AS ENUM ('AWAITING_PAYMENT', 'RECEIVED', 'PREPARING', 'READY', 'FINISHED');
+
 -- Create clients table
 CREATE TABLE IF NOT EXISTS ze_burguer.clients (
     "id" BIGSERIAL NOT NULL,
@@ -27,24 +29,12 @@ VALUES (18589822200, 'dbludmilo', 'dbludmilo@emailo.com');
 INSERT INTO ze_burguer.clients ( "cpf", "name", "email")
 VALUES (18589822400, 'dbdelicio', 'dbdelicio@emailo.com');
 
--- Create status table
-CREATE TABLE IF NOT EXISTS ze_burguer.orders (
-                                 "id" BIGSERIAL NOT NULL,
-                                 "client_id" INT NULL,
-                                 "status_order" status_order NOT NULL,
-                                 "created_at" TIMESTAMP NOT NULL,
-                                 "amount" FLOAT NOT NULL,
-                                 CONSTRAINT "PK_order" PRIMARY KEY ("id"),
-    CONSTRAINT "FK_client" FOREIGN KEY ("client_id") REFERENCES ze_burguer.clients(id)
-    );
-
-CREATE TYPE ze_burguer.status_order AS ENUM ('AWAITING_PAYMENT', 'RECEIVED', 'PREPARING', 'READY', 'FINISHED');
 
 -- Create orders table
 CREATE TABLE IF NOT EXISTS ze_burguer.orders (
     "id" BIGSERIAL NOT NULL,
     "client_id" INT NULL,
-    "status_order" status_order NOT NULL,
+    "status_order" ze_burguer.status_order NOT NULL,
     "created_at" TIMESTAMP NOT NULL,
     "amount" FLOAT NOT NULL,
     CONSTRAINT "PK_order" PRIMARY KEY ("id"),
