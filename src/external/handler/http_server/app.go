@@ -41,25 +41,25 @@ func (e *App) Run(ctx context.Context) error {
 	router := mux.NewRouter()
 
 	clientController := controller.NewClientController(e.clientUseCase, e.logger)
-	router.HandleFunc("/client", clientController.CreateClient).Methods("POST")
-	router.HandleFunc("/client", clientController.GetClientByCpf).Methods("GET")
+	router.HandleFunc("/clients", clientController.CreateClient).Methods("POST")
+	router.HandleFunc("/clients", clientController.GetClientByCpf).Methods("GET")
 
 	productController := controller.NewProductController(e.productUseCase, e.categoryUseCase, e.logger)
-	router.HandleFunc("/product", productController.CreateProduct).Methods("POST")
-	router.HandleFunc("/category/{categoryId:[0-9]+}/product", productController.GetProductByCategory).Methods("GET")
-	router.HandleFunc("/product/{productId:[0-9]+}", productController.UpdateProduct).Methods("PUT")
-	router.HandleFunc("/product/{productId:[0-9]+}", productController.DeleteProduct).Methods("DELETE")
+	router.HandleFunc("/products", productController.CreateProduct).Methods("POST")
+	router.HandleFunc("/categories/{categoryId:[0-9]+}/products", productController.GetProductByCategory).Methods("GET")
+	router.HandleFunc("/products/{productId:[0-9]+}", productController.UpdateProduct).Methods("PUT")
+	router.HandleFunc("/products/{productId:[0-9]+}", productController.DeleteProduct).Methods("DELETE")
 
 	orderController := controller.NewOrderController(e.orderUseCase, e.productUseCase, e.clientUseCase, e.logger)
-	router.HandleFunc("/order", orderController.FindOrders).Methods("GET")
-	router.HandleFunc("/order/{orderId:[0-9]+}", orderController.GetOrderById).Methods("GET")
-	router.HandleFunc("/order", orderController.CreateOrder).Methods("POST")
-	router.HandleFunc("/order/{orderId:[0-9]+}", orderController.UpdateOrderStatusById).Methods("PATCH")
+	router.HandleFunc("/orders", orderController.FindOrders).Methods("GET")
+	router.HandleFunc("/orders/{orderId:[0-9]+}", orderController.GetOrderById).Methods("GET")
+	router.HandleFunc("/orders", orderController.CreateOrder).Methods("POST")
+	router.HandleFunc("/orders/{orderId:[0-9]+}", orderController.UpdateOrderStatusById).Methods("PATCH")
 
 	paymentController := controller.NewPaymentController(e.paymentUseCase, e.logger, e.orderUseCase)
-	router.HandleFunc("/order/{orderId:[0-9]+}/payments", paymentController.CreatePayment).Methods("POST")
-	router.HandleFunc("/order/{orderId:[0-9]+}/status-payments", paymentController.GetLastPaymentStatus).Methods("GET")
-	router.HandleFunc("/order/{orderId:[0-9]+}/notification-payments", paymentController.Notification).Methods("POST")
+	router.HandleFunc("/orders/{orderId:[0-9]+}/payments", paymentController.CreatePayment).Methods("POST")
+	router.HandleFunc("/orders/{orderId:[0-9]+}/status-payment", paymentController.GetLastPaymentStatus).Methods("GET")
+	router.HandleFunc("/orders/{orderId:[0-9]+}/notification-payments", paymentController.Notification).Methods("POST")
 
 	return http.ListenAndServe(":8080", router)
 }

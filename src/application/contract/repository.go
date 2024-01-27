@@ -30,7 +30,7 @@ type PaymentRepository interface {
 
 type ProductRepository interface {
 	Create(product entity.Product) (entity.Product, error)
-	Update(product entity.Product) (entity.Product, error)
+	Update(product entity.Product) (*entity.Product, error)
 	Delete(id int) error
 	GetProductByCategory(categoryId int) ([]entity.Product, error)
 	GetById(id int) (*entity.Product, error)

@@ -1,6 +1,6 @@
 package controller
 
 type Response struct {
-	MessageError string
-	Data         interface{}
+	Error string      `json:"error"`
+	Data  interface{} `json:"data"`
 }
