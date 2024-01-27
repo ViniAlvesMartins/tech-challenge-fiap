@@ -45,7 +45,6 @@ spec:
       target:
         type: Utilization
         averageUtilization: 50
-              name: ze-burguer
 ---
 apiVersion: v1
 kind: Service
