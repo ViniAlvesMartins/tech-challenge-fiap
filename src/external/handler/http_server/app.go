@@ -63,7 +63,7 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/orders/{orderId:[0-9]+}/status-payment", paymentController.GetLastPaymentStatus).Methods("GET")
 	router.HandleFunc("/orders/{orderId:[0-9]+}/notification-payments", paymentController.Notification).Methods("POST")
 
-	router.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
+	router.PathPrefix("/docs").Handler(httpSwagger.WrapHandler)
 
 	return http.ListenAndServe(":8080", router)
 }
