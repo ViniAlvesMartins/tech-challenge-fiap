@@ -33,6 +33,17 @@ func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contr
 	}
 }
 
+// CreateOrder godoc
+// @Summary      Create order
+// @Description  Place a new order
+// @Tags         Orders
+// @Accept       json
+// @Produce      json
+// @Param        request   body      input.OrderDto  true  "Order properties"
+// @Success      200  {object}  Response{data=output.OrderDto}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
+// @Router       /orders [post]
 func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	var orderDto input.OrderDto
 
@@ -120,6 +131,14 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		})
 }
 
+// FindOrders godoc
+// @Summary      List orders
+// @Description  List orders by status
+// @Tags         Orders
+// @Produce      json
+// @Success      200  {object}  Response{data=[]output.OrderDto}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Router       /orders [get]
 func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
 	orders, err := o.orderUseCase.GetAll()
 	if err != nil {
@@ -144,6 +163,16 @@ func (o *OrderController) FindOrders(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// GetOrderById godoc
+// @Summary      Find order
+// @Description  Find order by id
+// @Tags         Orders
+// @Produce      json
+// @Param        id   path      int  true  "Order ID"
+// @Success      200  {object}  Response{data=output.OrderDto}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
+// @Router       /orders/{id} [get]
 func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 	orderIdParam := mux.Vars(r)["orderId"]
 
@@ -193,6 +222,17 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// UpdateOrderStatusById godoc
+// @Summary      Find order
+// @Description  Find order by id
+// @Tags         Orders
+// @Produce      json
+// @Param        id   path      int  true  "Order ID"
+// @Param        status   query      string  true  "Order status"
+// @Success      204  {object}  interface{}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
+// @Router       /orders/{id} [patch]
 func (o *OrderController) UpdateOrderStatusById(w http.ResponseWriter, r *http.Request) {
 	orderIdParam := mux.Vars(r)["orderId"]
 	orderId, err := strconv.Atoi(orderIdParam)

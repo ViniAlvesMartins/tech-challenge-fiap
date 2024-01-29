@@ -33,6 +33,17 @@ func NewPaymentController(p contract.PaymentUseCase, logger *slog.Logger, orderU
 	}
 }
 
+// CreatePayment godoc
+// @Summary      Start payment process
+// @Description  Start payment process for a certain order
+// @Tags         Payments
+// @Accept       json
+// @Produce      json
+// @Param        request   body      input.PaymentDto  true  "Payment properties"
+// @Success      200  {object}  Response{data=string}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
+// @Router       /orders/{id}/payments [post]
 func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request) {
 	var paymentDTO dto.PaymentDto
 	var response Response
@@ -133,6 +144,16 @@ func (p *PaymentController) CreatePayment(w http.ResponseWriter, r *http.Request
 		})
 }
 
+// GetLastPaymentStatus godoc
+// @Summary      Get status for last payment
+// @Description  Get status for order last payment try
+// @Tags         Payments
+// @Accept       json
+// @Produce      json
+// @Param        request   body      input.PaymentDto  true  "Payment properties"
+// @Success      200  {object}  Response{data=string}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Router       /orders/{id}/status-payments [get]
 func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.Request) {
 	orderIdParam := mux.Vars(r)["orderId"]
 	orderId, err := strconv.Atoi(orderIdParam)
@@ -173,6 +194,17 @@ func (p *PaymentController) GetLastPaymentStatus(w http.ResponseWriter, r *http.
 		})
 }
 
+// Notification godoc
+// @Summary      Payment confirmation webhook
+// @Description  Payment confirmation webhook
+// @Tags         Payments
+// @Accept       json
+// @Produce      json
+// @Param        request   body      input.PaymentDto  true  "Payment properties"
+// @Success      201  {object}  interface{}
+// @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Router       /orders/{id}/notification-payments [post]
 func (p *PaymentController) Notification(w http.ResponseWriter, r *http.Request) {
 	orderIdParam := mux.Vars(r)["orderId"]
 
