@@ -28,6 +28,16 @@ func NewProductController(productUseCase contract.ProductUseCase, categoryUseCas
 	}
 }
 
+// CreateProduct godoc
+// @Summary      Create product
+// @Description  Place a new product
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param        request   body      input.ProductDto  true  "Product properties"
+// @Success      200  {object}  Response{error=string,data=output.ProductDto}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Router       /products [post]
 func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var productDto dto.ProductDto
 
@@ -102,6 +112,17 @@ func (p *ProductController) CreateProduct(w http.ResponseWriter, r *http.Request
 		})
 }
 
+// UpdateProduct godoc
+// @Summary      Update product
+// @Description  Update product properties
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Product ID"
+// @Param        request   body      input.ProductDto  true  "Product properties"
+// @Success      200  {object}  Response{error=string,data=output.ProductDto}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Router       /products/{id} [put]
 func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	var productDto dto.ProductDto
 
@@ -201,6 +222,16 @@ func (p *ProductController) UpdateProduct(w http.ResponseWriter, r *http.Request
 		})
 }
 
+// DeleteProduct godoc
+// @Summary      Delete product
+// @Description  Remove product from list
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Product ID"
+// @Success      200  {object}  interface{}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Router       /products/{id} [delete]
 func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	productIdParam, ok := mux.Vars(r)["productId"]
 	if !ok {
@@ -267,6 +298,16 @@ func (p *ProductController) DeleteProduct(w http.ResponseWriter, r *http.Request
 	w.WriteHeader(http.StatusOK)
 }
 
+// GetProductByCategory godoc
+// @Summary      List product by category
+// @Description  List products from a certain category
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Category ID"
+// @Success      200  {object}  Response{data=[]output.ProductDto}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Router       /categories/{id}/products [get]
 func (p *ProductController) GetProductByCategory(w http.ResponseWriter, r *http.Request) {
 	categoryIdParam := mux.Vars(r)["categoryId"]
 

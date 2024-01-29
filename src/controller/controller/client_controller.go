@@ -25,6 +25,16 @@ func NewClientController(clientUseCase contract.ClientUseCase, logger *slog.Logg
 	}
 }
 
+// CreateClient godoc
+// @Summary      Create client
+// @Description  Add new client
+// @Tags         Clients
+// @Accept       json
+// @Produce      json
+// @Param        request   body      input.ClientDto  true  "Client properties"
+// @Success      201  {object}  Response{error=string,data=output.ClientDto}
+// @Failure      500  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
+// @Router       /clients [post]
 func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) {
 	var clientDto dto.ClientDto
 
@@ -100,6 +110,17 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		})
 }
 
+// GetClientByCpf godoc
+// @Summary      Show client details
+// @Description  Get client by cpf
+// @Tags         Clients
+// @Accept       json
+// @Produce      json
+// @Param        cpf   query      integer  true  "Client cpf"
+// @Success      200  {object}  Response{data=output.ClientDto}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
+// @Router       /clients [get]
 func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request) {
 	cpfParam := r.URL.Query().Get("cpf")
 
