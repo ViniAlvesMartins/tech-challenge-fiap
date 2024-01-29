@@ -228,7 +228,7 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 // @Tags         Orders
 // @Produce      json
 // @Param        id   path      int  true  "Order ID"
-// @Param        status   query      string  true  "Order status"
+// @Param        request   body      input.StatusOrderDto  true  "Order status"
 // @Success      204  {object}  interface{}
 // @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
 // @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
