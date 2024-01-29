@@ -40,7 +40,7 @@ func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contr
 // @Accept       json
 // @Produce      json
 // @Param        request   body      input.OrderDto  true  "Order properties"
-// @Success      200  {object}  Response{data=output.OrderDto}
+// @Success      201  {object}  Response{data=output.OrderDto}
 // @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
 // @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
 // @Router       /orders [post]

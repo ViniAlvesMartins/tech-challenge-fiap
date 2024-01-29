@@ -32,7 +32,7 @@ func NewClientController(clientUseCase contract.ClientUseCase, logger *slog.Logg
 // @Accept       json
 // @Produce      json
 // @Param        request   body      input.ClientDto  true  "Client properties"
-// @Success      200  {object}  Response{error=string,data=output.ClientDto}
+// @Success      201  {object}  Response{error=string,data=output.ClientDto}
 // @Failure      500  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
 // @Router       /clients [post]
 func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) {
@@ -117,7 +117,7 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 // @Accept       json
 // @Produce      json
 // @Param        cpf   query      integer  true  "Client cpf"
-// @Success      200  {object}  output.ClientDto
+// @Success      200  {object}  Response{data=output.ClientDto}
 // @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
 // @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
 // @Router       /clients [get]

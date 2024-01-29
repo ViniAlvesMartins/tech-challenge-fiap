@@ -106,7 +106,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/output.ClientDto"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controller.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/output.ClientDto"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "404": {
@@ -171,8 +183,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "allOf": [
                                 {
@@ -289,8 +301,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "allOf": [
                                 {
@@ -515,6 +527,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/input.PaymentDto"
                         }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -585,11 +604,18 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/input.PaymentDto"
                         }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "allOf": [
                                 {
@@ -645,7 +671,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/orders/{id}/status-payments": {
+        "/orders/{id}/status-payment": {
             "get": {
                 "description": "Get status for order last payment try",
                 "consumes": [
@@ -660,13 +686,11 @@ const docTemplate = `{
                 "summary": "Get status for last payment",
                 "parameters": [
                     {
-                        "description": "Payment properties",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/input.PaymentDto"
-                        }
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {

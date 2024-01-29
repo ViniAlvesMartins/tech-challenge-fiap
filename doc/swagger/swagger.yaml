@@ -168,7 +168,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/output.ClientDto'
+            allOf:
+            - $ref: '#/definitions/controller.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/output.ClientDto'
+              type: object
         "404":
           description: Not Found
           schema:
@@ -204,8 +209,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             allOf:
             - $ref: '#/definitions/controller.Response'
@@ -270,8 +275,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             allOf:
             - $ref: '#/definitions/controller.Response'
@@ -395,6 +400,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/input.PaymentDto'
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -435,11 +445,16 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/input.PaymentDto'
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             allOf:
             - $ref: '#/definitions/controller.Response'
@@ -468,18 +483,17 @@ paths:
       summary: Start payment process
       tags:
       - Payments
-  /orders/{id}/status-payments:
+  /orders/{id}/status-payment:
     get:
       consumes:
       - application/json
       description: Get status for order last payment try
       parameters:
-      - description: Payment properties
-        in: body
-        name: request
+      - description: Order ID
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/input.PaymentDto'
+        type: integer
       produces:
       - application/json
       responses:
