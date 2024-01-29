@@ -13,7 +13,8 @@ spec:
     spec:
       containers:
         - name: ze-burguer
-          image: marcosilva/ze_burguer:latest
+          image: test-retry-zeburguer:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
           envFrom:
@@ -23,9 +24,9 @@ spec:
               name: ze-burguer
           resources:
             requests:
-              cpu: "50m"
+              cpu: "30m"
             limits:
-              cpu: "50m"
+              cpu: "30m"
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
