@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 
@@ -17,14 +18,24 @@ import (
 
 func MigrationExecute(cfg *infra.Config, log *slog.Logger) {
 	var err error
+    var db *sql.DB
 
-	connStr := fmt.Sprintf("host=%s user=%s sslmode=disable password=%s dbname=%s",
-		cfg.DatabaseHost, cfg.DatabaseUsername, cfg.DatabasePassword, cfg.DatabaseDBName)
+    var validationDB = true
 
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		log.Error("error opening postgres connection", err)
-	}
+    connStr := fmt.Sprintf("host=%s user=%s sslmode=disable password=%s dbname=%s",
+        cfg.DatabaseHost, cfg.DatabaseUsername, cfg.DatabasePassword, cfg.DatabaseDBName)
+
+    for validationDB {
+        db, err = sql.Open("postgres", connStr)
+
+        if err != nil {
+            log.Error("error opening postgres connection", err)
+            time.Sleep(10 * time.Second)
+        } else {
+            validationDB = false
+        }
+
+    }
 
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {

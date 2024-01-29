@@ -95,7 +95,12 @@ Requisitos Cluster Kubernetes:
 
 - Docker Kubernetes
 - Metrics Server (Instalado)
+	- [Guia de instalação Cluster](https://github.com/kubernetes-sigs/metrics-server?tab=readme-ov-file#installation)
 
+Requisitos Criação dos Recursos:
+
+- Kubectl 
+	[Guia de instalação local](https://kubernetes.io/docs/tasks/tools/)
 
 Para criar os recursos 
 
