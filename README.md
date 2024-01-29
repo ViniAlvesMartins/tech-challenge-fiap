@@ -100,7 +100,7 @@ Requisitos Cluster Kubernetes:
 Requisitos Criação dos Recursos:
 
 - Kubectl 
-	[Guia de instalação local](https://kubernetes.io/docs/tasks/tools/)
+	- [Guia de instalação local](https://kubernetes.io/docs/tasks/tools/)
 
 Para criar os recursos 
 
@@ -112,7 +112,7 @@ Com a execução acima será criado a seguinte infraestrutura:
 
 Services
  - ze-burguer: NodePort 30443
- - postgres: ClusterIP 5432
+ - postgres: NodePort 30432
 
 Deployments
  - ze-burguer: HPA (2-5 Pods) - CPU Average Usage metrics
