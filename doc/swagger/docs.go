@@ -452,11 +452,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
                         "description": "Order status",
-                        "name": "status",
-                        "in": "query",
-                        "required": true
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/input.StatusOrderDto"
+                        }
                     }
                 ],
                 "responses": {
@@ -1003,6 +1005,17 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "number"
+                }
+            }
+        },
+        "input.StatusOrderDto": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string"
                 }
             }
         },

@@ -229,7 +229,7 @@ func (o *OrderController) GetOrderById(w http.ResponseWriter, r *http.Request) {
 // @Tags         Orders
 // @Produce      json
 // @Param        id   path      int  true  "Order ID"
-// @Param        status   query      string  true  "Order status"
+// @Param        request   body      input.StatusOrderDto  true  "Order status"
 // @Success      204  {object}  interface{}
 // @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
 // @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
@@ -249,8 +249,20 @@ func (o *OrderController) UpdateOrderStatusById(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	status := r.URL.Query().Get("status")
-	if !enum.ValidateStatus(status) {
+	var statusOrderDto input.StatusOrderDto
+	if err := json.NewDecoder(r.Body).Decode(&statusOrderDto); err != nil {
+		o.logger.Error("unable to decode the request body", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Unable to decode the request body",
+				Data:  nil,
+			})
+		return
+	}
+
+	if !enum.ValidateStatus(statusOrderDto.Status) {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(Response{
 			Error: "Invalid status",
@@ -281,7 +293,7 @@ func (o *OrderController) UpdateOrderStatusById(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	if err := o.orderUseCase.UpdateStatusById(orderId, enum.StatusOrder(status)); err != nil {
+	if err := o.orderUseCase.UpdateStatusById(orderId, enum.StatusOrder(statusOrderDto.Status)); err != nil {
 		o.logger.Error("error updating status by id", slog.Any("error", err.Error()))
 
 		w.WriteHeader(http.StatusInternalServerError)

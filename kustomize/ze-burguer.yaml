@@ -13,8 +13,7 @@ spec:
     spec:
       containers:
         - name: ze-burguer
-          image: test-retry-zeburguer:latest
-          imagePullPolicy: Never
+          image: marcosilva/ze_burguer:latest
           ports:
             - containerPort: 8080
           envFrom:
