@@ -54,6 +54,13 @@ definitions:
     - name_product
     - price
     type: object
+  input.StatusOrderDto:
+    properties:
+      status:
+        type: string
+    required:
+    - status
+    type: object
   output.ClientDto:
     properties:
       cpf:
@@ -356,10 +363,11 @@ paths:
         required: true
         type: integer
       - description: Order status
-        in: query
-        name: status
+        in: body
+        name: request
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/input.StatusOrderDto'
       produces:
       - application/json
       responses:
