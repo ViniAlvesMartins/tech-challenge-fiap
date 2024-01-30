@@ -588,7 +588,16 @@
 							"path": [
 								"orders",
 								"1"
-							]
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n\t\"status\": \"FINISHED\" \n}",
+								"options": {
+									"raw": {
+										"language": "json"
+									}
+								}
+							}
 						}
 					},
 					"response": []
