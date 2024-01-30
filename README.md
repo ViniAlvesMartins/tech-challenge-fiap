@@ -143,4 +143,4 @@ Deployments
  - Passo 3: Criar um pedido com os produtos cadastrados (pode ou não informar o id do cliente cadastrado) (`http://localhost:port/orders`)
  - Passo 4: Criar um pagamento (Etapa de criação do Qr Code) (`http://localhost:port/orders/{id_order}/payments`)
  - Passo 5: Realizar uma chamada na API de `Notification Payment` (WEBHOOK responsável por confirmar o pagamento e atualizar o Status do pedido) (`http://localhost:port/orders/{id_order}/notification-payments`)
- - Passo 6: Realizar a atualização de status atravpes da API Patch de pedidos (`http://localhost:port/orders/{id_order}`)
+ - Passo 6: Realizar a atualização de status através da API Patch de pedidos (`http://localhost:port/orders/{id_order}`)
