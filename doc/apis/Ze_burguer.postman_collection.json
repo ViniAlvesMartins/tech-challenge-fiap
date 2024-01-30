@@ -579,7 +579,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders/1?status=FINISHED",
+							"raw": "http://localhost:{{PORT}}/orders/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -589,12 +589,15 @@
 								"orders",
 								"1"
 							],
-							"query": [
-								{
-									"key": "status",
-									"value": "FINISHED"
+							"body": {
+								"mode": "raw",
+								"raw": "{\n\t\"status\": \"FINISHED\" \n}",
+								"options": {
+									"raw": {
+										"language": "json"
+									}
 								}
-							]
+							}
 						}
 					},
 					"response": []
