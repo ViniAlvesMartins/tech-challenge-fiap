@@ -122,7 +122,7 @@ Deployments
 
 ## Documentação da API
 
-[Collection_Insomnia](./doc/apis/insomnia.json)
+[Collection_Postman](./doc/apis/Ze_burguer.postman_collection.json) (necessário importar as ENVS que costam na mesma pasta)
 
 #### Base URL: http://localhost:8080
 
