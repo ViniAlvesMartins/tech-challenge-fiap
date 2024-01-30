@@ -123,5 +123,24 @@ Deployments
 ## Documentação da API
 
 [Collection_Insomnia](./doc/apis/insomnia.json)
+
 #### Base URL: http://localhost:8080
+
 #### Doc Swagger: http://localhost:8080/docs/index.html
+
+#### Passo a passo para execução das APIs
+
+  - Categorias dos produtos:
+    - | Id | Categoria  |
+      | -- | ---------- |
+      | 1  | Lanche     |
+      | 2  | Bebida     |
+      | 3  | Acompanhamento   |
+      | 4  | Sobremesa  |
+
+ - Passo 1: Cadastrar os Produtos desejados (`http://localhost:port/products`)
+ - Passo 2: Cadastrar o cliente (etapa opcional) (`http://localhost:port/clients`)
+ - Passo 3: Criar um pedido com os produtos cadastrados (pode ou não informar o id do cliente cadastrado) (`http://localhost:port/orders`)
+ - Passo 4: Criar um pagamento (Etapa de criação do Qr Code) (`http://localhost:port/orders/{id_order}/payments`)
+ - Passo 5: Realizar uma chamada na API de `Notification Payment` (WEBHOOK responsável por confirmar o pagamento e atualizar o Status do pedido) (`http://localhost:port/orders/{id_order}/notification-payments`)
+ - Passo 6: Realizar a atualização de status atravpes da API Patch de pedidos (`http://localhost:port/orders/{id_order}`)

@@ -1,7 +1,9 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "title": "Ze Burguer APIs",
+        "contact": {},
+        "version": "1.0"
     },
     "paths": {
         "/categories/{id}/products": {

@@ -3,11 +3,12 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/input"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/output"
 	"log/slog"
 	"net/http"
 	"strconv"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/input"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/output"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/enum"
 

@@ -17,6 +17,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// @title           Ze Burguer APIs
+// @version         1.0
 func main() {
 	var err error
 	var ctx = context.Background()
