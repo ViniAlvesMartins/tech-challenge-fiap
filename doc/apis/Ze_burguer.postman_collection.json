@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "e05a3804-1daa-4960-810d-90ec2da383b7",
+		"_postman_id": "c68b560d-d206-47d8-84c0-862c5d77e8b1",
 		"name": "Ze_burguer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "4580887"
+		"_exporter_id": "10068266"
 	},
 	"item": [
 		{
@@ -579,7 +579,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders/1?status=FINISHED",
+							"raw": "http://localhost:{{PORT}}/orders/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -588,12 +588,6 @@
 							"path": [
 								"orders",
 								"1"
-							],
-							"query": [
-								{
-									"key": "status",
-									"value": "FINISHED"
-								}
 							]
 						}
 					},

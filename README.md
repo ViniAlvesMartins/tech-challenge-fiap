@@ -138,6 +138,15 @@ Deployments
       | 3  | Acompanhamento   |
       | 4  | Sobremesa  |
 
+  - Status do pedido:
+    - | Status | 
+      | ------ | 
+      | AWAITING_PAYMENT  | 
+      | RECEIVED  | 
+      | PREPARING  | 
+      | READY  | 
+      | FINISHED |
+
  - Passo 1: Cadastrar os Produtos desejados (`http://localhost:port/products`)
  - Passo 2: Cadastrar o cliente (etapa opcional) (`http://localhost:port/clients`)
  - Passo 3: Criar um pedido com os produtos cadastrados (pode ou não informar o id do cliente cadastrado) (`http://localhost:port/orders`)
