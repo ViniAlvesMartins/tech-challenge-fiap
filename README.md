@@ -55,6 +55,16 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 ## Database
 
 ![postgresql](./doc/arquitetura/database.png)
+
+Alguns pontos foram considerados para o uso de banco relacional na nossa solução, dentre eles podemos destacar: a natureza relacional entre as entidades e sua estrutura pouco flexivel; o conhecimento difundido do SQL entre os
+integrantes, como linguagem para inteface com o banco de dados; conformidade com ACID(atomicidade, consistência, isolamento e durabilidade).
+
+Dada a natureza da aplicação desenvolvida, levamos em consideração também a vantagem dos bancos de dados relacionais, em relação á flexibilidade para executar consultas mais complexas,
+estratégia de indexação a mais tempo sendo colocadas á prova e a consistência dos dados sobre os bancos não relacionais.
+
+Entre as opções de RDBMS, escolhemos o PostgreSQL por conta de extensa adoção no mercado; seu controle de concorrência, que por padrão evita que transações não salvas afete outras transações;
+compatibilidade com as principais soluções de banco de dados como serviço do mercado(Amazon RDS, Microsoft Azure e Google GCP). O PostgreSQL também oferece diversas funções que facilita o desenvolvimento, como:
+uma vasta quantidade de tipos de dados; suporte nativo a UUID(identificador único universal);e controle de acesso granular, permitindo acesso á apenas o que for necessário ao usuário da aplicação.
 ---
 
 ## Stack utilizada
