@@ -8,6 +8,6 @@ COPY . .
 
 EXPOSE 8080
 
-RUN go build -o main .
+RUN go build -o ./api/main ./api/main.go
 
-CMD [ "./main" ]
+CMD [ "./api/main" ]

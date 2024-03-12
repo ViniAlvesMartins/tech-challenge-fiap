@@ -54,7 +54,7 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 ## Stack utilizada
 
-**Linguagem:** Go lang (v1.21)
+**Linguagem:** Go (v1.22)
 
 **Banco de dados:** PostgreSQL
 

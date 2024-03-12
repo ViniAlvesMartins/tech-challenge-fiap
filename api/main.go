@@ -13,8 +13,6 @@ import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/external/database/postgres"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/external/handler/http_server"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/external/repository"
-
-	"gorm.io/gorm"
 )
 
 // @title           Ze Burguer APIs
@@ -31,14 +29,11 @@ func main() {
 		panic(err)
 	}
 
-	db, err := loadDatabase(ctx, cfg)
-
+	db, err := postgres.NewConnection(cfg)
 	if err != nil {
 		logger.Error("error connecting tdo database", err)
 		panic(err)
 	}
-
-	postgres.MigrationExecute(&cfg, logger)
 
 	clientRepository := repository.NewClientRepository(db, logger)
 	clientUseCase := use_case.NewClientUseCase(clientRepository, logger)
@@ -64,14 +59,6 @@ func main() {
 		logger.Error("error running application", err)
 		panic(err)
 	}
-}
-
-func loadDatabase(ctx context.Context, cfg infra.Config) (*gorm.DB, error) {
-	return postgres.NewConnection(
-		ctx,
-		slog.New(slog.NewTextHandler(os.Stdout, nil)),
-		cfg,
-	)
 }
 
 func loadConfig() (infra.Config, error) {
