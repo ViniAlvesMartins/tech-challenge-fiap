@@ -50,11 +50,25 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
         - **Entity**: Camada responsável pela definição das entidades que o sistema vai utilizar; Ex: Pedido, cliente
         - **Enum**: Camada responsável por definir os enums utilizados pelo negócio. Ex: Status do pedido, status do pagamento
 
+--- 
+
+## Database
+
+![postgresql](./doc/arquitetura/database.png)
+
+Alguns pontos foram considerados para o uso de banco relacional na nossa solução, dentre eles podemos destacar: a natureza relacional entre as entidades e sua estrutura pouco flexível; o conhecimento difundido do SQL, dentre os integrante do grupo, como linguagem para interface com o banco de dados; conformidade com ACID(atomicidade, consistência, isolamento e durabilidade).
+
+Dada a natureza da aplicação desenvolvida, levamos em consideração também a vantagem dos bancos de dados relacionais, em relação á flexibilidade para executar consultas mais complexas,
+estratégia de indexação a mais tempo sendo colocadas á prova e a consistência dos dados sobre os bancos não relacionais.
+
+Entre as opções de RDBMS, escolhemos o PostgreSQL por conta de extensa adoção no mercado, aumentando a gama de material de suporte disponível; seu controle de concorrência, que por padrão evita que transações não salvas afetem outras transações;
+compatibilidade com as principais soluções de banco de dados como serviço do mercado(Amazon RDS, Microsoft Azure e Google GCP). O PostgreSQL também oferece diversas funções que facilitam o desenvolvimento, como:
+uma vasta quantidade de tipos de dados; suporte nativo a UUID(identificador único universal);e controle de acesso granular, permitindo acesso á apenas o que for necessário ao usuário da aplicação.
 ---
 
 ## Stack utilizada
 
-**Linguagem:** Go lang (v1.21)
+**Linguagem:** Go (v1.22)
 
 **Banco de dados:** PostgreSQL
 

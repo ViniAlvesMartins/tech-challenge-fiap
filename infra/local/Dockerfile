@@ -1,4 +1,4 @@
-FROM golang:1.21
+FROM golang:1.22
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 COPY . .
 
-RUN go build -o main .
+RUN go build -o ./api/main ./api/main.go
 
 EXPOSE 8080
 
