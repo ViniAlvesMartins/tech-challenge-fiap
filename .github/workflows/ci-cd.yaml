@@ -10,6 +10,7 @@ on:
 env:
   EKS_CLUSTER_NAME: eks-ze-burguer
   AWS_REGION: us-east-1
+  RDS-ENDPOINT: 
 
 jobs:
   build:
@@ -36,9 +37,26 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ze_burguer:latest
 
+  migration:
+    name: Running DB migration
+    needs: [build]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check out
+      uses: actions/checkout@v4
+
+    - name: Set up Migration Script
+      run: |
+        chmod +x cmd/main
+  
+    - name: Run Migration Script
+      run: |
+        ./cmd/main 
+
   deploy:
     name: Deploy
-    needs: [build] 
+    needs: [build, migration] 
     runs-on: ubuntu-latest
 
     steps:
