@@ -50,6 +50,11 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
         - **Entity**: Camada responsável pela definição das entidades que o sistema vai utilizar; Ex: Pedido, cliente
         - **Enum**: Camada responsável por definir os enums utilizados pelo negócio. Ex: Status do pedido, status do pagamento
 
+--- 
+
+## Database
+
+![postgresql](./doc/arquitetura/database.png)
 ---
 
 ## Stack utilizada
