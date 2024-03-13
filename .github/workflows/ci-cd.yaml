@@ -90,8 +90,10 @@ jobs:
         aws-region: ${{env.AWS_REGION}}
 
     - name: Update kube config
+      id: config-kubectl
       run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
 
     - name: Deploy App to EKS
+      if: steps.config-kubectl.outcome == 'success'
       run: |
         kubectl apply -k ./kustomize
