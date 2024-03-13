@@ -13,6 +13,8 @@ env:
   DATABASE_HOST: "zeburger-db.cpwm48q0wvgx.us-east-1.rds.amazonaws.com"
   DATABASE_USERNAME: "zeburguer"
   DATABASE_PORT: 5432
+  DATABASE_SCHEMA: "ze_burguer"
+  MIGRATIONS_DIR: "infra/database/migrations"
 
 jobs:
   build:
