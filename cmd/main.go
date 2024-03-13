@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/infra"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/external/database/postgres"
-	"github.com/joho/godotenv"
 	"log/slog"
 	"os"
 )
@@ -11,12 +10,6 @@ import (
 func main() {
 	var err error
 	var logger = slog.New(slog.NewTextHandler(os.Stderr, nil))
-
-	err = godotenv.Load()
-	if err != nil {
-		logger.Error("error loading env vars", err)
-		panic(err)
-	}
 
 	cfg, err := infra.NewConfig()
 	if err != nil {
