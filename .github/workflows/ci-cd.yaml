@@ -15,6 +15,7 @@ env:
   DATABASE_PORT: 5432
   DATABASE_SCHEMA: "ze_burguer"
   MIGRATIONS_DIR: "infra/database/migrations"
+  DATABASE_NAME: postgress
 
 jobs:
   build:
