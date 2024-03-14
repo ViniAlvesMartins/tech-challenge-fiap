@@ -64,6 +64,7 @@ estratégia de indexação a mais tempo sendo colocadas á prova e a consistênc
 Entre as opções de RDBMS, escolhemos o PostgreSQL por conta de extensa adoção no mercado, aumentando a gama de material de suporte disponível; seu controle de concorrência, que por padrão evita que transações não salvas afetem outras transações;
 compatibilidade com as principais soluções de banco de dados como serviço do mercado(Amazon RDS, Microsoft Azure e Google GCP). O PostgreSQL também oferece diversas funções que facilitam o desenvolvimento, como:
 uma vasta quantidade de tipos de dados; suporte nativo a UUID(identificador único universal);e controle de acesso granular, permitindo acesso á apenas o que for necessário ao usuário da aplicação.
+
 ---
 
 ## Stack utilizada
