@@ -120,6 +120,8 @@ definitions:
     type: object
 info:
   contact: {}
+  title: Ze Burguer APIs
+  version: "1.0"
 paths:
   /categories/{id}/products:
     get:
