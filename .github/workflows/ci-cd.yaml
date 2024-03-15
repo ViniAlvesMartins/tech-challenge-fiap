@@ -98,3 +98,11 @@ jobs:
       run: |
         ls -lar
         kubectl config current-context
+    
+    - name: Deploy Metrics Server to EKS
+      run: |
+        kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+    
+    - name: Deploy APP to EKS
+      run: |
+        kubectl apply -f k8s/ze-burguer.yaml
