@@ -14,9 +14,9 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 [Stack](#stack-utilizada)
 
-[Instalação Docker](#instalação)
+[Instalação Docker](#instalação-docker)
 
-[Instalação Kubernetes](#instalação-k8s)
+[Instalação Kubernetes](#instalação-kubernetes)
 
 [APIs](#documentação-da-api)
 
