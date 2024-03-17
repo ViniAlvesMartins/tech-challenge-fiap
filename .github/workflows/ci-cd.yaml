@@ -10,7 +10,7 @@ on:
 env:
   EKS_CLUSTER_NAME: eks-ze-burguer
   AWS_REGION: us-east-1
-  RDS-ENDPOINT: 
+  RDS-ENDPOINT: zeburger-db.cpwm48q0wvgx.us-east-1.rds.amazonaws.com
 
 jobs:
   build:
