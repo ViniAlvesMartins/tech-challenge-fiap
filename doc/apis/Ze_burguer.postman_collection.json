@@ -37,7 +37,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -89,7 +89,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -150,7 +150,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -216,7 +216,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -270,7 +270,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -331,7 +331,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -385,7 +385,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -443,7 +443,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -498,7 +498,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -549,7 +549,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -594,7 +594,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -640,7 +640,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
@@ -691,7 +691,7 @@
 								"type": "text"
 							},
 							{
-								"key": "authorization",
+								"key": "Authorization",
 								"value": "{{access_token}}",
 								"type": "text"
 							}
