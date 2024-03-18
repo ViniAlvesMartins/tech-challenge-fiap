@@ -12,6 +12,8 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 [Arquitetura](#arquitetura)
 
+[Arquitetura Cloud](#arquitetura-cloud)
+
 [Stack](#stack-utilizada)
 
 [Instalação Docker](#instalação-docker)
@@ -67,6 +69,12 @@ uma vasta quantidade de tipos de dados; suporte nativo a UUID(identificador úni
 
 ---
 
+## Arquitetura cloud
+
+![Arquitetura_cloud](./doc/arquitetura/cloud_arch.png)
+
+---
+
 ## Stack utilizada
 
 **Linguagem:** Go (v1.22)
@@ -79,7 +87,7 @@ uma vasta quantidade de tipos de dados; suporte nativo a UUID(identificador úni
 
 ---
 
-## Instalação Docker
+## Instalação docker
 
 Clone o projeto
 
@@ -104,7 +112,7 @@ Inicie a aplicação
 ```bash
   docker-compose up
 ```
-## Instalação Kubernetes
+## Instalação kubernetes
 
 Requisitos Cluster Kubernetes:
 

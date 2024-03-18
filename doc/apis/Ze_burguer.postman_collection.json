@@ -18,7 +18,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -32,16 +33,20 @@
 						"header": [
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.6.0"
+								"value": "insomnia/8.6.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders/1/status-payment",
-							"protocol": "http",
+							"raw": "{{URL}}/orders/1/status-payment",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"orders",
 								"1",
@@ -60,7 +65,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -74,11 +80,18 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
 							},
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.6.0"
+								"value": "insomnia/8.6.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -91,12 +104,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders/1/payments",
-							"protocol": "http",
+							"raw": "{{URL}}/orders/1/payments",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"orders",
 								"1",
@@ -115,7 +126,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -129,11 +141,18 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
 							},
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.6.0"
+								"value": "insomnia/8.6.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -146,12 +165,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders/1/notification-payments",
-							"protocol": "http",
+							"raw": "{{URL}}/orders/1/notification-payments",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"orders",
 								"1",
@@ -175,7 +192,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -189,11 +207,18 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
 							},
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.3.0"
+								"value": "insomnia/8.3.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -206,12 +231,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:{{PORT}}/clients",
-							"protocol": "http",
+							"raw": "{{URL}}/clients",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"clients"
 							]
@@ -228,7 +251,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -242,23 +266,27 @@
 						"header": [
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.3.0"
+								"value": "insomnia/8.3.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/clients?cpf=39034722801",
-							"protocol": "http",
+							"raw": "{{URL}}/clients?cpf=18535898700",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"clients"
 							],
 							"query": [
 								{
 									"key": "cpf",
-									"value": "39034722801"
+									"value": "18535898700"
 								}
 							]
 						}
@@ -279,7 +307,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -293,11 +322,18 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
 							},
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.3.0"
+								"value": "insomnia/8.3.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -310,12 +346,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:{{PORT}}/products",
-							"protocol": "http",
+							"raw": "{{URL}}/products",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"products"
 							]
@@ -332,7 +366,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -346,16 +381,20 @@
 						"header": [
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.3.0"
+								"value": "insomnia/8.3.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/categories/1/products?=",
-							"protocol": "http",
+							"raw": "{{URL}}/categories/1/products?=",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"categories",
 								"1",
@@ -380,7 +419,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -394,11 +434,18 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
 							},
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.3.0"
+								"value": "insomnia/8.3.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -411,12 +458,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:{{PORT}}/products/1",
-							"protocol": "http",
+							"raw": "{{URL}}/products/1",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"products",
 								"1"
@@ -434,7 +479,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -448,16 +494,20 @@
 						"header": [
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.3.0"
+								"value": "insomnia/8.3.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/products/2",
-							"protocol": "http",
+							"raw": "{{URL}}/products/2",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"products",
 								"2"
@@ -480,7 +530,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -494,16 +545,20 @@
 						"header": [
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.3.0"
+								"value": "insomnia/8.3.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders",
-							"protocol": "http",
+							"raw": "{{URL}}/orders",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"orders"
 							]
@@ -520,7 +575,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -534,16 +590,20 @@
 						"header": [
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.3.0"
+								"value": "insomnia/8.3.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders/1",
-							"protocol": "http",
+							"raw": "{{URL}}/orders/1",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"orders",
 								"1"
@@ -561,7 +621,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -575,16 +636,20 @@
 						"header": [
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.3.0"
+								"value": "insomnia/8.3.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders/1",
-							"protocol": "http",
+							"raw": "{{URL}}/orders/1",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"orders",
 								"1"
@@ -602,7 +667,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -616,11 +682,18 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
 							},
 							{
 								"key": "User-Agent",
-								"value": "insomnia/8.3.0"
+								"value": "insomnia/8.3.0",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "{{access_token}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -633,14 +706,57 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:{{PORT}}/orders",
-							"protocol": "http",
+							"raw": "{{URL}}/orders",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "{{PORT}}",
 							"path": [
 								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"postman.setEnvironmentVariable(\"access_token\", jsonData.AuthenticationResult.AccessToken)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"vinicius.martins1196@gmail.com\",\r\n    \"password\": \"!Ab234567890@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth"
 							]
 						}
 					},
