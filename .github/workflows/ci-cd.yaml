@@ -10,7 +10,12 @@ on:
 env:
   EKS_CLUSTER_NAME: eks-ze-burguer
   AWS_REGION: us-east-1
-  RDS-ENDPOINT: 
+  DATABASE_HOST: "zeburger-db.cpwm48q0wvgx.us-east-1.rds.amazonaws.com"
+  DATABASE_USERNAME: "zeburguer"
+  DATABASE_PORT: 5432
+  DATABASE_SCHEMA: "ze_burguer"
+  MIGRATIONS_DIR: "infra/database/migrations"
+  DATABASE_NAME: zeburguer
 
 jobs:
   build:
@@ -46,6 +51,20 @@ jobs:
     - name: Check out
       uses: actions/checkout@v4
 
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{env.AWS_REGION}}
+
+    - name: Get Database Secret
+      uses: aws-actions/aws-secretsmanager-get-secrets@v1
+      with:
+        secret-ids: |
+          DATABASE_PASSWORD, ze_burguer_db
+
+
     - name: Set up Migration Script
       run: |
         chmod +x cmd/main
@@ -71,8 +90,10 @@ jobs:
         aws-region: ${{env.AWS_REGION}}
 
     - name: Update kube config
+      id: config-kubectl
       run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
 
     - name: Deploy App to EKS
+      if: steps.config-kubectl.outcome == 'success'
       run: |
-        kubectl apply -k ./kustomize
+        kubectl apply -k kustomize/
