@@ -1,6 +1,7 @@
 package use_case
 
 import (
+	"fmt"
 	"log/slog"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
@@ -53,7 +54,7 @@ func (p *PaymentUseCase) CreateQRCode(order *entity.Order) (*response_payment_se
 	}
 
 	if lastPaymentStatus == enum.CONFIRMED {
-		p.logger.Error("Last payment status: %v", lastPaymentStatus)
+		p.logger.Error(fmt.Sprintf("Last payment status: %v", lastPaymentStatus))
 		return nil, nil
 	}
 
