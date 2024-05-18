@@ -8,6 +8,7 @@ type StatusOrder string
 
 const (
 	AWAITING_PAYMENT StatusOrder = "AWAITING_PAYMENT"
+	PAID             StatusOrder = "PAID"
 	RECEIVED         StatusOrder = "RECEIVED"
 	PREPARING        StatusOrder = "PREPARING"
 	READY            StatusOrder = "READY"
@@ -15,6 +16,6 @@ const (
 )
 
 func ValidateStatus(val string) bool {
-	validStatus := []StatusOrder{AWAITING_PAYMENT, RECEIVED, PREPARING, READY, FINISHED}
+	validStatus := []StatusOrder{AWAITING_PAYMENT, PAID, RECEIVED, PREPARING, READY, FINISHED}
 	return slices.Contains(validStatus, StatusOrder(val))
 }

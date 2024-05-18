@@ -18,7 +18,6 @@ type App struct {
 	clientUseCase   contract.ClientUseCase
 	productUseCase  contract.ProductUseCase
 	orderUseCase    contract.OrderUseCase
-	paymentUseCase  contract.PaymentUseCase
 	categoryUseCase contract.CategoryUseCase
 }
 
@@ -26,7 +25,6 @@ func NewApp(logger *slog.Logger,
 	clientUseCase contract.ClientUseCase,
 	productUseCase contract.ProductUseCase,
 	orderUseCase contract.OrderUseCase,
-	paymentUseCase contract.PaymentUseCase,
 	categoryUseCase contract.CategoryUseCase,
 ) *App {
 	return &App{
@@ -34,7 +32,6 @@ func NewApp(logger *slog.Logger,
 		clientUseCase:   clientUseCase,
 		productUseCase:  productUseCase,
 		orderUseCase:    orderUseCase,
-		paymentUseCase:  paymentUseCase,
 		categoryUseCase: categoryUseCase,
 	}
 }
@@ -57,11 +54,6 @@ func (e *App) Run(ctx context.Context) error {
 	router.HandleFunc("/orders/{orderId:[0-9]+}", orderController.GetOrderById).Methods("GET")
 	router.HandleFunc("/orders", orderController.CreateOrder).Methods("POST")
 	router.HandleFunc("/orders/{orderId:[0-9]+}", orderController.UpdateOrderStatusById).Methods("PATCH")
-
-	paymentController := controller.NewPaymentController(e.paymentUseCase, e.logger, e.orderUseCase)
-	router.HandleFunc("/orders/{orderId:[0-9]+}/payments", paymentController.CreatePayment).Methods("POST")
-	router.HandleFunc("/orders/{orderId:[0-9]+}/status-payment", paymentController.GetLastPaymentStatus).Methods("GET")
-	router.HandleFunc("/orders/{orderId:[0-9]+}/notification-payments", paymentController.Notification).Methods("POST")
 
 	router.PathPrefix("/docs").Handler(httpSwagger.WrapHandler)
 
