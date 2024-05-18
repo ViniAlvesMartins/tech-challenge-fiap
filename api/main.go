@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/use_case"
+	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/external/handler/sqs"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/external/service"
 
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/use_case"
 	"log/slog"
 	"os"
 
@@ -30,10 +31,13 @@ func main() {
 	}
 
 	db, err := postgres.NewConnection(cfg)
+
 	if err != nil {
 		logger.Error("error connecting tdo database", err)
 		panic(err)
 	}
+
+	sqsService := service.NewSqsService()
 
 	clientRepository := repository.NewClientRepository(db, logger)
 	clientUseCase := use_case.NewClientUseCase(clientRepository, logger)
@@ -44,21 +48,19 @@ func main() {
 	orderRepository := repository.NewOrderRepository(db, logger)
 	orderUseCase := use_case.NewOrderUseCase(orderRepository, logger)
 
-	paymentRepository := repository.NewPaymentRepository(db, logger)
-	externalPaymentService := service.NewExternalPayment()
-	paymentUseCase := use_case.NewPaymentUseCase(paymentRepository, externalPaymentService, logger, orderUseCase)
-
 	categoryRepository := repository.NewCategoryRepository(db, logger)
 	categoryUseCase := use_case.NewCategoryUseCase(categoryRepository, logger)
 
-	app := http_server.NewApp(logger, clientUseCase, productUseCase, orderUseCase, paymentUseCase, categoryUseCase)
+	fmt.Println("aquisd")
 
-	err = app.Run(ctx)
+	consumerSqs := sqs.NewSqsConsumer(sqsService, orderUseCase, logger)
 
-	if err != nil {
-		logger.Error("error running application", err)
-		panic(err)
-	}
+	app := http_server.NewApp(logger, clientUseCase, productUseCase, orderUseCase, categoryUseCase)
+
+	go app.Run(ctx)
+	go consumerSqs.Run()
+
+	select {}
 }
 
 func loadConfig() (infra.Config, error) {
