@@ -41,5 +41,5 @@ volumes:
 
 networks:
   dev-networks:
-    driver: bridge
-  
+    external:
+      name: minha_rede

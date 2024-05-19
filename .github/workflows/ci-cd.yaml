@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - "main"
+  
 
 env:
   EKS_CLUSTER_NAME: eks-ze-burguer
@@ -46,7 +47,7 @@ jobs:
     name: Running DB migration
     needs: [build]
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Check out
       uses: actions/checkout@v4
@@ -63,8 +64,6 @@ jobs:
       with:
         secret-ids: |
           DATABASE_PASSWORD, ze_burguer_db
-
-
     - name: Set up Migration Script
       run: |
         chmod +x cmd/main
@@ -72,7 +71,6 @@ jobs:
     - name: Run Migration Script
       run: |
         ./cmd/main 
-
   deploy:
     name: Deploy
     needs: [build, migration] 

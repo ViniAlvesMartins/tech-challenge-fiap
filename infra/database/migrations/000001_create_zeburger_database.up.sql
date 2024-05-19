@@ -1,6 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS ze_burguer;
 
-CREATE TYPE ze_burguer.status_order AS ENUM ('AWAITING_PAYMENT', 'RECEIVED', 'PREPARING', 'READY', 'FINISHED');
+CREATE TYPE ze_burguer.status_order AS ENUM ('AWAITING_PAYMENT', 'PAID', 'RECEIVED', 'PREPARING', 'READY', 'FINISHED');
 
 -- Create clients table
 CREATE TABLE IF NOT EXISTS ze_burguer.clients (
@@ -49,6 +49,7 @@ INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at", "amoun
 VALUES (3, 'RECEIVED', '2023-10-13 11:32:30', 15);
 INSERT INTO ze_burguer.orders( "client_id", "status_order", "created_at", "amount")
 VALUES (4, 'FINISHED', '2023-10-13 11:33:30', 17);
+
 
 -- Create categories table
 CREATE TABLE IF NOT EXISTS ze_burguer.categories (
