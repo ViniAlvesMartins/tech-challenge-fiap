@@ -7,6 +7,8 @@ on:
     branches:
       - "main"
   
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 env:
   EKS_CLUSTER_NAME: eks-ze-burguer
@@ -21,6 +23,7 @@ env:
 jobs:
   build:
     name: Build 
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,37 +46,9 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ze_burguer:latest
 
-  migration:
-    name: Running DB migration
-    needs: [build]
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Check out
-      uses: actions/checkout@v4
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{env.AWS_REGION}}
-
-    - name: Get Database Secret
-      uses: aws-actions/aws-secretsmanager-get-secrets@v1
-      with:
-        secret-ids: |
-          DATABASE_PASSWORD, ze_burguer_db
-    - name: Set up Migration Script
-      run: |
-        chmod +x cmd/main
-  
-    - name: Run Migration Script
-      run: |
-        ./cmd/main 
   deploy:
     name: Deploy
-    needs: [build, migration] 
+    needs: [build] 
     runs-on: ubuntu-latest
 
     steps:
@@ -85,6 +60,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_session_token: ${{ secrets.AWS_SESSION_TOKEN}}
         aws-region: ${{env.AWS_REGION}}
 
     - name: Update kube config
