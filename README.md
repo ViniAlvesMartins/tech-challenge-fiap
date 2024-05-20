@@ -165,10 +165,11 @@ Deployments
 
   - Status do pedido:
     - | Status | 
-      | ------ | 
-      | AWAITING_PAYMENT  | 
-      | RECEIVED  | 
-      | PREPARING  | 
+      | ------ |
+      | RECEIVED  |
+      | AWAITING_PAYMENT  |
+    - | PAID   |
+    - | PREPARING  | 
       | READY  | 
       | FINISHED |
 
