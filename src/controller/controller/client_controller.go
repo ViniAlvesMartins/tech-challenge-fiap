@@ -136,11 +136,12 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 		c.logger.Error("error to convert cpf to int", slog.Any("error", err.Error()))
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(
+		jsonResponse, _ := json.Marshal(
 			Response{
 				Error: "Make sure document is an int",
 				Data:  nil,
 			})
+		w.Write(jsonResponse)
 		return
 	}
 
@@ -149,21 +150,23 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 		c.logger.Error("error finding client", slog.Any("error", err.Error()))
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(
+		jsonResponse, _ := json.Marshal(
 			Response{
 				Error: "Error finding client",
 				Data:  nil,
 			})
+		w.Write(jsonResponse)
 		return
 	}
 
 	if client == nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(
+		jsonResponse, _ := json.Marshal(
 			Response{
 				Error: "Client not found",
 				Data:  nil,
 			})
+		w.Write(jsonResponse)
 		return
 	}
 
@@ -171,9 +174,11 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(
+	jsonResponse, _ := json.Marshal(
 		Response{
 			Error: "",
 			Data:  clientOutput,
 		})
+	w.Write(jsonResponse)
+	return
 }

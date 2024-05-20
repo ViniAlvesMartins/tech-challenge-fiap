@@ -12,8 +12,8 @@ type ClientDto struct {
 func ClientFromEntity(client entity.Client) ClientDto {
 	return ClientDto{
 		ID:    client.ID,
-		Name:  client.Name,
 		Cpf:   client.Cpf,
+		Name:  client.Name,
 		Email: client.Email,
 	}
 }
