@@ -33,7 +33,6 @@ func (o *OrderUseCase) Create(order entity.Order, products []*entity.Product) (*
 	order.SetAmount(amount)
 
 	orderNew, err := o.orderRepository.Create(order)
-
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +42,6 @@ func (o *OrderUseCase) Create(order entity.Order, products []*entity.Product) (*
 
 func (o *OrderUseCase) GetAll() (*[]entity.Order, error) {
 	orders, err := o.orderRepository.GetAll()
-
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +51,6 @@ func (o *OrderUseCase) GetAll() (*[]entity.Order, error) {
 
 func (o *OrderUseCase) GetById(id int) (*entity.Order, error) {
 	order, err := o.orderRepository.GetById(id)
-
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +60,6 @@ func (o *OrderUseCase) GetById(id int) (*entity.Order, error) {
 
 func (o *OrderUseCase) UpdateStatusById(id int, status enum.StatusOrder) error {
 	err := o.orderRepository.UpdateStatusById(id, status)
-
 	if err != nil {
 		return err
 	}
