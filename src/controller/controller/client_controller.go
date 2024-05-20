@@ -42,11 +42,12 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		c.logger.Error("unable to decode the request body", slog.Any("error", err.Error()))
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(
+		jsonResponse, _ := json.Marshal(
 			Response{
 				Error: "Unable to decode the request body",
 				Data:  nil,
 			})
+		w.Write(jsonResponse)
 		return
 	}
 
@@ -55,11 +56,12 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		c.logger.Error("validate error", slog.Any("error", validate))
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(
+		jsonResponse, _ := json.Marshal(
 			Response{
 				Error: "Invalid body, make sure all required fields are sent",
 				Data:  nil,
 			})
+		w.Write(jsonResponse)
 		return
 	}
 
@@ -68,21 +70,23 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		c.logger.Error("error validating client", slog.Any("error", err.Error()))
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(
+		jsonResponse, _ := json.Marshal(
 			Response{
 				Error: "Error validating client",
 				Data:  nil,
 			})
+		w.Write(jsonResponse)
 		return
 	}
 
 	if validClient != nil {
 		w.WriteHeader(http.StatusConflict)
-		json.NewEncoder(w).Encode(
+		jsonResponse, _ := json.Marshal(
 			Response{
 				Error: "Client already exists",
 				Data:  nil,
 			})
+		w.Write(jsonResponse)
 		return
 	}
 
@@ -91,11 +95,12 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		c.logger.Error("error creating client", slog.Any("error", err.Error()))
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(
+		jsonResponse, _ := json.Marshal(
 			Response{
-				Error: err.Error(),
+				Error: "Error creating client",
 				Data:  nil,
 			})
+		w.Write(jsonResponse)
 		return
 	}
 
@@ -103,11 +108,13 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(
+	jsonResponse, _ := json.Marshal(
 		Response{
 			Error: "",
 			Data:  clientOutput,
 		})
+	w.Write(jsonResponse)
+	return
 }
 
 // GetClientByCpf godoc
