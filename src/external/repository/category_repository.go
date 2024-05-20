@@ -35,7 +35,7 @@ func (c *CategoryRepository) GetById(id int) (*entity.Category, error) {
 		}
 
 		c.logger.Error(fmt.Sprintf("get category by id (%s) from repository has failed", strconv.Itoa(id)))
-		return nil, errors.New("get category by id from repository has failed")
+		return nil, result.Error
 	}
 
 	return &category, nil
