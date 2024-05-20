@@ -20,7 +20,6 @@ func NewCategoryUseCase(categoryRepository contract.CategoryRepository, logger *
 }
 
 func (c *CategoryUseCase) GetById(id int) (*entity.Category, error) {
-
 	category, err := c.categoryRepository.GetById(id)
 
 	if err != nil {
