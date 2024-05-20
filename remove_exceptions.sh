@@ -1,4 +1,5 @@
 #!/bin/bash
 
-files='(/doc|/infra|/doc/swagger|/application|/contract|/mock|/src|/external|/handler|/http_server|/api|/external/database/dynamodb|/src/application/modules/response/order_service|/src/application/modules/response/payment_service|/src/controller/serializer/input|/src/controller/serializer/output|/src/controller/serializer|src/pkg/uuid)'
+files='(/cmd|/doc|/infra|/swagger|/src/external/database|/src/external/handler|/http_server|api|/src/pkg/uuid/mock|/src/external/handler/http_server|/src/application/contract/mock)'
 go list ./... | egrep -v $files$\
+
