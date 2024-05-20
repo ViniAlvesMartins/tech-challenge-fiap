@@ -71,7 +71,9 @@ uma vasta quantidade de tipos de dados; suporte nativo a UUID(identificador úni
 
 ## Arquitetura cloud
 
-![Arquitetura_cloud](./doc/arquitetura/cloud_arch.png)
+![Arquitetura_cloud_v2](./doc/arquitetura/cloud_arch_v2.png)
+
+![Arquitetura_cloud_v2_detail](./doc/arquitetura/cloud_arch_v2_detail.png)
 
 ---
 
@@ -173,6 +175,3 @@ Deployments
  - Passo 1: Cadastrar os Produtos desejados (`http://localhost:port/products`)
  - Passo 2: Cadastrar o cliente (etapa opcional) (`http://localhost:port/clients`)
  - Passo 3: Criar um pedido com os produtos cadastrados (pode ou não informar o id do cliente cadastrado) (`http://localhost:port/orders`)
- - Passo 4: Criar um pagamento (Etapa de criação do Qr Code) (`http://localhost:port/orders/{id_order}/payments`)
- - Passo 5: Realizar uma chamada na API de `Notification Payment` (WEBHOOK responsável por confirmar o pagamento e atualizar o Status do pedido) (`http://localhost:port/orders/{id_order}/notification-payments`)
- - Passo 6: Realizar a atualização de status através da API Patch de pedidos (`http://localhost:port/orders/{id_order}`)
