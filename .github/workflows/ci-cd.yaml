@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - "main"
-  
+
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -40,7 +40,6 @@ jobs:
         with:
           name: code-coverage-report
           path: cover.out
-  
   sonarcloud:
     name: SonarCloud
     needs: [tests]
@@ -65,7 +64,9 @@ jobs:
   build:
     name: Build 
     needs: [sonarcloud]
+
     if: ${{ github.ref == 'refs/heads/main' }}
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -96,7 +97,6 @@ jobs:
     steps:
     - name: Check out
       uses: actions/checkout@v4
-
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
