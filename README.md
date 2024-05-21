@@ -22,6 +22,7 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 [APIs](#documentação-da-api)
 
+[SONAR](#sonar)
 ---
 
 ## Arquitetura
@@ -176,3 +177,7 @@ Deployments
  - Passo 1: Cadastrar os Produtos desejados (`http://localhost:port/products`)
  - Passo 2: Cadastrar o cliente (etapa opcional) (`http://localhost:port/clients`)
  - Passo 3: Criar um pedido com os produtos cadastrados (pode ou não informar o id do cliente cadastrado) (`http://localhost:port/orders`)
+
+## Sonar
+
+![Sonar](./doc/sonar.png)
