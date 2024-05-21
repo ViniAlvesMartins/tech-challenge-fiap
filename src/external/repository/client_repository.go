@@ -46,17 +46,15 @@ func (c *ClientRepository) GetClientByCpf(cpf int) (*entity.Client, error) {
 }
 
 func (c *ClientRepository) GetClientById(id *int) (*entity.Client, error) {
-
 	var client entity.Client
 
 	if result := c.db.First(&client, "id=?", id); result.Error != nil {
-
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
 
 		c.logger.Error("result.Error")
-		return nil, errors.New("an error occurred from repository")
+		return nil, result.Error
 	}
 
 	return &client, nil
@@ -73,7 +71,7 @@ func (c *ClientRepository) GetAlreadyExists(cpf int, email string) (*entity.Clie
 		}
 
 		c.logger.Error("result.Error")
-		return nil, errors.New("an error occurred from repository")
+		return nil, result.Error
 	}
 
 	return &client, nil
