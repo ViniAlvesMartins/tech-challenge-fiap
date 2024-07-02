@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app:  ze-burguer
+      app: ze-burguer
   template:
     metadata:
       labels:
@@ -17,10 +17,10 @@ spec:
           ports:
             - containerPort: 8080
           envFrom:
-          - configMapRef:
-              name: ze-burguer
-          - secretRef:
-              name: ze-burguer
+            - configMapRef:
+                name: ze-burguer
+            - secretRef:
+                name: ze-burguer
           resources:
             requests:
               cpu: "30m"
@@ -39,12 +39,12 @@ spec:
   minReplicas: 2
   maxReplicas: 5
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
 ---
 apiVersion: v1
 kind: Service

@@ -15,6 +15,7 @@ type ClientRepository interface {
 	GetClientById(id *int) (*entity.Client, error)
 	GetClientByCpf(cpf int) (*entity.Client, error)
 	GetAlreadyExists(cpf int, email string) (*entity.Client, error)
+	DeleteClientByCpf(cpf int) error
 }
 
 type OrderRepository interface {

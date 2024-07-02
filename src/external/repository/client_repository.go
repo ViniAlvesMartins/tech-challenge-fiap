@@ -78,3 +78,12 @@ func (c *ClientRepository) GetAlreadyExists(cpf int, email string) (*entity.Clie
 
 	return &client, nil
 }
+
+func (c *ClientRepository) DeleteClientByCpf(cpf int) error {
+	result := c.db.Model(&entity.Client{}).Where("cpf = ?", cpf).Update("active", false)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}

@@ -2,13 +2,13 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/output"
+	"github.com/gorilla/mux"
 	"log/slog"
 	"net/http"
 	"strconv"
-
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer"
 
 	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/input"
 )
@@ -159,14 +159,13 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if client == nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		jsonResponse, _ := json.Marshal(
+	if client == nil || client.Active == false {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(
 			Response{
 				Error: "Client not found",
 				Data:  nil,
 			})
-		w.Write(jsonResponse)
 		return
 	}
 
@@ -181,4 +180,81 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 		})
 	w.Write(jsonResponse)
 	return
+}
+
+// DeleteClientByCpf godoc
+// @Summary      Show client details
+// @Description  Delete client by cpf
+// @Tags         Clients
+// @Accept       json
+// @Produce      json
+// @Param        cpf   query      integer  true  "Client cpf"
+// @Success      200  {object}  interface{}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
+// @Router       /clients [get]
+func (c *ClientController) DeleteClientByCpf(w http.ResponseWriter, r *http.Request) {
+	cpfParam, ok := mux.Vars(r)["cpf"]
+	if !ok {
+		c.logger.Error("cpf is missing in parameters")
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Cpf is missing in parameters",
+				Data:  nil,
+			})
+		return
+	}
+
+	cpf, err := strconv.Atoi(cpfParam)
+	if err != nil {
+		c.logger.Error("Error to convert cpf to int.  %v", err)
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Cpf is not a number",
+				Data:  nil,
+			})
+		return
+	}
+
+	client, err := c.clientUseCase.GetClientByCpf(cpf)
+	if err != nil {
+		c.logger.Error("error getting client by cpf", slog.Any("error", err))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Error finding client",
+				Data:  nil,
+			})
+		return
+	}
+
+	if client == nil || client.Active == false {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Client not found",
+				Data:  nil,
+			})
+		return
+	}
+
+	if err := c.clientUseCase.DeleteClientByCpf(cpf); err != nil {
+		c.logger.Error("error deleting client", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(
+			Response{
+				Error: "Error deleting client",
+				Data:  nil,
+			})
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 }

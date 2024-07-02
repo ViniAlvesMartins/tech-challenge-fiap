@@ -30,6 +30,7 @@ type ClientUseCase interface {
 	GetClientById(id *int) (*entity.Client, error)
 	Create(client entity.Client) (*entity.Client, error)
 	GetAlreadyExists(cpf int, email string) (*entity.Client, error)
+	DeleteClientByCpf(cpf int) error
 }
 
 type ProductUseCase interface {

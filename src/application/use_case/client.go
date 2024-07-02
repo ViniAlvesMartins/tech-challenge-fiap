@@ -55,3 +55,13 @@ func (c *ClientUseCase) GetAlreadyExists(cpf int, email string) (*entity.Client,
 
 	return client, nil
 }
+
+func (c *ClientUseCase) DeleteClientByCpf(cpf int) error {
+	err := c.clientRepository.DeleteClientByCpf(cpf)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
