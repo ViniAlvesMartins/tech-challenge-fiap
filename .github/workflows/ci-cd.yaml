@@ -8,7 +8,7 @@ on:
       - "main"
 
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 
 env:
   EKS_CLUSTER_NAME: eks-ze-burguer
@@ -19,7 +19,7 @@ env:
 
 jobs:
   tests:
-    name: Run Tests 
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,7 +33,7 @@ jobs:
           chmod +x remove_exceptions.sh
       - name: Generate coverage file
         run: |
-           go test $(./remove_exceptions.sh) -coverprofile cover.out
+          go test $(./remove_exceptions.sh) -coverprofile cover.out
       - name: Archive code coverage results
         uses: actions/upload-artifact@v1
         with:
@@ -41,13 +41,13 @@ jobs:
           path: cover.out
   sonarcloud:
     name: SonarCloud
-    needs: [tests]
+    needs: [ tests ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      
+
       - name: Download code coverage results
         uses: actions/download-artifact@v1
         with:
@@ -61,8 +61,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
-    name: Build 
-    needs: [sonarcloud]
+    name: Build
+    needs: [ sonarcloud ]
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
@@ -88,18 +88,18 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: [build] 
+    needs: [ build ]
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out
-      uses: actions/checkout@v4
+      - name: Check out
+        uses: actions/checkout@v4
 
-    - name: Update kube config
-      id: config-kubectl
-      run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+      - name: Update kube config
+        id: config-kubectl
+        run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
 
-    - name: Deploy App to EKS
-      if: steps.config-kubectl.outcome == 'success'
-      run: |
-        kubectl apply -k kustomize/
+      - name: Deploy App to EKS
+        if: steps.config-kubectl.outcome == 'success'
+        run: |
+          kubectl apply -k kustomize/
