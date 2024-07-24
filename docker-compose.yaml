@@ -41,5 +41,4 @@ volumes:
 
 networks:
   dev-networks:
-    external:
-      name: minha_rede
+
