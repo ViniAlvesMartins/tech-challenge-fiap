@@ -104,7 +104,7 @@ func (c *ClientController) CreateClient(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	clientOutput := output.ClientFromEntity(client)
+	clientOutput := output.ClientFromEntity(*client)
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
