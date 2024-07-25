@@ -74,10 +74,10 @@ func (m *MockClientRepository) EXPECT() *MockClientRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockClientRepository) Create(client entity.Client) (entity.Client, error) {
+func (m *MockClientRepository) Create(client entity.Client) (*entity.Client, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", client)
-	ret0, _ := ret[0].(entity.Client)
+	ret0, _ := ret[0].(*entity.Client)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -88,49 +88,49 @@ func (mr *MockClientRepositoryMockRecorder) Create(client interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockClientRepository)(nil).Create), client)
 }
 
-// GetAlreadyExists mocks base method.
-func (m *MockClientRepository) GetAlreadyExists(cpf int, email string) (*entity.Client, error) {
+// GetByCpf mocks base method.
+func (m *MockClientRepository) GetByCpf(cpf int) (*entity.Client, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAlreadyExists", cpf, email)
+	ret := m.ctrl.Call(m, "GetByCpf", cpf)
 	ret0, _ := ret[0].(*entity.Client)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetAlreadyExists indicates an expected call of GetAlreadyExists.
-func (mr *MockClientRepositoryMockRecorder) GetAlreadyExists(cpf, email interface{}) *gomock.Call {
+// GetByCpf indicates an expected call of GetByCpf.
+func (mr *MockClientRepositoryMockRecorder) GetByCpf(cpf interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAlreadyExists", reflect.TypeOf((*MockClientRepository)(nil).GetAlreadyExists), cpf, email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCpf", reflect.TypeOf((*MockClientRepository)(nil).GetByCpf), cpf)
 }
 
-// GetClientByCpf mocks base method.
-func (m *MockClientRepository) GetClientByCpf(cpf int) (*entity.Client, error) {
+// GetByCpfOrEmail mocks base method.
+func (m *MockClientRepository) GetByCpfOrEmail(cpf int, email string) (*entity.Client, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetClientByCpf", cpf)
+	ret := m.ctrl.Call(m, "GetByCpfOrEmail", cpf, email)
 	ret0, _ := ret[0].(*entity.Client)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetClientByCpf indicates an expected call of GetClientByCpf.
-func (mr *MockClientRepositoryMockRecorder) GetClientByCpf(cpf interface{}) *gomock.Call {
+// GetByCpfOrEmail indicates an expected call of GetByCpfOrEmail.
+func (mr *MockClientRepositoryMockRecorder) GetByCpfOrEmail(cpf, email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClientByCpf", reflect.TypeOf((*MockClientRepository)(nil).GetClientByCpf), cpf)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCpfOrEmail", reflect.TypeOf((*MockClientRepository)(nil).GetByCpfOrEmail), cpf, email)
 }
 
-// GetClientById mocks base method.
-func (m *MockClientRepository) GetClientById(id *int) (*entity.Client, error) {
+// GetById mocks base method.
+func (m *MockClientRepository) GetById(id *int) (*entity.Client, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetClientById", id)
+	ret := m.ctrl.Call(m, "GetById", id)
 	ret0, _ := ret[0].(*entity.Client)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetClientById indicates an expected call of GetClientById.
-func (mr *MockClientRepositoryMockRecorder) GetClientById(id interface{}) *gomock.Call {
+// GetById indicates an expected call of GetById.
+func (mr *MockClientRepositoryMockRecorder) GetById(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClientById", reflect.TypeOf((*MockClientRepository)(nil).GetClientById), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockClientRepository)(nil).GetById), id)
 }
 
 // MockOrderRepository is a mock of OrderRepository interface.

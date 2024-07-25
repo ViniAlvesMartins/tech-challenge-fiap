@@ -12,7 +12,7 @@ func TestOrderFromEntity(t *testing.T) {
 		order := entity.Order{
 			ID:          1,
 			ClientId:    nil,
-			StatusOrder: enum.AWAITING_PAYMENT,
+			StatusOrder: enum.OrderStatusAwaitingPayment,
 			Amount:      123.45,
 			Products: []*entity.Product{
 				{
@@ -47,7 +47,7 @@ func TestOrderListFromEntity(t *testing.T) {
 			{
 				ID:          1,
 				ClientId:    nil,
-				StatusOrder: enum.AWAITING_PAYMENT,
+				StatusOrder: enum.OrderStatusAwaitingPayment,
 				Amount:      123.45,
 				Products: []*entity.Product{
 					{

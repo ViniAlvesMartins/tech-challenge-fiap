@@ -5,8 +5,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/entity"
 	"github.com/stretchr/testify/assert"
-	"log/slog"
-	"os"
 	"regexp"
 	"testing"
 )
@@ -14,7 +12,6 @@ import (
 func TestClientRepository_Create(t *testing.T) {
 	t.Run("create client successfully", func(t *testing.T) {
 		sqlDB, db, mock := DbMock(t)
-		logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
 		defer sqlDB.Close()
 
 		client := entity.Client{
@@ -24,7 +21,7 @@ func TestClientRepository_Create(t *testing.T) {
 			Email: "testclient@example.com",
 		}
 
-		repo := NewClientRepository(db, logger)
+		repo := NewClientRepository(db)
 		addRow := sqlmock.NewRows([]string{"id"}).AddRow("1")
 
 		expectedSQL := `INSERT INTO "clients" ("cpf","name","email","id") VALUES ($1,$2,$3,$4)`
@@ -42,7 +39,6 @@ func TestClientRepository_Create(t *testing.T) {
 
 	t.Run("error creating client", func(t *testing.T) {
 		sqlDB, db, mock := DbMock(t)
-		logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
 		expectedErr := errors.New("scan error")
 		defer sqlDB.Close()
 
@@ -53,7 +49,7 @@ func TestClientRepository_Create(t *testing.T) {
 			Email: "testclient@example.com",
 		}
 
-		repo := NewClientRepository(db, logger)
+		repo := NewClientRepository(db)
 
 		expectedSQL := `INSERT INTO "clients" ("cpf","name","email","id") VALUES ($1,$2,$3,$4)`
 		mock.ExpectBegin()
@@ -72,16 +68,15 @@ func TestClientRepository_Create(t *testing.T) {
 func TestClientRepository_GetClientByCpf(t *testing.T) {
 	t.Run("get client by cpf successfully", func(t *testing.T) {
 		sqlDB, db, mock := DbMock(t)
-		logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
 		defer sqlDB.Close()
 
-		repo := NewClientRepository(db, logger)
+		repo := NewClientRepository(db)
 		rows := sqlmock.NewRows([]string{"id", "cpf", "name", "email"}).
 			AddRow(1, 12345678900, "Test client", "testclient@example.com")
 
-		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 ORDER BY "clients"."id" LIMIT 1`
-		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900).WillReturnRows(rows)
-		client, err := repo.GetClientByCpf(12345678900)
+		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 ORDER BY "clients"."id" LIMIT $2`
+		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900, 1).WillReturnRows(rows)
+		client, err := repo.GetByCpf(12345678900)
 
 		assert.IsType(t, entity.Client{}, *client)
 		assert.Nil(t, err)
@@ -90,15 +85,14 @@ func TestClientRepository_GetClientByCpf(t *testing.T) {
 
 	t.Run("record not found", func(t *testing.T) {
 		sqlDB, db, mock := DbMock(t)
-		logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
 		defer sqlDB.Close()
 
-		repo := NewClientRepository(db, logger)
+		repo := NewClientRepository(db)
 		rows := sqlmock.NewRows([]string{"id", "cpf", "name", "email"})
 
-		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 ORDER BY "clients"."id" LIMIT 1`
-		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900).WillReturnRows(rows)
-		client, err := repo.GetClientByCpf(12345678900)
+		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 ORDER BY "clients"."id" LIMIT $2`
+		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900, 1).WillReturnRows(rows)
+		client, err := repo.GetByCpf(12345678900)
 
 		assert.Nil(t, client)
 		assert.Nil(t, err)
@@ -107,15 +101,14 @@ func TestClientRepository_GetClientByCpf(t *testing.T) {
 
 	t.Run("database error", func(t *testing.T) {
 		sqlDB, db, mock := DbMock(t)
-		logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
 		expectedErr := errors.New("scanErr")
 		defer sqlDB.Close()
 
-		repo := NewClientRepository(db, logger)
+		repo := NewClientRepository(db)
 
-		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 ORDER BY "clients"."id" LIMIT 1`
-		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900).WillReturnError(expectedErr)
-		client, err := repo.GetClientByCpf(12345678900)
+		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 ORDER BY "clients"."id" LIMIT $2`
+		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900, 1).WillReturnError(expectedErr)
+		client, err := repo.GetByCpf(12345678900)
 
 		assert.Nil(t, client)
 		assert.ErrorIs(t, err, expectedErr)

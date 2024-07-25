@@ -54,7 +54,7 @@ func TestOrderController_CreateOrder(t *testing.T) {
 		order := entity.Order{
 			ID:          1,
 			ClientId:    &client.ID,
-			StatusOrder: enum.AWAITING_PAYMENT,
+			StatusOrder: enum.OrderStatusAwaitingPayment,
 			Amount:      123.45,
 			Products:    products,
 		}
@@ -72,8 +72,8 @@ func TestOrderController_CreateOrder(t *testing.T) {
 		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
 
 		getProduct := productUseCaseMock.EXPECT().GetById(1).Return(&product, nil).Times(1)
-		getClient := clientUseCaseMock.EXPECT().GetClientById(body.ClientId).Return(&client, nil).Times(1).After(getProduct)
-		orderUseCaseMock.EXPECT().Create(body.ConvertToEntity(), products).Return(&order, nil).Times(1).After(getClient)
+		getClient := clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(&client, nil).Times(1).After(getProduct)
+		orderUseCaseMock.EXPECT().Create(body.ConvertToEntity()).Return(&order, nil).Times(1).After(getClient)
 
 		c := NewOrderController(orderUseCaseMock, productUseCaseMock, clientUseCaseMock, loggerMock)
 		c.CreateOrder(w, r)
@@ -272,7 +272,7 @@ func TestOrderController_CreateOrder(t *testing.T) {
 		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
 
 		getProduct := productUseCaseMock.EXPECT().GetById(1).Return(&product, nil).Times(1)
-		clientUseCaseMock.EXPECT().GetClientById(body.ClientId).Return(nil, nil).Times(1).After(getProduct)
+		clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(nil, nil).Times(1).After(getProduct)
 
 		c := NewOrderController(orderUseCaseMock, productUseCaseMock, clientUseCaseMock, loggerMock)
 		c.CreateOrder(w, r)
@@ -317,8 +317,6 @@ func TestOrderController_CreateOrder(t *testing.T) {
 			},
 		}
 
-		products := []*entity.Product{&product}
-
 		jsonBody, _ := json.Marshal(body)
 		bodyReader := bytes.NewReader(jsonBody)
 
@@ -332,8 +330,8 @@ func TestOrderController_CreateOrder(t *testing.T) {
 		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
 
 		getProduct := productUseCaseMock.EXPECT().GetById(1).Return(&product, nil).Times(1)
-		getClient := clientUseCaseMock.EXPECT().GetClientById(body.ClientId).Return(&client, nil).Times(1).After(getProduct)
-		orderUseCaseMock.EXPECT().Create(body.ConvertToEntity(), products).Return(nil, expectedErr).Times(1).After(getClient)
+		getClient := clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(&client, nil).Times(1).After(getProduct)
+		orderUseCaseMock.EXPECT().Create(body.ConvertToEntity()).Return(nil, expectedErr).Times(1).After(getClient)
 
 		c := NewOrderController(orderUseCaseMock, productUseCaseMock, clientUseCaseMock, loggerMock)
 		c.CreateOrder(w, r)

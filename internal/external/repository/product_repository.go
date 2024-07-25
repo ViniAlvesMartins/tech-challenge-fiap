@@ -5,20 +5,16 @@ import (
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/entity"
 	"gorm.io/gorm/clause"
 
-	"log/slog"
-
 	"gorm.io/gorm"
 )
 
 type ProductRepository struct {
-	db     *gorm.DB
-	logger *slog.Logger
+	db *gorm.DB
 }
 
-func NewProductRepository(db *gorm.DB, logger *slog.Logger) *ProductRepository {
+func NewProductRepository(db *gorm.DB) *ProductRepository {
 	return &ProductRepository{
-		db:     db,
-		logger: logger,
+		db: db,
 	}
 }
 

@@ -40,7 +40,7 @@ func TestClientController_CreateClient(t *testing.T) {
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
-		checkClient := clientUseCaseMock.EXPECT().GetAlreadyExists(client.Cpf, client.Email).Return(nil, nil).Times(1)
+		checkClient := clientUseCaseMock.EXPECT().GetByCpfOrEmail(client.Cpf, client.Email).Return(nil, nil).Times(1)
 		clientUseCaseMock.EXPECT().Create(body.ConvertEntity()).Return(&client, nil).Times(1).After(checkClient)
 
 		c := NewClientController(clientUseCaseMock, loggerMock)
@@ -107,7 +107,7 @@ func TestClientController_CreateClient(t *testing.T) {
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
-		clientUseCaseMock.EXPECT().GetAlreadyExists(client.Cpf, client.Email).Return(nil, expectedErr).Times(1)
+		clientUseCaseMock.EXPECT().GetByCpfOrEmail(client.Cpf, client.Email).Return(nil, expectedErr).Times(1)
 
 		c := NewClientController(clientUseCaseMock, loggerMock)
 		c.CreateClient(w, r)
@@ -143,7 +143,7 @@ func TestClientController_CreateClient(t *testing.T) {
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
-		checkClient := clientUseCaseMock.EXPECT().GetAlreadyExists(client.Cpf, client.Email).Return(nil, nil).Times(1)
+		checkClient := clientUseCaseMock.EXPECT().GetByCpfOrEmail(client.Cpf, client.Email).Return(nil, nil).Times(1)
 		clientUseCaseMock.EXPECT().Create(body.ConvertEntity()).Return(nil, expectedErr).Times(1).After(checkClient)
 
 		c := NewClientController(clientUseCaseMock, loggerMock)
@@ -179,7 +179,7 @@ func TestClientController_CreateClient(t *testing.T) {
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
-		clientUseCaseMock.EXPECT().GetAlreadyExists(client.Cpf, client.Email).Return(&client, nil).Times(1)
+		clientUseCaseMock.EXPECT().GetByCpfOrEmail(client.Cpf, client.Email).Return(&client, nil).Times(1)
 
 		c := NewClientController(clientUseCaseMock, loggerMock)
 		c.CreateClient(w, r)
@@ -216,7 +216,7 @@ func TestClientController_GetClientByCpf(t *testing.T) {
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
-		clientUseCaseMock.EXPECT().GetClientByCpf(client.Cpf).Return(&client, nil).Times(1)
+		clientUseCaseMock.EXPECT().GetByCpf(client.Cpf).Return(&client, nil).Times(1)
 
 		c := NewClientController(clientUseCaseMock, loggerMock)
 		c.GetClientByCpf(w, r)
@@ -286,7 +286,7 @@ func TestClientController_GetClientByCpf(t *testing.T) {
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
-		clientUseCaseMock.EXPECT().GetClientByCpf(client.Cpf).Return(nil, expectedErr).Times(1)
+		clientUseCaseMock.EXPECT().GetByCpf(client.Cpf).Return(nil, expectedErr).Times(1)
 
 		c := NewClientController(clientUseCaseMock, loggerMock)
 		c.GetClientByCpf(w, r)
@@ -321,7 +321,7 @@ func TestClientController_GetClientByCpf(t *testing.T) {
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
-		clientUseCaseMock.EXPECT().GetClientByCpf(client.Cpf).Return(nil, nil).Times(1)
+		clientUseCaseMock.EXPECT().GetByCpf(client.Cpf).Return(nil, nil).Times(1)
 
 		c := NewClientController(clientUseCaseMock, loggerMock)
 		c.GetClientByCpf(w, r)

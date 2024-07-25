@@ -7,7 +7,6 @@ package mock
 import (
 	reflect "reflect"
 
-	response_payment_service "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/modules/response/payment_service"
 	entity "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/entity"
 	enum "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/enum"
 	gomock "github.com/golang/mock/gomock"
@@ -37,18 +36,18 @@ func (m *MockOrderUseCase) EXPECT() *MockOrderUseCaseMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockOrderUseCase) Create(order entity.Order, products []*entity.Product) (*entity.Order, error) {
+func (m *MockOrderUseCase) Create(order entity.Order) (*entity.Order, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", order, products)
+	ret := m.ctrl.Call(m, "Create", order)
 	ret0, _ := ret[0].(*entity.Order)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockOrderUseCaseMockRecorder) Create(order, products interface{}) *gomock.Call {
+func (mr *MockOrderUseCaseMockRecorder) Create(order interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockOrderUseCase)(nil).Create), order, products)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockOrderUseCase)(nil).Create), order)
 }
 
 // GetAll mocks base method.
@@ -93,87 +92,6 @@ func (m *MockOrderUseCase) UpdateStatusById(id int, status enum.StatusOrder) err
 func (mr *MockOrderUseCaseMockRecorder) UpdateStatusById(id, status interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateStatusById", reflect.TypeOf((*MockOrderUseCase)(nil).UpdateStatusById), id, status)
-}
-
-// MockPaymentUseCase is a mock of PaymentUseCase interface.
-type MockPaymentUseCase struct {
-	ctrl     *gomock.Controller
-	recorder *MockPaymentUseCaseMockRecorder
-}
-
-// MockPaymentUseCaseMockRecorder is the mock recorder for MockPaymentUseCase.
-type MockPaymentUseCaseMockRecorder struct {
-	mock *MockPaymentUseCase
-}
-
-// NewMockPaymentUseCase creates a new mock instance.
-func NewMockPaymentUseCase(ctrl *gomock.Controller) *MockPaymentUseCase {
-	mock := &MockPaymentUseCase{ctrl: ctrl}
-	mock.recorder = &MockPaymentUseCaseMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockPaymentUseCase) EXPECT() *MockPaymentUseCaseMockRecorder {
-	return m.recorder
-}
-
-// Create mocks base method.
-func (m *MockPaymentUseCase) Create(payment *entity.Payment) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", payment)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create.
-func (mr *MockPaymentUseCaseMockRecorder) Create(payment interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockPaymentUseCase)(nil).Create), payment)
-}
-
-// CreateQRCode mocks base method.
-func (m *MockPaymentUseCase) CreateQRCode(order *entity.Order) (*response_payment_service.CreateQRCode, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateQRCode", order)
-	ret0, _ := ret[0].(*response_payment_service.CreateQRCode)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateQRCode indicates an expected call of CreateQRCode.
-func (mr *MockPaymentUseCaseMockRecorder) CreateQRCode(order interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateQRCode", reflect.TypeOf((*MockPaymentUseCase)(nil).CreateQRCode), order)
-}
-
-// GetLastPaymentStatus mocks base method.
-func (m *MockPaymentUseCase) GetLastPaymentStatus(orderId int) (enum.PaymentStatus, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetLastPaymentStatus", orderId)
-	ret0, _ := ret[0].(enum.PaymentStatus)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetLastPaymentStatus indicates an expected call of GetLastPaymentStatus.
-func (mr *MockPaymentUseCaseMockRecorder) GetLastPaymentStatus(orderId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLastPaymentStatus", reflect.TypeOf((*MockPaymentUseCase)(nil).GetLastPaymentStatus), orderId)
-}
-
-// PaymentNotification mocks base method.
-func (m *MockPaymentUseCase) PaymentNotification(order *entity.Order) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PaymentNotification", order)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// PaymentNotification indicates an expected call of PaymentNotification.
-func (mr *MockPaymentUseCaseMockRecorder) PaymentNotification(order interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PaymentNotification", reflect.TypeOf((*MockPaymentUseCase)(nil).PaymentNotification), order)
 }
 
 // MockCategoryUseCase is a mock of CategoryUseCase interface.
@@ -252,49 +170,49 @@ func (mr *MockClientUseCaseMockRecorder) Create(client interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockClientUseCase)(nil).Create), client)
 }
 
-// GetAlreadyExists mocks base method.
-func (m *MockClientUseCase) GetAlreadyExists(cpf int, email string) (*entity.Client, error) {
+// GetByCpf mocks base method.
+func (m *MockClientUseCase) GetByCpf(cpf int) (*entity.Client, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAlreadyExists", cpf, email)
+	ret := m.ctrl.Call(m, "GetByCpf", cpf)
 	ret0, _ := ret[0].(*entity.Client)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetAlreadyExists indicates an expected call of GetAlreadyExists.
-func (mr *MockClientUseCaseMockRecorder) GetAlreadyExists(cpf, email interface{}) *gomock.Call {
+// GetByCpf indicates an expected call of GetByCpf.
+func (mr *MockClientUseCaseMockRecorder) GetByCpf(cpf interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAlreadyExists", reflect.TypeOf((*MockClientUseCase)(nil).GetAlreadyExists), cpf, email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCpf", reflect.TypeOf((*MockClientUseCase)(nil).GetByCpf), cpf)
 }
 
-// GetClientByCpf mocks base method.
-func (m *MockClientUseCase) GetClientByCpf(cpf int) (*entity.Client, error) {
+// GetByCpfOrEmail mocks base method.
+func (m *MockClientUseCase) GetByCpfOrEmail(cpf int, email string) (*entity.Client, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetClientByCpf", cpf)
+	ret := m.ctrl.Call(m, "GetByCpfOrEmail", cpf, email)
 	ret0, _ := ret[0].(*entity.Client)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetClientByCpf indicates an expected call of GetClientByCpf.
-func (mr *MockClientUseCaseMockRecorder) GetClientByCpf(cpf interface{}) *gomock.Call {
+// GetByCpfOrEmail indicates an expected call of GetByCpfOrEmail.
+func (mr *MockClientUseCaseMockRecorder) GetByCpfOrEmail(cpf, email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClientByCpf", reflect.TypeOf((*MockClientUseCase)(nil).GetClientByCpf), cpf)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCpfOrEmail", reflect.TypeOf((*MockClientUseCase)(nil).GetByCpfOrEmail), cpf, email)
 }
 
-// GetClientById mocks base method.
-func (m *MockClientUseCase) GetClientById(id *int) (*entity.Client, error) {
+// GetById mocks base method.
+func (m *MockClientUseCase) GetById(id *int) (*entity.Client, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetClientById", id)
+	ret := m.ctrl.Call(m, "GetById", id)
 	ret0, _ := ret[0].(*entity.Client)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetClientById indicates an expected call of GetClientById.
-func (mr *MockClientUseCaseMockRecorder) GetClientById(id interface{}) *gomock.Call {
+// GetById indicates an expected call of GetById.
+func (mr *MockClientUseCaseMockRecorder) GetById(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClientById", reflect.TypeOf((*MockClientUseCase)(nil).GetClientById), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockClientUseCase)(nil).GetById), id)
 }
 
 // MockProductUseCase is a mock of ProductUseCase interface.

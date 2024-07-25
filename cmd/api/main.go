@@ -33,7 +33,7 @@ func main() {
 	clientRepository := repository.NewClientRepository(db)
 	clientUseCase := use_case.NewClientUseCase(clientRepository)
 
-	productRepository := repository.NewProductRepository(db, logger)
+	productRepository := repository.NewProductRepository(db)
 	productUseCase := use_case.NewProductUseCase(productRepository)
 
 	orderRepository := repository.NewOrderRepository(db)
