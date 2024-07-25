@@ -35,9 +35,7 @@ func TestProductRepository_Create(t *testing.T) {
 		).WillReturnRows(addRow)
 		mock.ExpectCommit()
 
-		q, err := repo.Create(product)
-
-		t.Log("actual return => ", q)
+		_, err := repo.Create(product)
 
 		assert.Nil(t, err)
 		assert.Nil(t, mock.ExpectationsWereMet())
