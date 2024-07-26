@@ -160,7 +160,7 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 	}
 
 	if client == nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusNotFound)
 		jsonResponse, _ := json.Marshal(
 			Response{
 				Error: "Client not found",
@@ -181,4 +181,74 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 		})
 	w.Write(jsonResponse)
 	return
+}
+
+// DeleteClientByCpf godoc
+// @Summary      Delete client
+// @Description  Delete client by cpf
+// @Tags         Clients
+// @Accept       json
+// @Produce      json
+// @Param        cpf   query      integer  true  "Client cpf"
+// @Success      204  {object}  interface{}
+// @Failure      500  {object}  swagger.InternalServerErrorResponse{data=interface{}}
+// @Failure      404  {object}  swagger.ResourceNotFoundResponse{data=interface{}}
+// @Router       /clients [delete]
+func (c *ClientController) DeleteClientByCpf(w http.ResponseWriter, r *http.Request) {
+	cpfParam := r.URL.Query().Get("cpf")
+
+	cpf, err := strconv.Atoi(cpfParam)
+	if err != nil {
+		c.logger.Error("Error to convert cpf to int.  %v", err)
+
+		w.WriteHeader(http.StatusBadRequest)
+		jsonResponse, _ := json.Marshal(
+			Response{
+				Error: "Cpf is not a number",
+				Data:  nil,
+			})
+		w.Write(jsonResponse)
+		return
+	}
+
+	client, err := c.clientUseCase.GetByCpf(cpf)
+	if err != nil {
+		c.logger.Error("error getting client by cpf", slog.Any("error", err))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		jsonResponse, _ := json.Marshal(
+			Response{
+				Error: "Error finding client",
+				Data:  nil,
+			})
+		w.Write(jsonResponse)
+		return
+	}
+
+	if client == nil {
+		w.WriteHeader(http.StatusNotFound)
+		jsonResponse, _ := json.Marshal(
+			Response{
+				Error: "Client not found",
+				Data:  nil,
+			})
+		w.Write(jsonResponse)
+		return
+	}
+
+	if err = c.clientUseCase.DeleteClientByCpf(cpf); err != nil {
+		c.logger.Error("error deleting client", slog.Any("error", err.Error()))
+
+		w.WriteHeader(http.StatusInternalServerError)
+		jsonResponse, _ := json.Marshal(
+			Response{
+				Error: "Error deleting client",
+				Data:  nil,
+			})
+		w.Write(jsonResponse)
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
 }

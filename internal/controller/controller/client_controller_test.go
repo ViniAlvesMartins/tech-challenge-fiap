@@ -331,7 +331,7 @@ func TestClientController_GetClientByCpf(t *testing.T) {
 			Data:  nil,
 		})
 
-		assert.Equal(t, http.StatusInternalServerError, w.Code)
+		assert.Equal(t, http.StatusNotFound, w.Code)
 		assert.Equal(t, string(jsonResponse), string(w.Body.Bytes()))
 	})
 }

@@ -152,6 +152,44 @@ paths:
       tags:
       - Products
   /clients:
+    delete:
+      consumes:
+      - application/json
+      description: Delete client by cpf
+      parameters:
+      - description: Client cpf
+        in: query
+        name: cpf
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.ResourceNotFoundResponse'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
+            - properties:
+                data:
+                  type: object
+              type: object
+      summary: Delete client
+      tags:
+      - Clients
     get:
       consumes:
       - application/json

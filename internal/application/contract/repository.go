@@ -14,6 +14,7 @@ type ClientRepository interface {
 	Create(client entity.Client) (*entity.Client, error)
 	GetById(id *int) (*entity.Client, error)
 	GetByCpf(cpf int) (*entity.Client, error)
+	DeleteClientByCpf(cpf int) error
 	GetByCpfOrEmail(cpf int, email string) (*entity.Client, error)
 }
 

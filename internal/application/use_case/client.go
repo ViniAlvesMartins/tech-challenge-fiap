@@ -43,6 +43,10 @@ func (c *ClientUseCase) GetById(id *int) (*entity.Client, error) {
 
 }
 
+func (c *ClientUseCase) DeleteClientByCpf(cpf int) error {
+	return c.clientRepository.DeleteClientByCpf(cpf)
+}
+
 func (c *ClientUseCase) GetByCpfOrEmail(cpf int, email string) (*entity.Client, error) {
 	client, err := c.clientRepository.GetByCpfOrEmail(cpf, email)
 	if err != nil {

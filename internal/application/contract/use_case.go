@@ -22,6 +22,7 @@ type CategoryUseCase interface {
 type ClientUseCase interface {
 	GetByCpf(cpf int) (*entity.Client, error)
 	GetById(id *int) (*entity.Client, error)
+	DeleteClientByCpf(cpf int) error
 	Create(client entity.Client) (*entity.Client, error)
 	GetByCpfOrEmail(cpf int, email string) (*entity.Client, error)
 }

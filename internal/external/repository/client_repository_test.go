@@ -74,8 +74,8 @@ func TestClientRepository_GetClientByCpf(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"id", "cpf", "name", "email"}).
 			AddRow(1, 12345678900, "Test client", "testclient@example.com")
 
-		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 ORDER BY "clients"."id" LIMIT $2`
-		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900, 1).WillReturnRows(rows)
+		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 and active = $2 ORDER BY "clients"."id" LIMIT $3`
+		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900, true, 1).WillReturnRows(rows)
 		client, err := repo.GetByCpf(12345678900)
 
 		assert.IsType(t, entity.Client{}, *client)
@@ -90,8 +90,8 @@ func TestClientRepository_GetClientByCpf(t *testing.T) {
 		repo := NewClientRepository(db)
 		rows := sqlmock.NewRows([]string{"id", "cpf", "name", "email"})
 
-		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 ORDER BY "clients"."id" LIMIT $2`
-		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900, 1).WillReturnRows(rows)
+		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 and active = $2 ORDER BY "clients"."id" LIMIT $3`
+		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900, true, 1).WillReturnRows(rows)
 		client, err := repo.GetByCpf(12345678900)
 
 		assert.Nil(t, client)
@@ -106,8 +106,8 @@ func TestClientRepository_GetClientByCpf(t *testing.T) {
 
 		repo := NewClientRepository(db)
 
-		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 ORDER BY "clients"."id" LIMIT $2`
-		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900, 1).WillReturnError(expectedErr)
+		expectedSQL := `SELECT * FROM "clients" WHERE cpf=$1 and active = $2 ORDER BY "clients"."id" LIMIT $3`
+		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(12345678900, true, 1).WillReturnError(expectedErr)
 		client, err := repo.GetByCpf(12345678900)
 
 		assert.Nil(t, client)

@@ -199,6 +199,20 @@ func (mr *MockClientUseCaseMockRecorder) Create(client interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockClientUseCase)(nil).Create), client)
 }
 
+// DeleteClientByCpf mocks base method.
+func (m *MockClientUseCase) DeleteClientByCpf(cpf int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteClientByCpf", cpf)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteClientByCpf indicates an expected call of DeleteClientByCpf.
+func (mr *MockClientUseCaseMockRecorder) DeleteClientByCpf(cpf interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteClientByCpf", reflect.TypeOf((*MockClientUseCase)(nil).DeleteClientByCpf), cpf)
+}
+
 // GetByCpf mocks base method.
 func (m *MockClientUseCase) GetByCpf(cpf int) (*entity.Client, error) {
 	m.ctrl.T.Helper()

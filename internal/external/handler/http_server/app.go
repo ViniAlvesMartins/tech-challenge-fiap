@@ -49,6 +49,7 @@ func (e *App) Run(ctx context.Context) {
 	clientController := controller.NewClientController(e.clientUseCase, e.logger)
 	router.HandleFunc("/clients", clientController.CreateClient).Methods("POST")
 	router.HandleFunc("/clients", clientController.GetClientByCpf).Methods("GET")
+	router.HandleFunc("/clients", clientController.DeleteClientByCpf).Methods("DELETE")
 
 	productController := controller.NewProductController(e.productUseCase, e.categoryUseCase, e.logger)
 	router.HandleFunc("/products", productController.CreateProduct).Methods("POST")
