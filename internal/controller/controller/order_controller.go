@@ -16,18 +16,16 @@ import (
 )
 
 type OrderController struct {
-	orderUseCase   contract.OrderUseCase
-	productUseCase contract.ProductUseCase
-	clientUseCase  contract.ClientUseCase
-	logger         *slog.Logger
+	orderUseCase  contract.OrderUseCase
+	clientUseCase contract.ClientUseCase
+	logger        *slog.Logger
 }
 
-func NewOrderController(orderUseCase contract.OrderUseCase, productUseCase contract.ProductUseCase, clientUseCase contract.ClientUseCase, logger *slog.Logger) *OrderController {
+func NewOrderController(orderUseCase contract.OrderUseCase, clientUseCase contract.ClientUseCase, logger *slog.Logger) *OrderController {
 	return &OrderController{
-		orderUseCase:   orderUseCase,
-		productUseCase: productUseCase,
-		clientUseCase:  clientUseCase,
-		logger:         logger,
+		orderUseCase:  orderUseCase,
+		clientUseCase: clientUseCase,
+		logger:        logger,
 	}
 }
 

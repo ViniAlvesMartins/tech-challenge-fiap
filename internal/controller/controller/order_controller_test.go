@@ -67,15 +67,13 @@ func TestOrderController_CreateOrder(t *testing.T) {
 
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
-		productUseCaseMock := mock.NewMockProductUseCase(ctrl)
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
 		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
 
-		getProduct := productUseCaseMock.EXPECT().GetById(1).Return(&product, nil).Times(1)
-		getClient := clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(&client, nil).Times(1).After(getProduct)
+		getClient := clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(&client, nil).Times(1)
 		orderUseCaseMock.EXPECT().Create(body.ConvertToEntity()).Return(&order, nil).Times(1).After(getClient)
 
-		c := NewOrderController(orderUseCaseMock, productUseCaseMock, clientUseCaseMock, loggerMock)
+		c := NewOrderController(orderUseCaseMock, clientUseCaseMock, loggerMock)
 		c.CreateOrder(w, r)
 
 		jsonResponse, _ := json.Marshal(Response{
@@ -100,11 +98,10 @@ func TestOrderController_CreateOrder(t *testing.T) {
 
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
-		productUseCaseMock := mock.NewMockProductUseCase(ctrl)
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
 		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
 
-		c := NewOrderController(orderUseCaseMock, productUseCaseMock, clientUseCaseMock, loggerMock)
+		c := NewOrderController(orderUseCaseMock, clientUseCaseMock, loggerMock)
 		c.CreateOrder(w, r)
 
 		jsonResponse, _ := json.Marshal(Response{
@@ -132,11 +129,10 @@ func TestOrderController_CreateOrder(t *testing.T) {
 
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
-		productUseCaseMock := mock.NewMockProductUseCase(ctrl)
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
 		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
 
-		c := NewOrderController(orderUseCaseMock, productUseCaseMock, clientUseCaseMock, loggerMock)
+		c := NewOrderController(orderUseCaseMock, clientUseCaseMock, loggerMock)
 		c.CreateOrder(w, r)
 
 		jsonResponse, _ := json.Marshal(Response{
@@ -148,98 +144,8 @@ func TestOrderController_CreateOrder(t *testing.T) {
 		assert.Equal(t, string(jsonResponse), string(w.Body.Bytes()))
 	})
 
-	t.Run("error getting product", func(t *testing.T) {
-		ctrl := gomock.NewController(t)
-		expectedErr := errors.New("error connecting to database")
-
-		body := dto.OrderDto{
-			ClientId: nil,
-			Products: []struct {
-				ID int `json:"id"`
-			}{
-				{
-					ID: 1,
-				},
-			},
-		}
-
-		jsonBody, _ := json.Marshal(body)
-		bodyReader := bytes.NewReader(jsonBody)
-
-		r, _ := http.NewRequest("POST", "/clients", bodyReader)
-		w := httptest.NewRecorder()
-
-		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
-
-		productUseCaseMock := mock.NewMockProductUseCase(ctrl)
-		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
-		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
-
-		productUseCaseMock.EXPECT().GetById(1).Return(nil, expectedErr).Times(1)
-
-		c := NewOrderController(orderUseCaseMock, productUseCaseMock, clientUseCaseMock, loggerMock)
-		c.CreateOrder(w, r)
-
-		jsonResponse, _ := json.Marshal(Response{
-			Error: "Error finding product",
-			Data:  nil,
-		})
-
-		assert.Equal(t, http.StatusNotFound, w.Code)
-		assert.Equal(t, string(jsonResponse), string(w.Body.Bytes()))
-	})
-
-	t.Run("product not found error", func(t *testing.T) {
-		ctrl := gomock.NewController(t)
-
-		body := dto.OrderDto{
-			ClientId: nil,
-			Products: []struct {
-				ID int `json:"id"`
-			}{
-				{
-					ID: 1,
-				},
-			},
-		}
-
-		jsonBody, _ := json.Marshal(body)
-		bodyReader := bytes.NewReader(jsonBody)
-
-		r, _ := http.NewRequest("POST", "/clients", bodyReader)
-		w := httptest.NewRecorder()
-
-		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
-
-		productUseCaseMock := mock.NewMockProductUseCase(ctrl)
-		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
-		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
-
-		productUseCaseMock.EXPECT().GetById(1).Return(nil, nil).Times(1)
-
-		c := NewOrderController(orderUseCaseMock, productUseCaseMock, clientUseCaseMock, loggerMock)
-		c.CreateOrder(w, r)
-
-		jsonResponse, _ := json.Marshal(Response{
-			Error: "Product of id 1 not found",
-			Data:  nil,
-		})
-
-		assert.Equal(t, http.StatusNotFound, w.Code)
-		assert.Equal(t, string(jsonResponse), string(w.Body.Bytes()))
-	})
-
 	t.Run("client not found error", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
-
-		product := entity.Product{
-			ID:          1,
-			NameProduct: "Test product",
-			Description: "Test product",
-			Price:       123.45,
-			CategoryId:  1,
-			Active:      true,
-		}
 
 		client := entity.Client{
 			ID:    1,
@@ -267,14 +173,12 @@ func TestOrderController_CreateOrder(t *testing.T) {
 
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
-		productUseCaseMock := mock.NewMockProductUseCase(ctrl)
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
 		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
 
-		getProduct := productUseCaseMock.EXPECT().GetById(1).Return(&product, nil).Times(1)
-		clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(nil, nil).Times(1).After(getProduct)
+		clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(nil, nil).Times(1)
 
-		c := NewOrderController(orderUseCaseMock, productUseCaseMock, clientUseCaseMock, loggerMock)
+		c := NewOrderController(orderUseCaseMock, clientUseCaseMock, loggerMock)
 		c.CreateOrder(w, r)
 
 		jsonResponse, _ := json.Marshal(Response{
@@ -290,15 +194,6 @@ func TestOrderController_CreateOrder(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		expectedErr := errors.New("error connecting to database")
 
-		product := entity.Product{
-			ID:          1,
-			NameProduct: "Test product",
-			Description: "Test product",
-			Price:       123.45,
-			CategoryId:  1,
-			Active:      true,
-		}
-
 		client := entity.Client{
 			ID:    1,
 			Cpf:   12345678900,
@@ -325,15 +220,13 @@ func TestOrderController_CreateOrder(t *testing.T) {
 
 		loggerMock := slog.New(slog.NewTextHandler(os.Stderr, nil))
 
-		productUseCaseMock := mock.NewMockProductUseCase(ctrl)
 		clientUseCaseMock := mock.NewMockClientUseCase(ctrl)
 		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
 
-		getProduct := productUseCaseMock.EXPECT().GetById(1).Return(&product, nil).Times(1)
-		getClient := clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(&client, nil).Times(1).After(getProduct)
+		getClient := clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(&client, nil).Times(1)
 		orderUseCaseMock.EXPECT().Create(body.ConvertToEntity()).Return(nil, expectedErr).Times(1).After(getClient)
 
-		c := NewOrderController(orderUseCaseMock, productUseCaseMock, clientUseCaseMock, loggerMock)
+		c := NewOrderController(orderUseCaseMock, clientUseCaseMock, loggerMock)
 		c.CreateOrder(w, r)
 
 		jsonResponse, _ := json.Marshal(Response{

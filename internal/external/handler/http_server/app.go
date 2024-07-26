@@ -56,7 +56,7 @@ func (e *App) Run(ctx context.Context) {
 	router.HandleFunc("/products/{productId:[0-9]+}", productController.UpdateProduct).Methods("PUT")
 	router.HandleFunc("/products/{productId:[0-9]+}", productController.DeleteProduct).Methods("DELETE")
 
-	orderController := controller.NewOrderController(e.orderUseCase, e.productUseCase, e.clientUseCase, e.logger)
+	orderController := controller.NewOrderController(e.orderUseCase, e.clientUseCase, e.logger)
 	router.HandleFunc("/orders", orderController.FindOrders).Methods("GET")
 	router.HandleFunc("/orders/{orderId:[0-9]+}", orderController.GetOrderById).Methods("GET")
 	router.HandleFunc("/orders", orderController.CreateOrder).Methods("POST")

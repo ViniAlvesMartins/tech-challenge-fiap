@@ -42,7 +42,10 @@ func TestOrderUseCase_Create(t *testing.T) {
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().Create(order).Return(order, nil).Times(1)
 
-		orderUseCase := NewOrderUseCase(repo)
+		productUseCase := mock.NewMockProductUseCase(ctrl)
+		productUseCase.EXPECT().GetById(gomock.Any()).Return(order.Products[1], nil).Times(2)
+
+		orderUseCase := NewOrderUseCase(repo, productUseCase)
 		newOrder, err := orderUseCase.Create(order)
 
 		assert.Equal(t, order, *newOrder)
@@ -78,10 +81,13 @@ func TestOrderUseCase_Create(t *testing.T) {
 			},
 		}
 
+		productUseCase := mock.NewMockProductUseCase(ctrl)
+		productUseCase.EXPECT().GetById(gomock.Any()).Return(order.Products[1], nil).Times(2)
+
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().Create(order).Return(entity.Order{}, expectedErr).Times(1)
 
-		orderUseCase := NewOrderUseCase(repo)
+		orderUseCase := NewOrderUseCase(repo, productUseCase)
 		newOrder, err := orderUseCase.Create(order)
 
 		assert.Equal(t, expectedErr, err)
@@ -118,10 +124,12 @@ func TestOrderUseCase_GetById(t *testing.T) {
 			},
 		}
 
+		productUseCase := mock.NewMockProductUseCase(ctrl)
+
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().GetById(1).Return(&order, nil).Times(1)
 
-		useCase := NewOrderUseCase(repo)
+		useCase := NewOrderUseCase(repo, productUseCase)
 		o, err := useCase.GetById(1)
 
 		assert.Nil(t, err)
@@ -132,10 +140,12 @@ func TestOrderUseCase_GetById(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		expectedErr := errors.New("error connecting to database")
 
+		productUseCase := mock.NewMockProductUseCase(ctrl)
+
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().GetById(1).Return(nil, expectedErr).Times(1)
 
-		useCase := NewOrderUseCase(repo)
+		useCase := NewOrderUseCase(repo, productUseCase)
 		o, err := useCase.GetById(1)
 
 		assert.Nil(t, o)
@@ -198,10 +208,12 @@ func TestOrderUseCase_GetByAll(t *testing.T) {
 			},
 		}
 
+		productUseCase := mock.NewMockProductUseCase(ctrl)
+
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().GetAll().Return(orders, nil).Times(1)
 
-		useCase := NewOrderUseCase(repo)
+		useCase := NewOrderUseCase(repo, productUseCase)
 		o, err := useCase.GetAll()
 
 		assert.Nil(t, err)
@@ -212,10 +224,12 @@ func TestOrderUseCase_GetByAll(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		expectedErr := errors.New("error connecting to database")
 
+		productUseCase := mock.NewMockProductUseCase(ctrl)
+
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().GetAll().Return(nil, expectedErr).Times(1)
 
-		useCase := NewOrderUseCase(repo)
+		useCase := NewOrderUseCase(repo, productUseCase)
 		o, err := useCase.GetAll()
 
 		assert.Nil(t, o)
@@ -230,7 +244,9 @@ func TestOrderUseCase_UpdateStatusById(t *testing.T) {
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().UpdateStatusById(1, enum.OrderStatusPreparing).Times(1).Return(nil)
 
-		useCase := NewOrderUseCase(repo)
+		productUseCase := mock.NewMockProductUseCase(ctrl)
+
+		useCase := NewOrderUseCase(repo, productUseCase)
 		err := useCase.UpdateStatusById(1, enum.OrderStatusPreparing)
 
 		assert.Nil(t, err)
@@ -240,10 +256,12 @@ func TestOrderUseCase_UpdateStatusById(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		expectedErr := errors.New("error connecting to database")
 
+		productUseCase := mock.NewMockProductUseCase(ctrl)
+
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().UpdateStatusById(1, enum.OrderStatusPreparing).Times(1).Return(expectedErr)
 
-		useCase := NewOrderUseCase(repo)
+		useCase := NewOrderUseCase(repo, productUseCase)
 		err := useCase.UpdateStatusById(1, enum.OrderStatusPreparing)
 
 		assert.Error(t, expectedErr, err)

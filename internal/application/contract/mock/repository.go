@@ -156,6 +156,20 @@ func (m *MockOrderRepository) EXPECT() *MockOrderRepositoryMockRecorder {
 	return m.recorder
 }
 
+// CancelExpiredOrders mocks base method.
+func (m *MockOrderRepository) CancelExpiredOrders(threshold int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CancelExpiredOrders", threshold)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CancelExpiredOrders indicates an expected call of CancelExpiredOrders.
+func (mr *MockOrderRepositoryMockRecorder) CancelExpiredOrders(threshold interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelExpiredOrders", reflect.TypeOf((*MockOrderRepository)(nil).CancelExpiredOrders), threshold)
+}
+
 // Create mocks base method.
 func (m *MockOrderRepository) Create(order entity.Order) (entity.Order, error) {
 	m.ctrl.T.Helper()
@@ -199,6 +213,21 @@ func (m *MockOrderRepository) GetById(id int) (*entity.Order, error) {
 func (mr *MockOrderRepositoryMockRecorder) GetById(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockOrderRepository)(nil).GetById), id)
+}
+
+// GetByStatus mocks base method.
+func (m *MockOrderRepository) GetByStatus(status enum.StatusOrder) ([]*entity.Order, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByStatus", status)
+	ret0, _ := ret[0].([]*entity.Order)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByStatus indicates an expected call of GetByStatus.
+func (mr *MockOrderRepositoryMockRecorder) GetByStatus(status interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByStatus", reflect.TypeOf((*MockOrderRepository)(nil).GetByStatus), status)
 }
 
 // UpdateStatusById mocks base method.
