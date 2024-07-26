@@ -21,6 +21,8 @@ type OrderRepository interface {
 	Create(order entity.Order) (entity.Order, error)
 	GetAll() ([]entity.Order, error)
 	GetById(id int) (*entity.Order, error)
+	GetByStatus(status enum.StatusOrder) ([]*entity.Order, error)
+	CancelExpiredOrders(threshold int) error
 	UpdateStatusById(id int, status enum.StatusOrder) error
 }
 

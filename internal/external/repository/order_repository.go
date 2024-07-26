@@ -36,6 +36,32 @@ func (o *OrderRepository) GetAll() ([]entity.Order, error) {
 	return orders, nil
 }
 
+func (o *OrderRepository) GetByStatus(status enum.StatusOrder) ([]*entity.Order, error) {
+	var orders []*entity.Order
+
+	result := o.db.Model(orders).Where("status_order = ?", status)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+
+		return nil, result.Error
+	}
+
+	return orders, nil
+}
+
+func (o *OrderRepository) CancelExpiredOrders(threshold int) error {
+	results := o.db.Exec("update ze_burguer.orders set status_order = ? "+
+		"WHERE (DATE_PART('Day', timezone('utc', now()) - orders.created_at)) * 24 + (DATE_PART('Hour',  timezone('utc', now())) - DATE_PART('Hour', orders.created_at)) >= ? "+
+		"AND status_order = ?", enum.OrderStatusFinished, threshold, enum.OrderStatusAwaitingPayment)
+	if results.Error != nil {
+		return results.Error
+	}
+
+	return nil
+}
+
 func (o *OrderRepository) GetById(id int) (*entity.Order, error) {
 	var order entity.Order
 

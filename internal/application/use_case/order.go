@@ -1,22 +1,39 @@
 package use_case
 
 import (
+	"errors"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/enum"
 )
 
+var (
+	ErrProductNotFound = errors.New("product not found")
+)
+
 type OrderUseCase struct {
 	orderRepository contract.OrderRepository
+	productUseCase  contract.ProductUseCase
 }
 
-func NewOrderUseCase(orderRepository contract.OrderRepository) *OrderUseCase {
+func NewOrderUseCase(o contract.OrderRepository, p contract.ProductUseCase) *OrderUseCase {
 	return &OrderUseCase{
-		orderRepository: orderRepository,
+		orderRepository: o,
+		productUseCase:  p,
 	}
 }
 
 func (o *OrderUseCase) Create(order entity.Order) (*entity.Order, error) {
+	for i, p := range order.Products {
+		product, err := o.productUseCase.GetById(p.ID)
+
+		if err != nil {
+			return nil, ErrProductNotFound
+		}
+
+		order.Products[i].Price = product.Price
+	}
+
 	order.StatusOrder = enum.OrderStatusAwaitingPayment
 	order.Amount = order.GetAmount()
 
@@ -53,4 +70,12 @@ func (o *OrderUseCase) UpdateStatusById(id int, status enum.StatusOrder) error {
 	}
 
 	return nil
+}
+
+func (o *OrderUseCase) GetByStatus(status enum.StatusOrder) ([]*entity.Order, error) {
+	return o.orderRepository.GetByStatus(status)
+}
+
+func (o *OrderUseCase) CancelExpiredOrders(threshold int) error {
+	return o.orderRepository.CancelExpiredOrders(threshold)
 }

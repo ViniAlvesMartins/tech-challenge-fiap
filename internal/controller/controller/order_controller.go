@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -67,33 +66,6 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		})
 		w.Write(jsonResponse)
 		return
-	}
-
-	for _, p := range orderDto.Products {
-		product, err := o.productUseCase.GetById(p.ID)
-
-		if err != nil {
-			o.logger.Error("error getting product by id", slog.String("message", err.Error()))
-
-			w.WriteHeader(http.StatusNotFound)
-			jsonResponse, _ := json.Marshal(Response{
-				Error: "Error finding product",
-				Data:  nil,
-			})
-			w.Write(jsonResponse)
-			return
-		}
-
-		if product == nil {
-			w.WriteHeader(http.StatusNotFound)
-			jsonResponse, _ := json.Marshal(
-				Response{
-					Error: fmt.Sprintf("Product of id %d not found", p.ID),
-					Data:  nil,
-				})
-			w.Write(jsonResponse)
-			return
-		}
 	}
 
 	client, err := o.clientUseCase.GetById(orderDto.ClientId)

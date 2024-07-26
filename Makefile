@@ -4,6 +4,9 @@ build:
 run-app:
 	docker-compose up dev-app-orders
 
+run-migration:
+	docker-compose run dev-app-orders go run ./cmd/migration/main.go
+
 run-prod:
 	docker-compose up prod-app-orders
 

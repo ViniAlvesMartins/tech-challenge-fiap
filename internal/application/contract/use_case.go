@@ -11,6 +11,8 @@ type OrderUseCase interface {
 	GetAll() (*[]entity.Order, error)
 	GetById(id int) (*entity.Order, error)
 	UpdateStatusById(id int, status enum.StatusOrder) error
+	CancelExpiredOrders(threshold int) error
+	GetByStatus(status enum.StatusOrder) ([]*entity.Order, error)
 }
 
 type CategoryUseCase interface {
