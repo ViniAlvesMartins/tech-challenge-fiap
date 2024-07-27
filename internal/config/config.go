@@ -12,6 +12,13 @@ type Config struct {
 	DatabaseUsername string `envconfig:"database_username"`
 	DatabasePassword string `envconfig:"database_password"`
 	MigrationsDir    string `envconfig:"migrations_dir"`
+
+	SnsRegion               string `envconfig:"sns_region"`
+	SnsUrl                  string `envconfig:"sns_url"`
+	SnsAccessKey            string `envconfig:"sns_access_key"`
+	UpdateOrderStatusTopic  string `envconfig:"update_order_status_topic"`
+	OrderStatusQueue        string `envconfig:"order_status_queue"`
+	OrderPaymentStatusQueue string `envconfig:"order_payment_status_queue"`
 }
 
 func NewConfig() (cfg Config, err error) {

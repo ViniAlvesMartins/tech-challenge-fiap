@@ -1,6 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS ze_burguer;
 
-CREATE TYPE ze_burguer.status_order AS ENUM ('AWAITING_PAYMENT', 'PAID', 'RECEIVED', 'PREPARING', 'READY', 'FINISHED');
+CREATE TYPE ze_burguer.status_order AS ENUM ('AWAITING_PAYMENT', 'PAID', 'RECEIVED', 'PREPARING', 'READY', 'FINISHED', 'CANCELED');
 
 -- Create clients table
 CREATE TABLE IF NOT EXISTS ze_burguer.clients (

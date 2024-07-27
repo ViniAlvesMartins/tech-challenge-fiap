@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/enum"
 	"log/slog"
 	"slices"
@@ -15,11 +16,12 @@ type PaymentStatusUpdateMessage struct {
 }
 
 type PaymentStatusUpdateHandler struct {
-	logger *slog.Logger
+	logger       *slog.Logger
+	orderUseCase contract.OrderUseCase
 }
 
-func NewPaymentStatusUpdateHandler(l *slog.Logger) *PaymentStatusUpdateHandler {
-	return &PaymentStatusUpdateHandler{logger: l}
+func NewPaymentStatusUpdateHandler(o contract.OrderUseCase, l *slog.Logger) *PaymentStatusUpdateHandler {
+	return &PaymentStatusUpdateHandler{logger: l, orderUseCase: o}
 }
 
 func (f *PaymentStatusUpdateHandler) Handle(ctx context.Context, b []byte) error {
@@ -36,7 +38,5 @@ func (f *PaymentStatusUpdateHandler) Handle(ctx context.Context, b []byte) error
 		return nil
 	}
 
-	//add use case method to cancel order
-
-	return nil
+	return f.orderUseCase.UpdateStatusById(message.OrderId, enum.OrderStatusCanceled)
 }

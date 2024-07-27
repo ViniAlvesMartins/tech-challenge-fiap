@@ -16,3 +16,29 @@ services:
       - 8081:8081
     networks:
       - dev-networks
+
+  dev-app-payment-canceled-worker:
+    container_name: worker.ze-burger-orders-payment-canceled.dev
+    env_file: .env
+    command: >
+      sh -c "go run cmd/worker/rollback_payment/main.go"
+    build:
+      dockerfile: ./infra/docker/local/Dockerfile
+      context: ./
+    volumes:
+      - .:/app
+    networks:
+      - dev-networks
+
+  dev-app-order-status-update-worker:
+    container_name: worker.ze-burger-orders-order-status-update.dev
+    env_file: .env
+    command: >
+      sh -c "go run cmd/worker/update_order_status/main.go"
+    build:
+      dockerfile: ./infra/docker/local/Dockerfile
+      context: ./
+    volumes:
+      - .:/app
+    networks:
+      - dev-networks

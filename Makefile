@@ -4,6 +4,12 @@ build:
 run-app:
 	docker-compose up dev-app-orders
 
+run-payment-canceled-worker:
+	docker-compose up dev-app-payment-canceled-worker
+
+run-order-status-update-worker:
+	docker-compose up dev-app-order-status-update-worker
+
 run-migration:
 	docker-compose run dev-app-orders go run ./cmd/migration/main.go
 

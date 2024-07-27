@@ -16,11 +16,11 @@ type OrderStatusUpdateMessage struct {
 }
 
 type OrderStatusUpdateHandler struct {
-	orderUseCase contract.OrderUseCase
 	logger       *slog.Logger
+	orderUseCase contract.OrderUseCase
 }
 
-func NewOrderStatusUpdateHandler(l *slog.Logger, o contract.OrderUseCase) *OrderStatusUpdateHandler {
+func NewOrderStatusUpdateHandler(o contract.OrderUseCase, l *slog.Logger) *OrderStatusUpdateHandler {
 	return &OrderStatusUpdateHandler{logger: l, orderUseCase: o}
 }
 
@@ -38,7 +38,5 @@ func (f *OrderStatusUpdateHandler) Handle(ctx context.Context, b []byte) error {
 		return nil
 	}
 
-	//add use case method to change order status
-
-	return nil
+	return f.orderUseCase.UpdateStatusById(message.OrderId, message.Status)
 }

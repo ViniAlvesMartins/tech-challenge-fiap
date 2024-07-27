@@ -17,3 +17,23 @@ services:
         condition: service_healthy
     networks:
       - dev-networks
+
+  prod-app-payment-canceled-worker:
+    container_name: worker.ze-burger-orders-payment-canceled.prod
+    env_file: .env
+    command: [ "./cmd/worker/rollback_payment/main" ]
+    build:
+      dockerfile: ./infra/docker/prod/Dockerfile
+      context: ./
+    networks:
+      - dev-networks
+
+  prod-app-order-status-update-worker:
+    container_name: worker.ze-burger-orders-order-status-update.prod
+    env_file: .env
+    command: [ "./cmd/worker/update_order_status/main" ]
+    build:
+      dockerfile: ./infra/docker/prod/Dockerfile
+      context: ./
+    networks:
+      - dev-networks
