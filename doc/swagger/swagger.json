@@ -806,8 +806,8 @@
             "required": [
                 "category_id",
                 "description",
-                "name_product",
-                "price"
+                "price",
+                "product_name"
             ],
             "properties": {
                 "category_id": {
@@ -816,11 +816,11 @@
                 "description": {
                     "type": "string"
                 },
-                "name_product": {
-                    "type": "string"
-                },
                 "price": {
                     "type": "number"
+                },
+                "product_name": {
+                    "type": "string"
                 }
             }
         },
@@ -893,11 +893,11 @@
                 "id": {
                     "type": "integer"
                 },
-                "name_product": {
-                    "type": "string"
-                },
                 "price": {
                     "type": "number"
+                },
+                "product_name": {
+                    "type": "string"
                 }
             }
         },

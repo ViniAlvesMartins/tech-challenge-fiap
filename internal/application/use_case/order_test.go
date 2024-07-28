@@ -17,12 +17,12 @@ func TestOrderUseCase_Create(t *testing.T) {
 		order := entity.Order{
 			ID:          1,
 			ClientId:    nil,
-			StatusOrder: enum.OrderStatusAwaitingPayment,
+			OrderStatus: enum.OrderStatusAwaitingPayment,
 			Amount:      500.50,
 			Products: []*entity.Product{
 				{
 					ID:          1,
-					NameProduct: "Test product 1",
+					ProductName: "Test product 1",
 					Description: "Test product 1",
 					Price:       250.25,
 					CategoryId:  1,
@@ -30,7 +30,7 @@ func TestOrderUseCase_Create(t *testing.T) {
 				},
 				{
 					ID:          2,
-					NameProduct: "Test product 2",
+					ProductName: "Test product 2",
 					Description: "Test product 2",
 					Price:       250.25,
 					CategoryId:  1,
@@ -59,12 +59,12 @@ func TestOrderUseCase_Create(t *testing.T) {
 		order := entity.Order{
 			ID:          1,
 			ClientId:    nil,
-			StatusOrder: enum.OrderStatusAwaitingPayment,
+			OrderStatus: enum.OrderStatusAwaitingPayment,
 			Amount:      500.50,
 			Products: []*entity.Product{
 				{
 					ID:          1,
-					NameProduct: "Test product 1",
+					ProductName: "Test product 1",
 					Description: "Test product 1",
 					Price:       250.25,
 					CategoryId:  1,
@@ -72,7 +72,7 @@ func TestOrderUseCase_Create(t *testing.T) {
 				},
 				{
 					ID:          2,
-					NameProduct: "Test product 2",
+					ProductName: "Test product 2",
 					Description: "Test product 2",
 					Price:       250.25,
 					CategoryId:  1,
@@ -102,12 +102,12 @@ func TestOrderUseCase_GetById(t *testing.T) {
 		order := entity.Order{
 			ID:          1,
 			ClientId:    nil,
-			StatusOrder: enum.OrderStatusAwaitingPayment,
+			OrderStatus: enum.OrderStatusAwaitingPayment,
 			Amount:      500.50,
 			Products: []*entity.Product{
 				{
 					ID:          1,
-					NameProduct: "Test product 1",
+					ProductName: "Test product 1",
 					Description: "Test product 1",
 					Price:       250.25,
 					CategoryId:  1,
@@ -115,7 +115,7 @@ func TestOrderUseCase_GetById(t *testing.T) {
 				},
 				{
 					ID:          2,
-					NameProduct: "Test product 2",
+					ProductName: "Test product 2",
 					Description: "Test product 2",
 					Price:       250.25,
 					CategoryId:  1,
@@ -161,12 +161,12 @@ func TestOrderUseCase_GetByAll(t *testing.T) {
 			{
 				ID:          1,
 				ClientId:    nil,
-				StatusOrder: enum.OrderStatusAwaitingPayment,
+				OrderStatus: enum.OrderStatusAwaitingPayment,
 				Amount:      500.50,
 				Products: []*entity.Product{
 					{
 						ID:          1,
-						NameProduct: "Test product 1",
+						ProductName: "Test product 1",
 						Description: "Test product 1",
 						Price:       250.25,
 						CategoryId:  1,
@@ -174,7 +174,7 @@ func TestOrderUseCase_GetByAll(t *testing.T) {
 					},
 					{
 						ID:          2,
-						NameProduct: "Test product 2",
+						ProductName: "Test product 2",
 						Description: "Test product 2",
 						Price:       250.25,
 						CategoryId:  1,
@@ -185,12 +185,12 @@ func TestOrderUseCase_GetByAll(t *testing.T) {
 			{
 				ID:          2,
 				ClientId:    nil,
-				StatusOrder: enum.OrderStatusAwaitingPayment,
+				OrderStatus: enum.OrderStatusAwaitingPayment,
 				Amount:      100.50,
 				Products: []*entity.Product{
 					{
 						ID:          1,
-						NameProduct: "Test product 3",
+						ProductName: "Test product 3",
 						Description: "Test product 3",
 						Price:       50.25,
 						CategoryId:  1,
@@ -198,7 +198,7 @@ func TestOrderUseCase_GetByAll(t *testing.T) {
 					},
 					{
 						ID:          2,
-						NameProduct: "Test product 4",
+						ProductName: "Test product 4",
 						Description: "Test product 4",
 						Price:       550.25,
 						CategoryId:  1,

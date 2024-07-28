@@ -13,6 +13,7 @@ type OrderUseCase interface {
 	UpdateStatusById(id int, status enum.StatusOrder) error
 	CancelExpiredOrders(threshold int) error
 	GetByStatus(status enum.StatusOrder) ([]*entity.Order, error)
+	AnonymizeOrderClient(clientID int) error
 }
 
 type CategoryUseCase interface {

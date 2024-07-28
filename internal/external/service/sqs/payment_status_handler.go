@@ -33,10 +33,41 @@ func (f *PaymentStatusUpdateHandler) Handle(ctx context.Context, b []byte) error
 		return err
 	}
 
-	if !slices.Contains([]enum.PaymentStatus{enum.PaymentStatusCanceled}, message.Status) {
+	if !slices.Contains([]enum.PaymentStatus{enum.PaymentStatusCanceled, enum.PaymentStatusConfirmed}, message.Status) {
 		f.logger.Info(fmt.Sprintf("Received event with status %s. Ignoring message...", message.Status))
 		return nil
 	}
 
-	return f.orderUseCase.UpdateStatusById(message.OrderId, enum.OrderStatusCanceled)
+	// get order to check if status is valid for payment approval/cancel
+	order, err := f.orderUseCase.GetById(message.OrderId)
+	if err != nil {
+		f.logger.Error(
+			fmt.Sprintf("error getting order details: [order id: %d]", message.OrderId),
+			slog.Any("error", err.Error()),
+		)
+		return err
+	}
+
+	if order == nil {
+		f.logger.Warn(fmt.Sprintf("order not found: [order id: %d]", message.OrderId))
+		return nil
+	}
+
+	// cannot cancel/approve payment of FINISHED/PAID/CANCELED order
+	if slices.Contains([]enum.StatusOrder{enum.OrderStatusPaid, enum.OrderStatusFinished, enum.OrderStatusCanceled}, order.OrderStatus) {
+		f.logger.Warn(fmt.Sprintf("cannot change payment status [payment status: %s] of order [order status: %s]", message.Status, order.OrderStatus))
+		return nil
+	}
+
+	return f.updateOrderStatus(message.OrderId, message.Status)
+}
+
+func (f *PaymentStatusUpdateHandler) updateOrderStatus(id int, s enum.PaymentStatus) error {
+	status := enum.OrderStatusPaid
+
+	if s == enum.PaymentStatusCanceled {
+		status = enum.OrderStatusCanceled
+	}
+
+	return f.orderUseCase.UpdateStatusById(id, status)
 }

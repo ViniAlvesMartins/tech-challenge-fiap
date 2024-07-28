@@ -12,12 +12,12 @@ func TestOrderFromEntity(t *testing.T) {
 		order := entity.Order{
 			ID:          1,
 			ClientId:    nil,
-			StatusOrder: enum.OrderStatusAwaitingPayment,
+			OrderStatus: enum.OrderStatusAwaitingPayment,
 			Amount:      123.45,
 			Products: []*entity.Product{
 				{
 					ID:          1,
-					NameProduct: "Test Product 1",
+					ProductName: "Test Product 1",
 					Description: "Test Product 1",
 					Price:       10.5,
 					CategoryId:  1,
@@ -25,7 +25,7 @@ func TestOrderFromEntity(t *testing.T) {
 				},
 				{
 					ID:          2,
-					NameProduct: "Test Product 2",
+					ProductName: "Test Product 2",
 					Description: "Test Product 2",
 					Price:       10.5,
 					CategoryId:  1,
@@ -47,12 +47,12 @@ func TestOrderListFromEntity(t *testing.T) {
 			{
 				ID:          1,
 				ClientId:    nil,
-				StatusOrder: enum.OrderStatusAwaitingPayment,
+				OrderStatus: enum.OrderStatusAwaitingPayment,
 				Amount:      123.45,
 				Products: []*entity.Product{
 					{
 						ID:          1,
-						NameProduct: "Test Product 1",
+						ProductName: "Test Product 1",
 						Description: "Test Product 1",
 						Price:       10.5,
 						CategoryId:  1,
@@ -60,7 +60,7 @@ func TestOrderListFromEntity(t *testing.T) {
 					},
 					{
 						ID:          2,
-						NameProduct: "Test Product 2",
+						ProductName: "Test Product 2",
 						Description: "Test Product 2",
 						Price:       10.5,
 						CategoryId:  1,

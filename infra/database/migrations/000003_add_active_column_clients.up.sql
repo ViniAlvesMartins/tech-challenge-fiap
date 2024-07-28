@@ -1,1 +1,0 @@
-ALTER TABLE ze_burguer.clients ADD column active bool DEFAULT TRUE

@@ -37,15 +37,15 @@ definitions:
         type: integer
       description:
         type: string
-      name_product:
-        type: string
       price:
         type: number
+      product_name:
+        type: string
     required:
     - category_id
     - description
-    - name_product
     - price
+    - product_name
     type: object
   input.StatusOrderDto:
     properties:
@@ -92,10 +92,10 @@ definitions:
         type: string
       id:
         type: integer
-      name_product:
-        type: string
       price:
         type: number
+      product_name:
+        type: string
     type: object
   swagger.InternalServerErrorResponse:
     properties:

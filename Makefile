@@ -4,8 +4,8 @@ build:
 run-app:
 	docker-compose up dev-app-orders
 
-run-payment-canceled-worker:
-	docker-compose up dev-app-payment-canceled-worker
+run-payment-status-update-worker:
+	docker-compose up dev-app-payment-status-update-worker
 
 run-order-status-update-worker:
 	docker-compose up dev-app-order-status-update-worker

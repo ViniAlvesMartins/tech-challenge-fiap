@@ -1,12 +1,14 @@
 package enum
 
-import (
-	"slices"
-)
+import "slices"
 
 type StatusOrder string
+type PaymentStatus string
 
 const (
+	PaymentStatusConfirmed PaymentStatus = "CONFIRMED"
+	PaymentStatusCanceled  PaymentStatus = "CANCELED"
+
 	OrderStatusAwaitingPayment StatusOrder = "AWAITING_PAYMENT"
 	OrderStatusPaid            StatusOrder = "PAID"
 	OrderStatusCanceled        StatusOrder = "CANCELED"
@@ -16,7 +18,7 @@ const (
 	OrderStatusFinished        StatusOrder = "FINISHED"
 )
 
-func ValidateStatus(val string) bool {
+func ValidateOrderStatus(val string) bool {
 	validStatus := []StatusOrder{OrderStatusAwaitingPayment, OrderStatusPaid, OrderStatusCanceled, OrderStatusReceived, OrderStatusPreparing, OrderStatusReady, OrderStatusFinished}
 	return slices.Contains(validStatus, StatusOrder(val))
 }

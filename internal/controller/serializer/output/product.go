@@ -4,7 +4,7 @@ import "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/entity
 
 type ProductDto struct {
 	ID          int     `json:"id"`
-	NameProduct string  `json:"name_product"`
+	ProductName string  `json:"product_name"`
 	Description string  `json:"description"`
 	Price       float32 `json:"price"`
 	CategoryId  int     `json:"category_id"`
@@ -14,7 +14,7 @@ type ProductDto struct {
 func ProductFromEntity(product entity.Product) ProductDto {
 	return ProductDto{
 		ID:          product.ID,
-		NameProduct: product.NameProduct,
+		ProductName: product.ProductName,
 		Description: product.Description,
 		Price:       product.Price,
 		CategoryId:  product.CategoryId,

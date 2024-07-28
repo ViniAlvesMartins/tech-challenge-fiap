@@ -17,11 +17,11 @@ services:
     networks:
       - dev-networks
 
-  dev-app-payment-canceled-worker:
-    container_name: worker.ze-burger-orders-payment-canceled.dev
+  dev-app-payment-status-update-worker:
+    container_name: worker.ze-burger-orders-payment-status-update.dev
     env_file: .env
     command: >
-      sh -c "go run cmd/worker/rollback_payment/main.go"
+      sh -c "go run cmd/worker/update_payment_status/main.go"
     build:
       dockerfile: ./infra/docker/local/Dockerfile
       context: ./

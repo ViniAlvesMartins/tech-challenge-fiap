@@ -23,7 +23,9 @@ func TestNewClientUseCase_Create(t *testing.T) {
 		repo := mock.NewMockClientRepository(ctrl)
 		repo.EXPECT().Create(client).Return(&client, nil).Times(1)
 
-		clientUseCase := NewClientUseCase(repo)
+		ordersUseCase := mock.NewMockOrderUseCase(ctrl)
+
+		clientUseCase := NewClientUseCase(repo, ordersUseCase)
 
 		newClient, err := clientUseCase.Create(client)
 
@@ -42,10 +44,12 @@ func TestNewClientUseCase_Create(t *testing.T) {
 			Email: "client@example.com",
 		}
 
+		ordersUseCase := mock.NewMockOrderUseCase(ctrl)
+
 		repo := mock.NewMockClientRepository(ctrl)
 		repo.EXPECT().Create(client).Return(&entity.Client{}, expectedErr).Times(1)
 
-		clientUseCase := NewClientUseCase(repo)
+		clientUseCase := NewClientUseCase(repo, ordersUseCase)
 
 		newClient, err := clientUseCase.Create(client)
 
@@ -65,10 +69,12 @@ func TestNewClientUseCase_GetClientByCpf(t *testing.T) {
 			Email: "client@example.com",
 		}
 
+		ordersUseCase := mock.NewMockOrderUseCase(ctrl)
+
 		repo := mock.NewMockClientRepository(ctrl)
 		repo.EXPECT().GetByCpf(client.Cpf).Return(&client, nil).Times(1)
 
-		clientUseCase := NewClientUseCase(repo)
+		clientUseCase := NewClientUseCase(repo, ordersUseCase)
 		newClient, err := clientUseCase.GetByCpf(client.Cpf)
 
 		assert.Equal(t, client, *newClient)
@@ -86,10 +92,12 @@ func TestNewClientUseCase_GetClientByCpf(t *testing.T) {
 			Email: "client@example.com",
 		}
 
+		ordersUseCase := mock.NewMockOrderUseCase(ctrl)
+
 		repo := mock.NewMockClientRepository(ctrl)
 		repo.EXPECT().GetByCpf(client.Cpf).Return(nil, expectedErr).Times(1)
 
-		clientUseCase := NewClientUseCase(repo)
+		clientUseCase := NewClientUseCase(repo, ordersUseCase)
 
 		newClient, err := clientUseCase.GetByCpf(client.Cpf)
 
@@ -109,10 +117,12 @@ func TestNewClientUseCase_GetClientById(t *testing.T) {
 			Email: "client@example.com",
 		}
 
+		ordersUseCase := mock.NewMockOrderUseCase(ctrl)
+
 		repo := mock.NewMockClientRepository(ctrl)
 		repo.EXPECT().GetById(&client.ID).Return(&client, nil).Times(1)
 
-		clientUseCase := NewClientUseCase(repo)
+		clientUseCase := NewClientUseCase(repo, ordersUseCase)
 
 		newClient, err := clientUseCase.GetById(&client.ID)
 
@@ -131,10 +141,12 @@ func TestNewClientUseCase_GetClientById(t *testing.T) {
 			Email: "client@example.com",
 		}
 
+		ordersUseCase := mock.NewMockOrderUseCase(ctrl)
+
 		repo := mock.NewMockClientRepository(ctrl)
 		repo.EXPECT().GetById(&client.ID).Return(nil, expectedErr).Times(1)
 
-		clientUseCase := NewClientUseCase(repo)
+		clientUseCase := NewClientUseCase(repo, ordersUseCase)
 
 		newClient, err := clientUseCase.GetById(&client.ID)
 
@@ -154,10 +166,12 @@ func TestNewClientUseCase_GetAlreadyExists(t *testing.T) {
 			Email: "client@example.com",
 		}
 
+		ordersUseCase := mock.NewMockOrderUseCase(ctrl)
+
 		repo := mock.NewMockClientRepository(ctrl)
 		repo.EXPECT().GetByCpfOrEmail(client.Cpf, client.Email).Return(&client, nil).Times(1)
 
-		clientUseCase := NewClientUseCase(repo)
+		clientUseCase := NewClientUseCase(repo, ordersUseCase)
 
 		newClient, err := clientUseCase.GetByCpfOrEmail(client.Cpf, client.Email)
 
@@ -176,10 +190,12 @@ func TestNewClientUseCase_GetAlreadyExists(t *testing.T) {
 			Email: "client@example.com",
 		}
 
+		ordersUseCase := mock.NewMockOrderUseCase(ctrl)
+
 		repo := mock.NewMockClientRepository(ctrl)
 		repo.EXPECT().GetByCpfOrEmail(client.Cpf, client.Email).Return(nil, expectedErr).Times(1)
 
-		clientUseCase := NewClientUseCase(repo)
+		clientUseCase := NewClientUseCase(repo, ordersUseCase)
 
 		newClient, err := clientUseCase.GetByCpfOrEmail(client.Cpf, client.Email)
 

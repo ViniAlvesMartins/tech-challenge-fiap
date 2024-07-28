@@ -34,7 +34,7 @@ func (o *OrderUseCase) Create(order entity.Order) (*entity.Order, error) {
 		order.Products[i].Price = product.Price
 	}
 
-	order.StatusOrder = enum.OrderStatusAwaitingPayment
+	order.OrderStatus = enum.OrderStatusAwaitingPayment
 	order.Amount = order.GetAmount()
 
 	orderNew, err := o.orderRepository.Create(order)
@@ -78,4 +78,8 @@ func (o *OrderUseCase) GetByStatus(status enum.StatusOrder) ([]*entity.Order, er
 
 func (o *OrderUseCase) CancelExpiredOrders(threshold int) error {
 	return o.orderRepository.CancelExpiredOrders(threshold)
+}
+
+func (o *OrderUseCase) AnonymizeOrderClient(clientID int) error {
+	return o.orderRepository.AnonymizeOrderClient(clientID)
 }

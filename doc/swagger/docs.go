@@ -817,8 +817,8 @@ const docTemplate = `{
             "required": [
                 "category_id",
                 "description",
-                "name_product",
-                "price"
+                "price",
+                "product_name"
             ],
             "properties": {
                 "category_id": {
@@ -827,11 +827,11 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "name_product": {
-                    "type": "string"
-                },
                 "price": {
                     "type": "number"
+                },
+                "product_name": {
+                    "type": "string"
                 }
             }
         },
@@ -904,11 +904,11 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "name_product": {
-                    "type": "string"
-                },
                 "price": {
                     "type": "number"
+                },
+                "product_name": {
+                    "type": "string"
                 }
             }
         },

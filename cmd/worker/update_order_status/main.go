@@ -30,7 +30,7 @@ func main() {
 
 	db, err := postgres.NewConnection(cfg.DatabaseHost, cfg.DatabaseUsername, cfg.DatabasePassword, cfg.DatabaseDBName, cfg.DatabasePort, cfg.DatabaseSchema)
 	if err != nil {
-		logger.Error("error connecting tdo database", err)
+		logger.Error("error connecting to database", err)
 		panic(err)
 	}
 

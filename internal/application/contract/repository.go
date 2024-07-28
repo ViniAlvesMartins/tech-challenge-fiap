@@ -24,12 +24,8 @@ type OrderRepository interface {
 	GetById(id int) (*entity.Order, error)
 	GetByStatus(status enum.StatusOrder) ([]*entity.Order, error)
 	CancelExpiredOrders(threshold int) error
+	AnonymizeOrderClient(clientID int) error
 	UpdateStatusById(id int, status enum.StatusOrder) error
-}
-
-type PaymentRepository interface {
-	Create(payment entity.Payment) (entity.Payment, error)
-	GetLastPaymentStatus(orderId int) (*entity.Payment, error)
 }
 
 type ProductRepository interface {

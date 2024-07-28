@@ -29,7 +29,7 @@ func (p *ProductRepository) Create(product entity.Product) (entity.Product, erro
 func (p *ProductRepository) Update(product entity.Product) (*entity.Product, error) {
 	var uptProduct entity.Product
 	result := p.db.Model(&uptProduct).Where("id = ?", product.ID).Clauses(clause.Returning{}).Updates(entity.Product{
-		NameProduct: product.NameProduct,
+		ProductName: product.ProductName,
 		Description: product.Description,
 		Price:       product.Price,
 		CategoryId:  product.CategoryId,

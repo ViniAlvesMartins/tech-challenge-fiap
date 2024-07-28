@@ -18,10 +18,10 @@ services:
     networks:
       - dev-networks
 
-  prod-app-payment-canceled-worker:
-    container_name: worker.ze-burger-orders-payment-canceled.prod
+  prod-app-payment-status-update-worker:
+    container_name: worker.ze-burger-orders-payment-status-update.prod
     env_file: .env
-    command: [ "./cmd/worker/rollback_payment/main" ]
+    command: [ "./cmd/worker/update_payment_status/main" ]
     build:
       dockerfile: ./infra/docker/prod/Dockerfile
       context: ./

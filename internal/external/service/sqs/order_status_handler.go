@@ -33,7 +33,7 @@ func (f *OrderStatusUpdateHandler) Handle(ctx context.Context, b []byte) error {
 		return err
 	}
 
-	if !slices.Contains([]enum.StatusOrder{enum.OrderStatusFinished, enum.OrderStatusPreparing}, message.Status) {
+	if !slices.Contains([]enum.StatusOrder{enum.OrderStatusCanceled, enum.OrderStatusPaid, enum.OrderStatusFinished, enum.OrderStatusPreparing}, message.Status) {
 		f.logger.Info(fmt.Sprintf("Received event with status %s. Ignoring message...", message.Status))
 		return nil
 	}

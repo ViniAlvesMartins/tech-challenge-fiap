@@ -9,7 +9,7 @@ import (
 func TestProductDto_ConvertToEntity(t *testing.T) {
 	t.Run("convert dto to entity successfully", func(t *testing.T) {
 		dto := ProductDto{
-			NameProduct: "Test Product",
+			ProductName: "Test Product",
 			Description: "Test created for test purposes",
 			Price:       123.45,
 			CategoryId:  1,

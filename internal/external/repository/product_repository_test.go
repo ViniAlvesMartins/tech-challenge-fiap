@@ -16,7 +16,7 @@ func TestProductRepository_Create(t *testing.T) {
 
 		product := entity.Product{
 			ID:          1,
-			NameProduct: "Test product",
+			ProductName: "Test product",
 			Description: "Test product",
 			Price:       123,
 			CategoryId:  1,
@@ -28,10 +28,10 @@ func TestProductRepository_Create(t *testing.T) {
 			NewRows([]string{"id"}).
 			AddRow("1")
 
-		expectedSQL := `INSERT INTO "products" ("name_product","description","price","category_id","active","id") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "id"`
+		expectedSQL := `INSERT INTO "products" ("product_name","description","price","category_id","active","id") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "id"`
 		mock.ExpectBegin()
 		mock.ExpectQuery(regexp.QuoteMeta(expectedSQL)).WithArgs(
-			product.NameProduct, product.Description, product.Price, product.CategoryId, product.Active, product.ID,
+			product.ProductName, product.Description, product.Price, product.CategoryId, product.Active, product.ID,
 		).WillReturnRows(addRow)
 		mock.ExpectCommit()
 

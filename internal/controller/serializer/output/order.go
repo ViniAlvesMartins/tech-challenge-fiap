@@ -8,7 +8,7 @@ import (
 type OrderDto struct {
 	ID          int          `json:"id"`
 	ClientID    *int         `json:"client_id"`
-	StatusOrder string       `json:"status_order"`
+	OrderStatus string       `json:"status_order"`
 	Amount      float32      `json:"amount"`
 	CreatedAt   time.Time    `json:"created_at"`
 	Products    []ProductDto `json:"products"`
@@ -18,7 +18,7 @@ func OrderFromEntity(order entity.Order) OrderDto {
 	var orderDto = OrderDto{
 		ID:          order.ID,
 		ClientID:    order.ClientId,
-		StatusOrder: string(order.StatusOrder),
+		OrderStatus: string(order.OrderStatus),
 		Amount:      order.Amount,
 		CreatedAt:   order.CreatedAt,
 	}

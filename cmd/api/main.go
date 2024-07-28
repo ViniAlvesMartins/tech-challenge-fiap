@@ -30,14 +30,14 @@ func main() {
 		panic(err)
 	}
 
-	clientRepository := repository.NewClientRepository(db)
-	clientUseCase := use_case.NewClientUseCase(clientRepository)
-
 	productRepository := repository.NewProductRepository(db)
 	productUseCase := use_case.NewProductUseCase(productRepository)
 
 	orderRepository := repository.NewOrderRepository(db)
 	orderUseCase := use_case.NewOrderUseCase(orderRepository, productUseCase)
+
+	clientRepository := repository.NewClientRepository(db)
+	clientUseCase := use_case.NewClientUseCase(clientRepository, orderUseCase)
 
 	categoryRepository := repository.NewCategoryRepository(db)
 	categoryUseCase := use_case.NewCategoryUseCase(categoryRepository)

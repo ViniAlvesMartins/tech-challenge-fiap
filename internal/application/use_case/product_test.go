@@ -14,7 +14,7 @@ func TestProductUseCase_Create(t *testing.T) {
 		ctrl := gomock.NewController(t)
 
 		p := entity.Product{
-			NameProduct: "Test product",
+			ProductName: "Test product",
 			Description: "Product created to test",
 			Price:       123.45,
 			CategoryId:  1,
@@ -36,7 +36,7 @@ func TestProductUseCase_Create(t *testing.T) {
 		expectedErr := errors.New("error connecting to database")
 
 		p := entity.Product{
-			NameProduct: "Test product",
+			ProductName: "Test product",
 			Description: "Product created to test",
 			Price:       123.45,
 			CategoryId:  1,
@@ -58,7 +58,7 @@ func TestProductUseCase_Update(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		p := entity.Product{
 			ID:          1,
-			NameProduct: "Updated test product",
+			ProductName: "Updated test product",
 			Description: "Product updated to test",
 			Price:       123.45,
 			CategoryId:  1,
@@ -83,7 +83,7 @@ func TestProductUseCase_Update(t *testing.T) {
 
 		p := entity.Product{
 			ID:          1,
-			NameProduct: "Updated test product",
+			ProductName: "Updated test product",
 			Description: "Product updated to test",
 			Price:       123.45,
 			CategoryId:  1,
@@ -106,7 +106,7 @@ func TestProductUseCase_Delete(t *testing.T) {
 
 		p := entity.Product{
 			ID:          1,
-			NameProduct: "Updated test product",
+			ProductName: "Updated test product",
 			Description: "Product updated to test",
 			Price:       123.45,
 			CategoryId:  1,
@@ -128,7 +128,7 @@ func TestProductUseCase_Delete(t *testing.T) {
 
 		p := entity.Product{
 			ID:          1,
-			NameProduct: "Updated test product",
+			ProductName: "Updated test product",
 			Description: "Product updated to test",
 			Price:       123.45,
 			CategoryId:  1,
@@ -152,7 +152,7 @@ func TestProductUseCase_GetProductByCategory(t *testing.T) {
 		pp := []entity.Product{
 			{
 				ID:          1,
-				NameProduct: "Product 1",
+				ProductName: "Product 1",
 				Description: "Product of category 1",
 				Price:       123.45,
 				CategoryId:  1,
@@ -160,14 +160,14 @@ func TestProductUseCase_GetProductByCategory(t *testing.T) {
 			},
 			{
 				ID:          2,
-				NameProduct: "Product 2",
+				ProductName: "Product 2",
 				Description: "Product of category 2",
 				Price:       123.45,
 				CategoryId:  2,
 				Active:      true,
 			}, {
 				ID:          3,
-				NameProduct: "Product 3",
+				ProductName: "Product 3",
 				Description: "Product of category 1",
 				Price:       123.45,
 				CategoryId:  1,

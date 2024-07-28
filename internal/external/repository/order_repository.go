@@ -26,9 +26,13 @@ func (o *OrderRepository) Create(order entity.Order) (entity.Order, error) {
 	return order, nil
 }
 
+func (o *OrderRepository) AnonymizeOrderClient(clientID int) error {
+	return o.db.Model(&entity.Order{}).Where("client_id = ?", clientID).Update("client_id", nil).Error
+}
+
 func (o *OrderRepository) GetAll() ([]entity.Order, error) {
 	var orders []entity.Order
-	results := o.db.Raw("select * from ze_burguer.orders where not status_order = 'FINISHED' order by case when status_order = 'READY' then 1 when status_order = 'PREPARING' then 2 when status_order = 'RECEIVED' then 3 else 4 end asc, created_at asc").Find(&orders)
+	results := o.db.Raw("select * from ze_burguer.orders where not order_status = 'FINISHED' order by case when order_status = 'READY' then 1 when order_status = 'PREPARING' then 2 when order_status = 'RECEIVED' then 3 else 4 end asc, created_at asc").Find(&orders)
 	if results.Error != nil {
 		return orders, results.Error
 	}
@@ -39,7 +43,7 @@ func (o *OrderRepository) GetAll() ([]entity.Order, error) {
 func (o *OrderRepository) GetByStatus(status enum.StatusOrder) ([]*entity.Order, error) {
 	var orders []*entity.Order
 
-	result := o.db.Model(orders).Where("status_order = ?", status)
+	result := o.db.Model(orders).Where("order_status = ?", status)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -52,9 +56,9 @@ func (o *OrderRepository) GetByStatus(status enum.StatusOrder) ([]*entity.Order,
 }
 
 func (o *OrderRepository) CancelExpiredOrders(threshold int) error {
-	results := o.db.Exec("update ze_burguer.orders set status_order = ? "+
+	results := o.db.Exec("update ze_burguer.orders set order_status = ? "+
 		"WHERE (DATE_PART('Day', timezone('utc', now()) - orders.created_at)) * 24 + (DATE_PART('Hour',  timezone('utc', now())) - DATE_PART('Hour', orders.created_at)) >= ? "+
-		"AND status_order = ?", enum.OrderStatusFinished, threshold, enum.OrderStatusAwaitingPayment)
+		"AND order_status = ?", enum.OrderStatusFinished, threshold, enum.OrderStatusAwaitingPayment)
 	if results.Error != nil {
 		return results.Error
 	}
@@ -78,5 +82,5 @@ func (o *OrderRepository) GetById(id int) (*entity.Order, error) {
 }
 
 func (o *OrderRepository) UpdateStatusById(id int, status enum.StatusOrder) error {
-	return o.db.Model(&entity.Order{}).Where("id = ?", id).Update("status_order", status).Error
+	return o.db.Model(&entity.Order{}).Where("id = ?", id).Update("order_status", status).Error
 }

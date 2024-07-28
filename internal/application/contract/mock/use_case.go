@@ -35,6 +35,20 @@ func (m *MockOrderUseCase) EXPECT() *MockOrderUseCaseMockRecorder {
 	return m.recorder
 }
 
+// AnonymizeOrderClient mocks base method.
+func (m *MockOrderUseCase) AnonymizeOrderClient(clientID int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AnonymizeOrderClient", clientID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AnonymizeOrderClient indicates an expected call of AnonymizeOrderClient.
+func (mr *MockOrderUseCaseMockRecorder) AnonymizeOrderClient(clientID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AnonymizeOrderClient", reflect.TypeOf((*MockOrderUseCase)(nil).AnonymizeOrderClient), clientID)
+}
+
 // CancelExpiredOrders mocks base method.
 func (m *MockOrderUseCase) CancelExpiredOrders(threshold int) error {
 	m.ctrl.T.Helper()

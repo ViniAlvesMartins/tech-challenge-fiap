@@ -24,7 +24,7 @@ func TestOrderController_CreateOrder(t *testing.T) {
 
 		product := entity.Product{
 			ID:          1,
-			NameProduct: "Test product",
+			ProductName: "Test product",
 			Description: "Test product",
 			Price:       123.45,
 			CategoryId:  1,
@@ -54,7 +54,7 @@ func TestOrderController_CreateOrder(t *testing.T) {
 		order := entity.Order{
 			ID:          1,
 			ClientId:    &client.ID,
-			StatusOrder: enum.OrderStatusAwaitingPayment,
+			OrderStatus: enum.OrderStatusAwaitingPayment,
 			Amount:      123.45,
 			Products:    products,
 		}

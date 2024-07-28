@@ -7,11 +7,13 @@ import (
 
 type ClientUseCase struct {
 	clientRepository contract.ClientRepository
+	orderUseCase     contract.OrderUseCase
 }
 
-func NewClientUseCase(clientRepository contract.ClientRepository) *ClientUseCase {
+func NewClientUseCase(c contract.ClientRepository, o contract.OrderUseCase) *ClientUseCase {
 	return &ClientUseCase{
-		clientRepository: clientRepository,
+		clientRepository: c,
+		orderUseCase:     o,
 	}
 }
 
@@ -44,6 +46,15 @@ func (c *ClientUseCase) GetById(id *int) (*entity.Client, error) {
 }
 
 func (c *ClientUseCase) DeleteClientByCpf(cpf int) error {
+	client, err := c.clientRepository.GetByCpf(cpf)
+	if err != nil {
+		return nil
+	}
+
+	if err = c.orderUseCase.AnonymizeOrderClient(client.ID); err != nil {
+		return nil
+	}
+
 	return c.clientRepository.DeleteClientByCpf(cpf)
 }
 

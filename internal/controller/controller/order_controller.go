@@ -245,7 +245,7 @@ func (o *OrderController) UpdateOrderStatusById(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	if !enum.ValidateStatus(statusOrderDto.Status) {
+	if !enum.ValidateOrderStatus(statusOrderDto.Status) {
 		w.WriteHeader(http.StatusBadRequest)
 		jsonResponse, _ := json.Marshal(Response{
 			Error: "Invalid status",
