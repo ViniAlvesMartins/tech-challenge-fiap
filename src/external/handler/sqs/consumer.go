@@ -30,7 +30,7 @@ func (s *SqsConsumer) Run() error {
 
 	fmt.Println("teste aqui")
 
-	queueUrl := "https://sqs.us-east-1.amazonaws.com/682279319757/from_payment_production_order_queue"
+	queueUrl := "https://sqs.us-east-1.amazonaws.com/961381910932/from_payment_production_order_queue"
 
 	for {
 
@@ -81,7 +81,7 @@ func (s *SqsConsumer) Run() error {
 						Status:  string(enum.PREPARING),
 					})
 
-					s.sqsService.SendMessage("https://sqs.us-east-1.amazonaws.com/682279319757/to_production_order_queue.fifo",
+					s.sqsService.SendMessage("https://sqs.us-east-1.amazonaws.com/961381910932/to_production_order_queue.fifo",
 						string(js),
 						fmt.Sprint(sqsMessageReturn.OrderId))
 				}
