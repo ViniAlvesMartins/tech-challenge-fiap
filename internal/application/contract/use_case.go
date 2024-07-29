@@ -2,12 +2,13 @@
 package contract
 
 import (
+	"context"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/entity"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/enum"
 )
 
 type OrderUseCase interface {
-	Create(order entity.Order) (*entity.Order, error)
+	Create(ctx context.Context, order entity.Order) (*entity.Order, error)
 	GetAll() (*[]entity.Order, error)
 	GetById(id int) (*entity.Order, error)
 	UpdateStatusById(id int, status enum.StatusOrder) error

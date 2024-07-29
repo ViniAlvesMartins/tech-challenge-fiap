@@ -5,8 +5,10 @@
 package mock
 
 import (
+	context "context"
 	reflect "reflect"
 
+	entity "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/entity"
 	types "github.com/aws/aws-sdk-go-v2/service/sqs/types"
 	gomock "github.com/golang/mock/gomock"
 )
@@ -75,4 +77,41 @@ func (m *MockQueueService) SendMessage(queueUrl, message, messageGroupId string)
 func (mr *MockQueueServiceMockRecorder) SendMessage(queueUrl, message, messageGroupId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMessage", reflect.TypeOf((*MockQueueService)(nil).SendMessage), queueUrl, message, messageGroupId)
+}
+
+// MockSnsService is a mock of SnsService interface.
+type MockSnsService struct {
+	ctrl     *gomock.Controller
+	recorder *MockSnsServiceMockRecorder
+}
+
+// MockSnsServiceMockRecorder is the mock recorder for MockSnsService.
+type MockSnsServiceMockRecorder struct {
+	mock *MockSnsService
+}
+
+// NewMockSnsService creates a new mock instance.
+func NewMockSnsService(ctrl *gomock.Controller) *MockSnsService {
+	mock := &MockSnsService{ctrl: ctrl}
+	mock.recorder = &MockSnsServiceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockSnsService) EXPECT() *MockSnsServiceMockRecorder {
+	return m.recorder
+}
+
+// SendMessage mocks base method.
+func (m *MockSnsService) SendMessage(ctx context.Context, message entity.Order) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendMessage", ctx, message)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendMessage indicates an expected call of SendMessage.
+func (mr *MockSnsServiceMockRecorder) SendMessage(ctx, message interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMessage", reflect.TypeOf((*MockSnsService)(nil).SendMessage), ctx, message)
 }

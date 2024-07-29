@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap-common/postgres"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap-common/sns"
 	sqsservice "github.com/ViniAlvesMartins/tech-challenge-fiap-common/sqs"
 	usecase "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/use_case"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/config"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/external/repository"
+	snsproducer "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/external/service/sns"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/external/service/sqs"
 	"log/slog"
 	"os"
@@ -45,11 +47,19 @@ func main() {
 		panic(err)
 	}
 
+	snsConnection, err := sns.NewConnection(ctx, cfg.OrderCreatedTopic)
+	if err != nil {
+		logger.Error("error connecting to sns", err)
+		panic(err)
+	}
+
+	snsService := snsproducer.NewService(snsConnection)
+
 	productsRepository := repository.NewProductRepository(db)
 	productsUseCase := usecase.NewProductUseCase(productsRepository)
 
 	ordersRepository := repository.NewOrderRepository(db)
-	ordersUseCase := usecase.NewOrderUseCase(ordersRepository, productsUseCase)
+	ordersUseCase := usecase.NewOrderUseCase(ordersRepository, productsUseCase, snsService)
 
 	orderStatusHandler := sqs.NewOrderStatusUpdateHandler(ordersUseCase, logger)
 

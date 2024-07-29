@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap-common/postgres"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap-common/sns"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/use_case"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/config"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/external/repository"
+	snsproducer "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/external/service/sns"
 	"log/slog"
 	"os"
 )
@@ -16,6 +19,7 @@ const orderExpirationThreshold = 1
 func main() {
 	var err error
 	var logger = loadLogger()
+	var ctx = context.Background()
 
 	cfg, err := loadConfig()
 
@@ -30,11 +34,19 @@ func main() {
 		panic(err)
 	}
 
+	snsConnection, err := sns.NewConnection(ctx, cfg.OrderCreatedTopic)
+	if err != nil {
+		logger.Error("error connecting to sns", err)
+		panic(err)
+	}
+
+	snsService := snsproducer.NewService(snsConnection)
+
 	productRepository := repository.NewProductRepository(db)
 	productUseCase := use_case.NewProductUseCase(productRepository)
 
 	orderRepository := repository.NewOrderRepository(db)
-	orderUseCase := use_case.NewOrderUseCase(orderRepository, productUseCase)
+	orderUseCase := use_case.NewOrderUseCase(orderRepository, productUseCase, snsService)
 
 	logger.Info("starting job")
 

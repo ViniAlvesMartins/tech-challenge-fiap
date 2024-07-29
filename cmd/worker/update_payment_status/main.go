@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap-common/postgres"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap-common/sns"
 	sqsservice "github.com/ViniAlvesMartins/tech-challenge-fiap-common/sqs"
 	usecase "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/use_case"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/config"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/external/repository"
+	snsproducer "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/external/service/sns"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/external/service/sqs"
 	"log/slog"
 	"os"
@@ -39,6 +41,14 @@ func main() {
 		panic(err)
 	}
 
+	snsConnection, err := sns.NewConnection(ctx, cfg.OrderCreatedTopic)
+	if err != nil {
+		logger.Error("error connecting to sns", err)
+		panic(err)
+	}
+
+	snsService := snsproducer.NewService(snsConnection)
+
 	consumer, err := sqsservice.NewConnection(ctx, cfg.OrderPaymentStatusQueue, 1, 20)
 	if err != nil {
 		logger.Error("error connecting to sqs", err)
@@ -49,7 +59,7 @@ func main() {
 	productsUseCase := usecase.NewProductUseCase(productsRepository)
 
 	ordersRepository := repository.NewOrderRepository(db)
-	ordersUseCase := usecase.NewOrderUseCase(ordersRepository, productsUseCase)
+	ordersUseCase := usecase.NewOrderUseCase(ordersRepository, productsUseCase, snsService)
 
 	paymentStatusHandler := sqs.NewPaymentStatusUpdateHandler(ordersUseCase, logger)
 

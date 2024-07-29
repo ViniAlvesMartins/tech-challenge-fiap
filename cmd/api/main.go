@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap-common/postgres"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap-common/sns"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/use_case"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/config"
+	snsproducer "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/external/service/sns"
 	"log/slog"
 	"os"
 
@@ -33,8 +35,16 @@ func main() {
 	productRepository := repository.NewProductRepository(db)
 	productUseCase := use_case.NewProductUseCase(productRepository)
 
+	snsConnection, err := sns.NewConnection(ctx, cfg.OrderCreatedTopic)
+	if err != nil {
+		logger.Error("error connecting to sns", err)
+		panic(err)
+	}
+
+	snsService := snsproducer.NewService(snsConnection)
+
 	orderRepository := repository.NewOrderRepository(db)
-	orderUseCase := use_case.NewOrderUseCase(orderRepository, productUseCase)
+	orderUseCase := use_case.NewOrderUseCase(orderRepository, productUseCase, snsService)
 
 	clientRepository := repository.NewClientRepository(db)
 	clientUseCase := use_case.NewClientUseCase(clientRepository, orderUseCase)

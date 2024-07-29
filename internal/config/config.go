@@ -16,7 +16,7 @@ type Config struct {
 	SnsRegion               string `envconfig:"sns_region"`
 	SnsUrl                  string `envconfig:"sns_url"`
 	SnsAccessKey            string `envconfig:"sns_access_key"`
-	UpdateOrderStatusTopic  string `envconfig:"update_order_status_topic"`
+	OrderCreatedTopic       string `envconfig:"order_created_topic"`
 	OrderStatusQueue        string `envconfig:"order_status_queue"`
 	OrderPaymentStatusQueue string `envconfig:"order_payment_status_queue"`
 }

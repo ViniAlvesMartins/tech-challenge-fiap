@@ -1,6 +1,7 @@
 package use_case
 
 import (
+	"context"
 	"errors"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/contract/mock"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/entity"
@@ -13,6 +14,7 @@ import (
 func TestOrderUseCase_Create(t *testing.T) {
 	t.Run("create order successfully", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
+		ctx := context.Background()
 
 		order := entity.Order{
 			ID:          1,
@@ -42,11 +44,14 @@ func TestOrderUseCase_Create(t *testing.T) {
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().Create(order).Return(order, nil).Times(1)
 
+		snsService := mock.NewMockSnsService(ctrl)
+		snsService.EXPECT().SendMessage(ctx, order).Return(nil)
+
 		productUseCase := mock.NewMockProductUseCase(ctrl)
 		productUseCase.EXPECT().GetById(gomock.Any()).Return(order.Products[1], nil).Times(2)
 
-		orderUseCase := NewOrderUseCase(repo, productUseCase)
-		newOrder, err := orderUseCase.Create(order)
+		orderUseCase := NewOrderUseCase(repo, productUseCase, snsService)
+		newOrder, err := orderUseCase.Create(ctx, order)
 
 		assert.Equal(t, order, *newOrder)
 		assert.Nil(t, err)
@@ -54,6 +59,8 @@ func TestOrderUseCase_Create(t *testing.T) {
 
 	t.Run("error creating order", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
+		ctx := context.Background()
+
 		expectedErr := errors.New("error connecting to database")
 
 		order := entity.Order{
@@ -81,14 +88,16 @@ func TestOrderUseCase_Create(t *testing.T) {
 			},
 		}
 
+		snsService := mock.NewMockSnsService(ctrl)
+
 		productUseCase := mock.NewMockProductUseCase(ctrl)
 		productUseCase.EXPECT().GetById(gomock.Any()).Return(order.Products[1], nil).Times(2)
 
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().Create(order).Return(entity.Order{}, expectedErr).Times(1)
 
-		orderUseCase := NewOrderUseCase(repo, productUseCase)
-		newOrder, err := orderUseCase.Create(order)
+		orderUseCase := NewOrderUseCase(repo, productUseCase, snsService)
+		newOrder, err := orderUseCase.Create(ctx, order)
 
 		assert.Equal(t, expectedErr, err)
 		assert.Nil(t, newOrder)
@@ -124,12 +133,14 @@ func TestOrderUseCase_GetById(t *testing.T) {
 			},
 		}
 
+		snsService := mock.NewMockSnsService(ctrl)
+
 		productUseCase := mock.NewMockProductUseCase(ctrl)
 
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().GetById(1).Return(&order, nil).Times(1)
 
-		useCase := NewOrderUseCase(repo, productUseCase)
+		useCase := NewOrderUseCase(repo, productUseCase, snsService)
 		o, err := useCase.GetById(1)
 
 		assert.Nil(t, err)
@@ -142,10 +153,12 @@ func TestOrderUseCase_GetById(t *testing.T) {
 
 		productUseCase := mock.NewMockProductUseCase(ctrl)
 
+		snsService := mock.NewMockSnsService(ctrl)
+
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().GetById(1).Return(nil, expectedErr).Times(1)
 
-		useCase := NewOrderUseCase(repo, productUseCase)
+		useCase := NewOrderUseCase(repo, productUseCase, snsService)
 		o, err := useCase.GetById(1)
 
 		assert.Nil(t, o)
@@ -210,10 +223,12 @@ func TestOrderUseCase_GetByAll(t *testing.T) {
 
 		productUseCase := mock.NewMockProductUseCase(ctrl)
 
+		snsService := mock.NewMockSnsService(ctrl)
+
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().GetAll().Return(orders, nil).Times(1)
 
-		useCase := NewOrderUseCase(repo, productUseCase)
+		useCase := NewOrderUseCase(repo, productUseCase, snsService)
 		o, err := useCase.GetAll()
 
 		assert.Nil(t, err)
@@ -226,10 +241,12 @@ func TestOrderUseCase_GetByAll(t *testing.T) {
 
 		productUseCase := mock.NewMockProductUseCase(ctrl)
 
+		snsService := mock.NewMockSnsService(ctrl)
+
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().GetAll().Return(nil, expectedErr).Times(1)
 
-		useCase := NewOrderUseCase(repo, productUseCase)
+		useCase := NewOrderUseCase(repo, productUseCase, snsService)
 		o, err := useCase.GetAll()
 
 		assert.Nil(t, o)
@@ -246,7 +263,9 @@ func TestOrderUseCase_UpdateStatusById(t *testing.T) {
 
 		productUseCase := mock.NewMockProductUseCase(ctrl)
 
-		useCase := NewOrderUseCase(repo, productUseCase)
+		snsService := mock.NewMockSnsService(ctrl)
+
+		useCase := NewOrderUseCase(repo, productUseCase, snsService)
 		err := useCase.UpdateStatusById(1, enum.OrderStatusPreparing)
 
 		assert.Nil(t, err)
@@ -261,7 +280,9 @@ func TestOrderUseCase_UpdateStatusById(t *testing.T) {
 		repo := mock.NewMockOrderRepository(ctrl)
 		repo.EXPECT().UpdateStatusById(1, enum.OrderStatusPreparing).Times(1).Return(expectedErr)
 
-		useCase := NewOrderUseCase(repo, productUseCase)
+		snsService := mock.NewMockSnsService(ctrl)
+
+		useCase := NewOrderUseCase(repo, productUseCase, snsService)
 		err := useCase.UpdateStatusById(1, enum.OrderStatusPreparing)
 
 		assert.Error(t, expectedErr, err)

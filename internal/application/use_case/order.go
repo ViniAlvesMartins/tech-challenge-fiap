@@ -1,6 +1,7 @@
 package use_case
 
 import (
+	"context"
 	"errors"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/entity"
@@ -14,16 +15,18 @@ var (
 type OrderUseCase struct {
 	orderRepository contract.OrderRepository
 	productUseCase  contract.ProductUseCase
+	snsService      contract.SnsService
 }
 
-func NewOrderUseCase(o contract.OrderRepository, p contract.ProductUseCase) *OrderUseCase {
+func NewOrderUseCase(o contract.OrderRepository, p contract.ProductUseCase, s contract.SnsService) *OrderUseCase {
 	return &OrderUseCase{
 		orderRepository: o,
 		productUseCase:  p,
+		snsService:      s,
 	}
 }
 
-func (o *OrderUseCase) Create(order entity.Order) (*entity.Order, error) {
+func (o *OrderUseCase) Create(ctx context.Context, order entity.Order) (*entity.Order, error) {
 	for i, p := range order.Products {
 		product, err := o.productUseCase.GetById(p.ID)
 
@@ -39,6 +42,10 @@ func (o *OrderUseCase) Create(order entity.Order) (*entity.Order, error) {
 
 	orderNew, err := o.orderRepository.Create(order)
 	if err != nil {
+		return nil, err
+	}
+
+	if err = o.snsService.SendMessage(ctx, order); err != nil {
 		return nil, err
 	}
 

@@ -78,7 +78,7 @@ func (o *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	order, err := o.orderUseCase.Create(orderDto.ConvertToEntity())
+	order, err := o.orderUseCase.Create(r.Context(), orderDto.ConvertToEntity())
 	if err != nil {
 		o.logger.Error("error creating order", slog.Any("error", err.Error()))
 

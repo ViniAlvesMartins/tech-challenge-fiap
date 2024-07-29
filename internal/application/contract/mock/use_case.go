@@ -5,6 +5,7 @@
 package mock
 
 import (
+	context "context"
 	reflect "reflect"
 
 	entity "github.com/ViniAlvesMartins/tech-challenge-fiap/internal/entities/entity"
@@ -64,18 +65,18 @@ func (mr *MockOrderUseCaseMockRecorder) CancelExpiredOrders(threshold interface{
 }
 
 // Create mocks base method.
-func (m *MockOrderUseCase) Create(order entity.Order) (*entity.Order, error) {
+func (m *MockOrderUseCase) Create(ctx context.Context, order entity.Order) (*entity.Order, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", order)
+	ret := m.ctrl.Call(m, "Create", ctx, order)
 	ret0, _ := ret[0].(*entity.Order)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockOrderUseCaseMockRecorder) Create(order interface{}) *gomock.Call {
+func (mr *MockOrderUseCaseMockRecorder) Create(ctx, order interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockOrderUseCase)(nil).Create), order)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockOrderUseCase)(nil).Create), ctx, order)
 }
 
 // GetAll mocks base method.

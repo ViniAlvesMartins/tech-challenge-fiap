@@ -2,6 +2,7 @@ package controller
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/internal/application/contract/mock"
@@ -21,6 +22,7 @@ import (
 func TestOrderController_CreateOrder(t *testing.T) {
 	t.Run("create order successfully", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
+		ctx := context.Background()
 
 		product := entity.Product{
 			ID:          1,
@@ -71,7 +73,7 @@ func TestOrderController_CreateOrder(t *testing.T) {
 		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
 
 		getClient := clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(&client, nil).Times(1)
-		orderUseCaseMock.EXPECT().Create(body.ConvertToEntity()).Return(&order, nil).Times(1).After(getClient)
+		orderUseCaseMock.EXPECT().Create(ctx, body.ConvertToEntity()).Return(&order, nil).Times(1).After(getClient)
 
 		c := NewOrderController(orderUseCaseMock, clientUseCaseMock, loggerMock)
 		c.CreateOrder(w, r)
@@ -192,6 +194,8 @@ func TestOrderController_CreateOrder(t *testing.T) {
 
 	t.Run("error creating order", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
+		ctx := context.Background()
+
 		expectedErr := errors.New("error connecting to database")
 
 		client := entity.Client{
@@ -224,7 +228,7 @@ func TestOrderController_CreateOrder(t *testing.T) {
 		orderUseCaseMock := mock.NewMockOrderUseCase(ctrl)
 
 		getClient := clientUseCaseMock.EXPECT().GetById(body.ClientId).Return(&client, nil).Times(1)
-		orderUseCaseMock.EXPECT().Create(body.ConvertToEntity()).Return(nil, expectedErr).Times(1).After(getClient)
+		orderUseCaseMock.EXPECT().Create(ctx, body.ConvertToEntity()).Return(nil, expectedErr).Times(1).After(getClient)
 
 		c := NewOrderController(orderUseCaseMock, clientUseCaseMock, loggerMock)
 		c.CreateOrder(w, r)
