@@ -73,7 +73,7 @@ kind: ConfigMap
 metadata:
   name: ze-burguer
 data:
-  DATABASE_HOST: "zeburger-db.cqj1tlmduii1.us-east-1.rds.amazonaws.com"
+  DATABASE_HOST: "zeburguer-order-rds.cuijjbu0cy7p.us-east-1.rds.amazonaws.com"
   DATABASE_PORT: "5432"
   DATABASE_NAME: "zeburguer"
   DATABASE_SCHEMA: "ze_burguer"
@@ -86,4 +86,4 @@ metadata:
   name: ze-burguer
 type: Opaque
 data:
-  DATABASE_PASSWORD: YUthbVhQSDhTWDF0ZjBtdwo=
+  DATABASE_PASSWORD: MFAlbnJiR3B6NUUlVXkxRgo=
