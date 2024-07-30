@@ -5,18 +5,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract/mock"
-	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/input"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/output"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/entity"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/assert"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strconv"
 	"testing"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract/mock"
+	dto "github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/input"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/output"
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/entities/entity"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestClientController_CreateClient(t *testing.T) {
@@ -260,7 +261,7 @@ func TestClientController_GetClientByCpf(t *testing.T) {
 			Data:  nil,
 		})
 
-		assert.Equal(t, http.StatusInternalServerError, w.Code)
+		assert.Equal(t, http.StatusBadRequest, w.Code)
 		assert.Equal(t, string(jsonResponse), string(w.Body.Bytes()))
 	})
 
