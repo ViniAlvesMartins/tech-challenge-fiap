@@ -2,10 +2,11 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/output"
 	"log/slog"
 	"net/http"
 	"strconv"
+
+	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer/output"
 
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/application/contract"
 	"github.com/ViniAlvesMartins/tech-challenge-fiap/src/controller/serializer"
@@ -132,10 +133,11 @@ func (c *ClientController) GetClientByCpf(w http.ResponseWriter, r *http.Request
 	cpfParam := r.URL.Query().Get("cpf")
 
 	cpf, err := strconv.Atoi(cpfParam)
+
 	if err != nil {
 		c.logger.Error("error to convert cpf to int", slog.Any("error", err.Error()))
 
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		jsonResponse, _ := json.Marshal(
 			Response{
 				Error: "Make sure document is an int",
