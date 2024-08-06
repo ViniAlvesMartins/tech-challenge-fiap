@@ -29,6 +29,7 @@ services:
       - sh
       - -c
       - |
+        sleep 5
         aws --endpoint-url=http://orders-localstack:4566 sns create-topic --name order_status_updated-topic --region us-east-1 --output table | cat
         aws --endpoint-url=http://orders-localstack:4566 sns create-topic --name payment_status_updated-topic --region us-east-1 --output table | cat
         aws --endpoint-url=http://orders-localstack:4566 sns create-topic --name order_created-topic --region us-east-1 --output table | cat
