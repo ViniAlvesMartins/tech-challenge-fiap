@@ -49,7 +49,7 @@ func main() {
 
 	snsService := snsproducer.NewService(snsConnection)
 
-	consumer, err := sqsservice.NewConnection(ctx, cfg.OrderPaymentStatusQueue, 1, 20)
+	consumer, err := sqsservice.NewConnection(ctx, cfg.OrderPaymentStatusUpdatedQueue, 1, 20)
 	if err != nil {
 		logger.Error("error connecting to sqs", err)
 		panic(err)

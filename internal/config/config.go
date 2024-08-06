@@ -13,12 +13,12 @@ type Config struct {
 	DatabasePassword string `envconfig:"database_password"`
 	MigrationsDir    string `envconfig:"migrations_dir"`
 
-	SnsRegion               string `envconfig:"sns_region"`
-	SnsUrl                  string `envconfig:"sns_url"`
-	SnsAccessKey            string `envconfig:"sns_access_key"`
-	OrderCreatedTopic       string `envconfig:"order_created_topic"`
-	OrderStatusQueue        string `envconfig:"order_status_queue"`
-	OrderPaymentStatusQueue string `envconfig:"order_payment_status_queue"`
+	SnsRegion                      string `envconfig:"sns_region"`
+	SnsUrl                         string `envconfig:"sns_url"`
+	SnsAccessKey                   string `envconfig:"sns_access_key"`
+	OrderCreatedTopic              string `envconfig:"order_created_topic"`
+	OrderStatusUpdatedQueue        string `envconfig:"order_status_updated_queue"`
+	OrderPaymentStatusUpdatedQueue string `envconfig:"order_payment_status_updated_queue"`
 }
 
 func NewConfig() (cfg Config, err error) {

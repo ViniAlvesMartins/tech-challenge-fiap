@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 
 COPY . .
 
-EXPOSE 8081
+EXPOSE 8080
 
 RUN go build -o ./cmd/api/main ./cmd/api/main.go
 RUN go build -o ./cmd/worker/cancel_awaiting_payment_orders/main ./cmd/worker/cancel_awaiting_payment_orders/main.go

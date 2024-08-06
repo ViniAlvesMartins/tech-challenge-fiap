@@ -16,6 +16,6 @@ RUN go build -o ./cmd/worker/cancel_awaiting_payment_orders/main ./cmd/worker/ca
 RUN go build -o ./cmd/worker/update_order_status/main ./cmd/worker/update_order_status/main.go
 RUN go build -o ./cmd/worker/update_payment_status/main ./cmd/worker/update_payment_status/main.go
 
-EXPOSE 8081
+EXPOSE 8080
 
 CMD "air"

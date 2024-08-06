@@ -41,7 +41,7 @@ func main() {
 		panic(err)
 	}
 
-	consumer, err := sqsservice.NewConnection(ctx, cfg.OrderStatusQueue, 1, 20)
+	consumer, err := sqsservice.NewConnection(ctx, cfg.OrderStatusUpdatedQueue, 1, 20)
 	if err != nil {
 		logger.Error("error connecting to sqs", err)
 		panic(err)

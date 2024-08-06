@@ -68,7 +68,7 @@ func (e *App) Run(ctx context.Context) {
 	swagger.SwaggerInfo.Version = "1.0"
 
 	server := &http.Server{
-		Addr:    ":8081",
+		Addr:    ":8080",
 		Handler: router,
 	}
 
