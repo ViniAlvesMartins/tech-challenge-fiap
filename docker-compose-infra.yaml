@@ -36,8 +36,8 @@ services:
         aws --endpoint-url=http://orders-localstack:4566 sqs create-queue --queue-name order_status_updated-queue --region us-east-1 --output table | cat
         aws --endpoint-url=http://orders-localstack:4566 sqs create-queue --queue-name order_payment_status-updated-queue --region us-east-1 --output table | cat
         aws --endpoint-url=http://orders-localstack:4566 sqs list-queues --region us-east-1 --output table | cat
-        aws --endpoint-url=http://orders-localstack:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:order_status_updated-topic --protocol sqs --notification-endpoint arn:aws:sqs:us-east-1:000000000000:order_status-updated-queue --region us-east-1 --output table | cat
-        aws --endpoint-url=http://orders-localstack:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:payment_status_updated-topic --protocol sqs --notification-endpoint arn:aws:sqs:us-east-1:000000000000:order_payment_status_updated-queue --region us-east-1 --output table | cat
+        aws --endpoint-url=http://orders-localstack:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:order_status_updated-topic --protocol sqs --notification-endpoint arn:aws:sqs:us-east-1:000000000000:order_status_updated-queue --region us-east-1 --output table | cat
+        aws --endpoint-url=http://orders-localstack:4566 sns subscribe --topic-arn arn:aws:sns:us-east-1:000000000000:payment_status_updated-topic --protocol sqs --notification-endpoint arn:aws:sqs:us-east-1:000000000000:order_payment_status-updated-queue --region us-east-1 --output table | cat
     networks:
       - dev-networks
 
