@@ -16,6 +16,8 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 [Stack](#stack-utilizada)
 
+[SAGA](#saga-coreografia)
+
 [Instalação Docker](#instalação-docker)
 
 [Instalação Kubernetes](#instalação-kubernetes)
@@ -23,6 +25,8 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 [APIs](#documentação-da-api)
 
 [SONAR](#sonar)
+
+[OWASP ZAP](#owasp-zap)
 ---
 
 ## Arquitetura
@@ -33,10 +37,11 @@ Aplicação responsável pela gestão de pedidos da hamburgueria Zé do Burguer 
 
 ### Estrutura do projeto
 
+
+- cmd
 - doc
-- infra: Módulo responsável pela gestão da infra e configurações externas utilizadas na aplicação. Ex: Migrations, docker, config.go
-- kustomize: Módulo responsável pela gestão dos arquivos kubernetes
-- src
+- infra: Módulo responsável pela gestão da infra e configurações externas utilizadas na aplicação. Ex: Migrations, docker, config.go, kustomize
+- internal
 	- **External**: Módulo responsável por realizar a recepção dos dados e realizar a chamada para a controller
 		- **Handler**: Camada responsável por definir o meio de recepção das requisições; ex: REST API, GraphQL, Mensageria
         - **Database**: Camada onde realizamos a configuração do banco de dados;
@@ -78,6 +83,12 @@ uma vasta quantidade de tipos de dados; suporte nativo a UUID(identificador úni
 
 ---
 
+## Saga coreografia
+
+O padrão SAGA coreografado é vantajoso para aplicações pequenas por sua simplicidade, desacoplamento de serviços, escalabilidade, resiliência e flexibilidade. Ele evita a complexidade de um orquestrador central, facilitando a manutenção e evolução independente dos serviços. A comunicação entre serviços por eventos promove baixo acoplamento e resiliência, permitindo que cada serviço escale e evolua separadamente. Em uma aplicação de hamburguer, por exemplo, os serviços de pedidos, inventário e pagamentos podem coordenar suas ações por meio de eventos sem um controlador central.
+
+---
+
 ## Stack utilizada
 
 **Linguagem:** Go (v1.22)
@@ -110,10 +121,20 @@ Crie o arquivo `.env` apartir do `.env.example`
   cp .env.example .env
 ```
 
+Inicie a infra
+
+```bash
+  docker-compose -f docker-compose-infra.yaml up -d
+  ou
+  make start-infra
+```
+
 Inicie a aplicação
 
 ```bash
-  docker-compose up
+  docker-compose up dev-app-orders -d
+  ou
+  make run-app
 ```
 ## Instalação kubernetes
 
@@ -181,3 +202,8 @@ Deployments
 ## Sonar
 
 ![Sonar](./doc/sonar.png)
+
+## OWASP ZAP
+
+Relatório se encontra na pasta ./doc/relatorio/orders-report.html
+![OWASP](./doc/relatorio/owasp.png)
