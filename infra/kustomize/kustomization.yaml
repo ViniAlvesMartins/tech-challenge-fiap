@@ -1,0 +1,6 @@
+resources:
+- namespace.yaml
+- ze-burguer.yaml
+- worker.yaml
+
+namespace: tech-challenge

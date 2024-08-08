@@ -223,6 +223,72 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Delete client by cpf",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Delete client",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Client cpf",
+                        "name": "cpf",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/swagger.ResourceNotFoundResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/swagger.InternalServerErrorResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
             }
         },
         "/orders": {
@@ -507,234 +573,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/orders/{id}/notification-payments": {
-            "post": {
-                "description": "Payment confirmation webhook",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Payments"
-                ],
-                "summary": "Payment confirmation webhook",
-                "parameters": [
-                    {
-                        "description": "Payment properties",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/input.PaymentDto"
-                        }
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Order ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "type": "object"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/swagger.ResourceNotFoundResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/swagger.InternalServerErrorResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/orders/{id}/payments": {
-            "post": {
-                "description": "Start payment process for a certain order",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Payments"
-                ],
-                "summary": "Start payment process",
-                "parameters": [
-                    {
-                        "description": "Payment properties",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/input.PaymentDto"
-                        }
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Order ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controller.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/swagger.ResourceNotFoundResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/swagger.InternalServerErrorResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/orders/{id}/status-payment": {
-            "get": {
-                "description": "Get status for order last payment try",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Payments"
-                ],
-                "summary": "Get status for last payment",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Order ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controller.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/swagger.InternalServerErrorResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
         "/products": {
             "post": {
                 "description": "Place a new product",
@@ -974,24 +812,13 @@ const docTemplate = `{
                 }
             }
         },
-        "input.PaymentDto": {
-            "type": "object",
-            "required": [
-                "type"
-            ],
-            "properties": {
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
         "input.ProductDto": {
             "type": "object",
             "required": [
                 "category_id",
                 "description",
-                "name_product",
-                "price"
+                "price",
+                "product_name"
             ],
             "properties": {
                 "category_id": {
@@ -1000,11 +827,11 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "name_product": {
-                    "type": "string"
-                },
                 "price": {
                     "type": "number"
+                },
+                "product_name": {
+                    "type": "string"
                 }
             }
         },
@@ -1077,11 +904,11 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "name_product": {
-                    "type": "string"
-                },
                 "price": {
                     "type": "number"
+                },
+                "product_name": {
+                    "type": "string"
                 }
             }
         },
@@ -1110,11 +937,11 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
+	Version:          "",
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Ze Burguer APIs",
+	Title:            "",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

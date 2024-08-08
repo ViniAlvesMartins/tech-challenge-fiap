@@ -31,28 +31,21 @@ definitions:
           type: object
         type: array
     type: object
-  input.PaymentDto:
-    properties:
-      type:
-        type: string
-    required:
-    - type
-    type: object
   input.ProductDto:
     properties:
       category_id:
         type: integer
       description:
         type: string
-      name_product:
-        type: string
       price:
         type: number
+      product_name:
+        type: string
     required:
     - category_id
     - description
-    - name_product
     - price
+    - product_name
     type: object
   input.StatusOrderDto:
     properties:
@@ -99,10 +92,10 @@ definitions:
         type: string
       id:
         type: integer
-      name_product:
-        type: string
       price:
         type: number
+      product_name:
+        type: string
     type: object
   swagger.InternalServerErrorResponse:
     properties:
@@ -120,8 +113,6 @@ definitions:
     type: object
 info:
   contact: {}
-  title: Ze Burguer APIs
-  version: "1.0"
 paths:
   /categories/{id}/products:
     get:
@@ -161,6 +152,44 @@ paths:
       tags:
       - Products
   /clients:
+    delete:
+      consumes:
+      - application/json
+      description: Delete client by cpf
+      parameters:
+      - description: Client cpf
+        in: query
+        name: cpf
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.ResourceNotFoundResponse'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
+            - properties:
+                data:
+                  type: object
+              type: object
+      summary: Delete client
+      tags:
+      - Clients
     get:
       consumes:
       - application/json
@@ -398,136 +427,6 @@ paths:
       summary: Find order
       tags:
       - Orders
-  /orders/{id}/notification-payments:
-    post:
-      consumes:
-      - application/json
-      description: Payment confirmation webhook
-      parameters:
-      - description: Payment properties
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/input.PaymentDto'
-      - description: Order ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.ResourceNotFoundResponse'
-            - properties:
-                data:
-                  type: object
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
-            - properties:
-                data:
-                  type: object
-              type: object
-      summary: Payment confirmation webhook
-      tags:
-      - Payments
-  /orders/{id}/payments:
-    post:
-      consumes:
-      - application/json
-      description: Start payment process for a certain order
-      parameters:
-      - description: Payment properties
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/input.PaymentDto'
-      - description: Order ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            allOf:
-            - $ref: '#/definitions/controller.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "404":
-          description: Not Found
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.ResourceNotFoundResponse'
-            - properties:
-                data:
-                  type: object
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
-            - properties:
-                data:
-                  type: object
-              type: object
-      summary: Start payment process
-      tags:
-      - Payments
-  /orders/{id}/status-payment:
-    get:
-      consumes:
-      - application/json
-      description: Get status for order last payment try
-      parameters:
-      - description: Order ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/controller.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/swagger.InternalServerErrorResponse'
-            - properties:
-                data:
-                  type: object
-              type: object
-      summary: Get status for last payment
-      tags:
-      - Payments
   /products:
     post:
       consumes:

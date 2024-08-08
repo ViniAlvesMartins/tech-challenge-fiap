@@ -1,0 +1,17 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: ze-burguer-cronjob
+spec:
+  schedule: "*/15 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: ze-burguer
+            image: marcosilva/ze_burguer:latest
+            imagePullPolicy: Always
+            command:
+            - /cmd/worker/cancel_awaiting_payment_orders/main
+          restartPolicy: OnFailure
