@@ -1,21 +1,50 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ze-burguer-app-worker
+  name: ze-burguer-app-order-worker
 spec:
   selector:
     matchLabels:
-      app:  ze-burguer-worker
+      app:  ze-burguer-order-worker
   template:
     metadata:
       labels:
-        app: ze-burguer-worker
+        app: ze-burguer-order-worker
     spec:
       containers:
-        - name: ze-burguer
+        - name: ze-burguer-order-worker
           image: marcosilva/ze_burguer:latest
           command:
            - /cmd/worker/update_order_status/main
+          envFrom:
+          - configMapRef:
+              name: ze-burguer
+          - secretRef:
+              name: ze-burguer
+          resources:
+            requests:
+              cpu: "30m"
+            limits:
+              cpu: "30m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ze-burguer-app-payment-worker
+spec:
+  selector:
+    matchLabels:
+      app:  ze-burguer-payment-worker
+  template:
+    metadata:
+      labels:
+        app: ze-burguer-payment-worker
+    spec:
+      containers:
+        - name: ze-burguer-payment-worker
+          image: marcosilva/ze_burguer:latest
+          command:
+           - /cmd/worker/update_payment_status/main
           envFrom:
           - configMapRef:
               name: ze-burguer
