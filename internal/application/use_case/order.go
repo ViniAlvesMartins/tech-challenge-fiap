@@ -45,7 +45,7 @@ func (o *OrderUseCase) Create(ctx context.Context, order entity.Order) (*entity.
 		return nil, err
 	}
 
-	if err = o.snsService.SendMessage(ctx, order); err != nil {
+	if err = o.snsService.SendMessage(ctx, orderNew); err != nil {
 		return nil, err
 	}
 
