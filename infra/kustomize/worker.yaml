@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ze-burguer-app-worker
+spec:
+  selector:
+    matchLabels:
+      app:  ze-burguer-worker
+  template:
+    metadata:
+      labels:
+        app: ze-burguer-worker
+    spec:
+      containers:
+        - name: ze-burguer
+          image: marcosilva/ze_burguer:latest
+          command:
+           - /cmd/worker/update_order_status/main
+          envFrom:
+          - configMapRef:
+              name: ze-burguer
+          - secretRef:
+              name: ze-burguer
+          resources:
+            requests:
+              cpu: "30m"
+            limits:
+              cpu: "30m"
