@@ -80,8 +80,8 @@ data:
   DATABASE_USERNAME: "zeburguer"
   MIGRATIONS_DIR: "infra/database/migrations"
   ORDER_CREATED_TOPIC: "arn:aws:sns:us-east-1:435304418663:order_created-topic"
-  ORDER_STATUS_UPDATED_QUEUE: "http://sqs.us-east-1.localhost.localstack.cloud:4566/435304418663/order_status_updated-queue"
-  ORDER_PAYMENT_STATUS_UPDATED_QUEUE: "http://sqs.us-east-1.localhost.localstack.cloud:4566/435304418663/order_payment_status_updated-queue"
+  ORDER_STATUS_UPDATED_QUEUE: "http://sqs.us-east-1.amazonaws.com/435304418663/order_status_updated-queue"
+  ORDER_PAYMENT_STATUS_UPDATED_QUEUE: "http://sqs.us-east-1.amazonaws.com/435304418663/order_payment_status_updated-queue"
 ---
 apiVersion: v1
 kind: Secret
